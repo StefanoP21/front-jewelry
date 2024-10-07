@@ -2,8 +2,8 @@ name: pull request
 
 on:
   pull_request:
-    branches: ['dev', 'main']
-    types: ['opened', 'synchronize', 'reopened', 'edited']
+    branches: ["dev", "main"]
+    types: ["opened", "synchronize", "reopened", "edited"]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
