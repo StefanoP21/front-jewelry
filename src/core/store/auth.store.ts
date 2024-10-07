@@ -1,5 +1,5 @@
-import { User } from '@/core/models';
-import { create } from 'zustand';
+import { User } from "@/core/models";
+import { create } from "zustand";
 
 interface AuthState {
   user?: User;
