@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        login:
+          "url('https://images.pexels.com/photos/1050321/pexels-photo-1050321.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')",
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
