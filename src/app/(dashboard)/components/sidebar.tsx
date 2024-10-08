@@ -1,17 +1,9 @@
-"use client";
-
-import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
+import { ChevronLast, ChevronFirst } from "lucide-react";
 import { useContext, createContext, useState, ReactNode } from "react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import Logo from "./logo";
 import { User } from "@/core/models";
+import Avatar from "./avatar";
+import SidebarOptions from "./sidebar-options";
 
 interface SidebarContextType {
   expanded: boolean;
@@ -44,29 +36,29 @@ export default function Sidebar({ children, user }: SidebarProps) {
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
 
-        <div className="border-t flex p-3">
+        <div className="border-t flex p-3 items-center relative group">
           <Avatar name={user.name} />
           <div
-            className={`flex justify-between items-center overflow-hidden transition-all ${
-              expanded ? "w-52 ml-3" : "w-0"
-            }`}
+            className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0 ml-0"}`}
           >
             <div className="leading-4">
-              <h4 className="font-semibold text-[hsl(var(--foreground))]">{user.name + " " + user.lastname}</h4>
-              <span className="text-xs text-[hsl(var(--muted-foreground))]">{user.dni}</span>
+              <h4 className="font-semibold text-[hsl(var(--foreground))] whitespace-nowrap">
+                {user.name + " " + user.lastname}
+              </h4>
+              <span className="text-xs text-[hsl(var(--muted-foreground))] whitespace-nowrap">{user.dni}</span>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <MoreVertical size={20} />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Actualizar Datos</DropdownMenuItem>
-                <DropdownMenuItem>Cambiar contraseña</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+
+            <SidebarOptions />
           </div>
+
+          {!expanded && (
+            <div
+              className={`absolute left-full rounded-md px-2 py-1 ml-3 bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap`}
+              style={{ top: "50%", transform: "translateY(-50%)", maxWidth: "200px" }}
+            >
+              {user.name + " " + user.lastname}
+            </div>
+          )}
         </div>
       </nav>
     </aside>
@@ -113,17 +105,3 @@ export function SidebarItem({ icon, text, active = false, alert = false }: Sideb
     </li>
   );
 }
-
-interface AvatarProps {
-  name: string;
-}
-
-const Avatar = ({ name }: AvatarProps) => {
-  const initial = name.charAt(0).toUpperCase();
-
-  return (
-    <div className="w-10 h-10 rounded-full bg-[hsl(var(--primary))] flex items-center justify-center text-[hsl(var(--primary-foreground))] font-bold">
-      {initial}
-    </div>
-  );
-};

@@ -1,4 +1,4 @@
-import { Gem, Ampersand, Watch } from "lucide-react"; // Importa los iconos que necesitas
+import { Gem, Ampersand, Watch } from "lucide-react";
 
 const Logo = ({ expanded }: { expanded: boolean }) => {
   return (
@@ -6,7 +6,7 @@ const Logo = ({ expanded }: { expanded: boolean }) => {
       className={`flex items-center justify-center transition-all duration-300 overflow-hidden ${
         expanded ? "w-32 opacity-100 scale-100" : "w-0 opacity-0 scale-0"
       }`}
-      style={{ height: 64 }} // Mantener el alto fijo
+      style={{ height: 64 }}
     >
       <Gem color="#22d3ee" className="h-8 w-8" />
       <Ampersand className="h-8 w-8 text-[hsl(var(--foreground))]" />
