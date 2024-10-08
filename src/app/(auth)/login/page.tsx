@@ -11,6 +11,7 @@ import { LoginDto, UserResponse } from "@/core/models";
 import { useAuthStore } from "@/core/store/auth.store";
 import Link from "next/link";
 
+//* Form Schema
 const loginSchema = z.object({
   dni: z.string().min(8, { message: "El DNI debe tener al menos 8 caracteres" }),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 8 caracteres" }),
