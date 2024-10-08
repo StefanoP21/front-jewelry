@@ -1,11 +1,11 @@
 "use client";
 
 import { ReactNode } from "react";
-import Sidebar, { SidebarItem } from "@/components/ui/sidebar";
+import Sidebar, { SidebarItem } from "./components/sidebar";
 import { ShoppingBasket, Gem, Package, TicketX, User, Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User as UserModel } from "@/core/models";
+import { useAuthStore } from "@/core/store/auth.store";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -14,20 +14,22 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
 
-  const user: UserModel = localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user")!)
-    : {
-        id: 1,
-        name: "Jhon",
-        lastname: "Doe",
-        dni: "12345678",
-        role: "ADMIN",
-      };
+  const { user } = useAuthStore();
+
+  const defaultUser = {
+    id: 1,
+    name: "Jhon",
+    lastname: "Doe",
+    dni: "12345678",
+    role: "ADMIN",
+  };
+
+  const displayedUser = user || defaultUser;
 
   return (
     <div className="flex">
       {/* Sidebar */}
-      <Sidebar user={user}>
+      <Sidebar user={displayedUser}>
         <Link href="/">
           <SidebarItem icon={<Home size={20} />} text="Home" active={pathname === "/"} />
         </Link>
@@ -40,10 +42,10 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <Link href="/purchase">
           <SidebarItem icon={<Package size={20} />} text="Compras" active={pathname === "/purchase"} />
         </Link>
-        <Link href="/refunds">
-          <SidebarItem icon={<TicketX size={20} />} text="Devoluciones" active={pathname === "/refunds"} />
+        <Link href="/refund">
+          <SidebarItem icon={<TicketX size={20} />} text="Devoluciones" active={pathname === "/refund"} />
         </Link>
-        {user.role === "ADMIN" && (
+        {displayedUser.role === "ADMIN" && (
           <Link href="/user">
             <SidebarItem icon={<User size={20} />} text="Usuarios" active={pathname === "/user"} />
           </Link>
