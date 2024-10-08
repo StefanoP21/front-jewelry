@@ -10,6 +10,7 @@ import { AuthService } from "@/core/services/auth.service";
 import { LoginDto, UserResponse } from "@/core/models";
 import { useAuthStore } from "@/core/store/auth.store";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 //* Form Schema
 const loginSchema = z.object({
@@ -18,6 +19,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -32,6 +34,7 @@ export default function LoginPage() {
     mutationFn: AuthService.login,
     onSuccess: (data: UserResponse) => {
       setUser(data.data.user);
+      router.push("/order");
     },
     onError: (error: Error) => {
       console.error("Error en el login: ", error.message);
