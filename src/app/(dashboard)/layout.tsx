@@ -2,9 +2,9 @@
 
 import { ReactNode } from "react";
 import Sidebar, { SidebarItem } from "./components/sidebar";
-import { ShoppingBasket, Gem, Package, TicketX, User, Home } from "lucide-react";
+import { ShoppingBasket, Gem, Package, TicketX, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/core/store/auth.store";
 
 interface DashboardLayoutProps {
@@ -13,26 +13,21 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, status, checkAuthStatus } = useAuthStore();
 
-  const { user } = useAuthStore();
+  if (status === "loading") {
+    checkAuthStatus();
+    return <div>Loading...</div>;
+  }
 
-  const defaultUser = {
-    id: 1,
-    name: "Jhon",
-    lastname: "Doe",
-    dni: "12345678",
-    role: "ADMIN",
-  };
-
-  const displayedUser = user || defaultUser;
+  if (status === "unauthenticated") {
+    router.push("/login");
+  }
 
   return (
     <div className="flex">
-      {/* Sidebar */}
-      <Sidebar user={displayedUser}>
-        <Link href="/">
-          <SidebarItem icon={<Home size={20} />} text="Home" active={pathname === "/"} />
-        </Link>
+      <Sidebar user={user!}>
         <Link href="/order">
           <SidebarItem icon={<ShoppingBasket size={20} />} text="Ventas" active={pathname === "/order"} />
         </Link>
@@ -45,7 +40,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <Link href="/refund">
           <SidebarItem icon={<TicketX size={20} />} text="Devoluciones" active={pathname === "/refund"} />
         </Link>
-        {displayedUser.role === "ADMIN" && (
+        {user?.role === "ADMIN" && (
           <Link href="/user">
             <SidebarItem icon={<User size={20} />} text="Usuarios" active={pathname === "/user"} />
           </Link>
