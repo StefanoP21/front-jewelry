@@ -1,16 +1,49 @@
 import { User } from "@/core/models";
-import { create } from "zustand";
+import { create, StateCreator } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { AuthService } from "../services/auth.service";
 
-interface AuthState {
+type AuthStatus = "authenticated" | "unauthenticated" | "loading";
+
+export interface AuthState {
   user?: User;
-  isAuthenticated: boolean;
-  setUser: (user: User) => void;
-  clearUser: () => void;
+  token?: string;
+  status: AuthStatus;
+
+  loginUser: (dni: string, password: string) => Promise<void>;
+  checkAuthStatus: () => Promise<void>;
+  logoutUser: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+const storeApi: StateCreator<AuthState> = (set) => ({
+  status: "loading",
+  token: undefined,
   user: undefined,
-  isAuthenticated: false,
-  setUser: (user) => set({ user, isAuthenticated: true }),
-  clearUser: () => set({ user: undefined, isAuthenticated: false }),
-}));
+
+  loginUser: async (dni, password) => {
+    try {
+      const { data } = await AuthService.login({ dni, password });
+      set({ user: data.user, token: data.token, status: "authenticated" });
+    } catch (error) {
+      set({ user: undefined, token: undefined, status: "unauthenticated" });
+      throw error;
+    }
+  },
+
+  checkAuthStatus: async () => {
+    try {
+      const { data } = await AuthService.renew();
+      set({ user: data.user, token: data.token, status: "authenticated" });
+    } catch (error) {
+      set({ user: undefined, token: undefined, status: "unauthenticated" });
+      throw error;
+    }
+  },
+
+  logoutUser: () => {
+    localStorage.removeItem("token");
+    set({ user: undefined, token: undefined, status: "unauthenticated" });
+  },
+});
+
+export const useAuthStore = create<AuthState>()(devtools(persist(storeApi, { name: "auth-store" })));
