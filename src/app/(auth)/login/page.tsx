@@ -5,20 +5,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
-import { AuthService } from "@/core/services/auth.service";
-import { LoginDto, UserResponse } from "@/core/models";
+import { LoginDto } from "@/core/models";
 import { useAuthStore } from "@/core/store/auth.store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-//* Form Schema
 const loginSchema = z.object({
   dni: z.string().min(8, { message: "El DNI debe tener al menos 8 caracteres" }),
   password: z.string().min(6, { message: "La contraseña debe tener al menos 8 caracteres" }),
 });
 
 export default function LoginPage() {
+  const loginUser = useAuthStore((state) => state.loginUser);
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -28,21 +26,9 @@ export default function LoginPage() {
     },
   });
 
-  const setUser = useAuthStore((state) => state.setUser);
-
-  const mutation = useMutation({
-    mutationFn: AuthService.login,
-    onSuccess: (data: UserResponse) => {
-      setUser(data.data.user);
-      router.push("/order");
-    },
-    onError: (error: Error) => {
-      console.error("Error en el login: ", error.message);
-    },
-  });
-
-  const onSubmit = (data: LoginDto) => {
-    mutation.mutate(data);
+  const onSubmit = async (data: LoginDto) => {
+    await loginUser(data.dni, data.password);
+    router.push("/order");
   };
 
   return (
@@ -91,8 +77,6 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-          {mutation.isPending && <p className="text-center text-blue-500">Iniciando sesión</p>}
-          {mutation.isError && <p className="text-center text-red-500">{mutation.error?.message}</p>}
           <p className="text-right">
             <Link className="text-blue-500 underline" href={"/register"}>
               Registrar usuario

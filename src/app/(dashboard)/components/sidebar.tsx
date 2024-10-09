@@ -37,15 +37,15 @@ export default function Sidebar({ children, user }: SidebarProps) {
         </SidebarContext.Provider>
 
         <div className="border-t flex p-3 items-center relative group">
-          <Avatar name={user.name} />
+          <Avatar name={user?.name} />
           <div
             className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0 ml-0"}`}
           >
             <div className="leading-4">
               <h4 className="font-semibold text-[hsl(var(--foreground))] whitespace-nowrap">
-                {user.name + " " + user.lastname}
+                {user?.name + " " + user?.lastname}
               </h4>
-              <span className="text-xs text-[hsl(var(--muted-foreground))] whitespace-nowrap">{user.dni}</span>
+              <span className="text-xs text-[hsl(var(--muted-foreground))] whitespace-nowrap">{user?.dni}</span>
             </div>
 
             <SidebarOptions />
@@ -56,7 +56,7 @@ export default function Sidebar({ children, user }: SidebarProps) {
               className={`absolute left-full rounded-md px-2 py-1 ml-3 bg-[hsl(var(--muted))] text-[hsl(var(--muted-foreground))] text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 whitespace-nowrap`}
               style={{ top: "50%", transform: "translateY(-50%)", maxWidth: "200px" }}
             >
-              {user.name + " " + user.lastname}
+              {user?.name + " " + user?.lastname}
             </div>
           )}
         </div>
