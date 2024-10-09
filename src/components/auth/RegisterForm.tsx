@@ -43,7 +43,7 @@ export default function RegisterForm() {
         >
           <h1 className="text-2xl font-bold text-center">Registrar usuario</h1>
           <FormField
-            name="dni"
+            name="name"
             control={form.control}
             render={({ field }) => (
               <FormItem>
@@ -61,7 +61,7 @@ export default function RegisterForm() {
             )}
           />
           <FormField
-            name="dni"
+            name="lastname"
             control={form.control}
             render={({ field }) => (
               <FormItem>
