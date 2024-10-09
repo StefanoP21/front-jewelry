@@ -21,9 +21,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
+import { useAuthStore } from "@/core/store/auth.store";
+import { useRouter } from "next/navigation";
 
 export default function SidebarOptions() {
   const { setTheme } = useTheme();
+  const logoutUser = useAuthStore((state) => state.logoutUser);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logoutUser();
+    router.push("/login");
+  };
 
   return (
     <>
@@ -56,7 +65,7 @@ export default function SidebarOptions() {
               <DropdownMenuItem>Cambiar contraseña</DropdownMenuItem>
             </DialogTrigger>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Cerrar sesión</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>Cerrar sesión</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
