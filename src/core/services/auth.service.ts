@@ -2,15 +2,19 @@ import { api } from "../lib/api";
 import { LoginDto, RegisterDto, UserResponse } from "../models";
 
 export const AuthService = {
-  login: async ({ dni, password }: LoginDto): Promise<UserResponse> => {
-    const response = await api.post("/api/auth/login", { dni, password });
-
-    return response.data;
+  login: async (dto: LoginDto): Promise<UserResponse> => {
+    const { data } = await api.post<UserResponse>("/api/auth/login", dto);
+    localStorage.setItem("token", data.data.token);
+    return data;
   },
 
-  register: async ({ name, lastname, dni, password, role }: RegisterDto): Promise<UserResponse> => {
-    const response = await api.post("/api/auth/register", { name, lastname, dni, password, role });
+  register: async (dto: RegisterDto): Promise<UserResponse> => {
+    const { data } = await api.post<UserResponse>("/api/auth/register", dto);
+    return data;
+  },
 
-    return response.data;
+  renew: async (): Promise<UserResponse> => {
+    const { data } = await api.get<UserResponse>("/api/auth/renew");
+    return data;
   },
 };
