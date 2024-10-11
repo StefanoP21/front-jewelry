@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import Sidebar, { SidebarItem } from "./components/sidebar";
 import { ShoppingBasket, Gem, Package, TicketX, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { useAuthStore } from "@/core/store/auth.store";
 
 interface DashboardLayoutProps {
@@ -13,7 +13,6 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const pathname = usePathname();
-  const router = useRouter();
   const { user, status, checkAuthStatus } = useAuthStore();
 
   if (status === "loading") {
@@ -22,7 +21,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   }
 
   if (status === "unauthenticated") {
-    router.push("/login");
+    redirect("/login");
   }
 
   return (

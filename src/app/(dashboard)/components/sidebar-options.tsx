@@ -22,16 +22,15 @@ import {
 } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
 import { useAuthStore } from "@/core/store/auth.store";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function SidebarOptions() {
   const { setTheme } = useTheme();
   const logoutUser = useAuthStore((state) => state.logoutUser);
-  const router = useRouter();
 
   const handleLogout = () => {
     logoutUser();
-    router.push("/login");
+    redirect("/login");
   };
 
   return (

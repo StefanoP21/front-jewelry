@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useAuthStore } from "@/core/store/auth.store";
 
 const AuthLayout = ({
@@ -9,7 +9,6 @@ const AuthLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const router = useRouter();
   const { status, checkAuthStatus } = useAuthStore();
 
   if (status === "loading") {
@@ -18,7 +17,7 @@ const AuthLayout = ({
   }
 
   if (status === "authenticated") {
-    router.push("/order");
+    redirect("/order");
   }
 
   return <div>{children}</div>;
