@@ -1,6 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { File, ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
+import { File, ListFilter, MoreHorizontal, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -25,6 +27,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CreateProductForm } from "@/components/product/CreateProductForm";
+import { UpdateProductForm } from "@/components/product/UpdateProductForm";
+import { DeleteProductForm } from "@/components/product/DeleteProductForm";
 
 export const description =
   "An products dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. It displays a list of products in a table with actions.";
@@ -113,10 +118,11 @@ export default function ProductPage() {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
               </Button>
-              <Button size="sm" className="h-7 gap-1">
+              <CreateProductForm />
+              {/*<Button size="sm" className="h-7 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
-              </Button>
+              </Button>*/}
             </div>
           </div>
           <TabsContent value="all">
@@ -170,8 +176,12 @@ export default function ProductPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                              <UpdateProductForm />
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                              <DeleteProductForm />
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
