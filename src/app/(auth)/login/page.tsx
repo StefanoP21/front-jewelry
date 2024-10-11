@@ -1,23 +1,27 @@
 "use client";
 
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { useToast } from "@/hooks/use-toast";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { LoginDto } from "@/core/models";
+import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/core/store/auth.store";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { AxiosError } from "axios";
 
 const loginSchema = z.object({
   dni: z.string().min(8, { message: "El DNI debe tener al menos 8 caracteres" }),
-  password: z.string().min(6, { message: "La contraseña debe tener al menos 8 caracteres" }),
+  password: z.string().min(6, { message: "La contraseña debe tener al menos 6 caracteres" }),
 });
 
 export default function LoginPage() {
   const loginUser = useAuthStore((state) => state.loginUser);
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,34 +30,48 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = async (data: LoginDto) => {
-    await loginUser(data.dni, data.password);
-    router.push("/order");
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    try {
+      setIsLoading(true);
+      await loginUser(values.dni, values.password);
+      redirect("/order");
+    } catch (error) {
+      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Error al iniciar sesión",
+        description:
+          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+          "Ocurrió un error al intentar iniciar sesión",
+      });
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-login bg-cover bg-center">
+    <div className="flex items-center min-h-screen bg-login bg-cover bg-center">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4 bg-white p-6 rounded-lg shadow-md w-100 mx-auto"
+          className="space-y-5 mx-auto bg-background px-7 py-10 rounded-xl shadow-l"
         >
-          <h1 className="text-2xl font-bold text-center">Joyería y Relojería Jenny</h1>
-          <h2 className="text-xl">Iniciar sesión</h2>
+          <h1 className="text-2xl font-bold text-center text-primary">Joyería y Relojería &quot;Jenny&quot;</h1>
+          <h2 className="text-xl font-semibold">Iniciar sesión</h2>
           <hr />
           <FormField
             name="dni"
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>DNI</FormLabel>
+                <FormLabel htmlFor="dni">DNI</FormLabel>
                 <FormControl>
-                  <input
+                  <Input
                     {...field}
+                    id="dni"
                     type="text"
                     placeholder="Ingrese su DNI"
-                    className="mt-1 block w-full p-2 border rounded-md"
-                  ></input>
+                    autoComplete="username"
+                    disabled={isLoading}
+                  ></Input>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,26 +82,35 @@ export default function LoginPage() {
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contraseña</FormLabel>
+                <FormLabel htmlFor="password">Contraseña</FormLabel>
                 <FormControl>
-                  <input
+                  <Input
                     {...field}
+                    id="password"
                     type="password"
                     placeholder="Ingrese su contraseña"
-                    className="mt-1 block w-full p-2 border rounded-md"
-                  ></input>
+                    autoComplete="current-password"
+                    disabled={isLoading}
+                  ></Input>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <p className="text-right">
-            <Link className="text-blue-500 underline" href={"/register"}>
-              Registrar usuario
-            </Link>
-          </p>
-          <Button type="submit" className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-            Iniciar sesión
+          <br />
+          <Button
+            type="submit"
+            className="w-full bg-primary text-white"
+            aria-label="Iniciar sesión"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Validando credenciales
+              </>
+            ) : (
+              <span>Iniciar sesión</span>
+            )}
           </Button>
         </form>
       </Form>
