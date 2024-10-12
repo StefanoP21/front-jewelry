@@ -9,59 +9,93 @@ import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { PlusCircle } from "lucide-react";
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select";
+import { ProductService } from "@/core/services/product.service";
+import { useToast } from "@/hooks/use-toast";
+import { AxiosError } from "axios";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z.enum(["1", "2", "3"], { required_error: "Category is required" }),
+  categoryId: z
+    .string()
+    .min(1, { message: "Category is required" })
+    .transform((val) => Number(val)),
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z.string().min(1, { message: "Price is required" }),
-  stock: z.string().min(1, { message: "Stock is required" }),
+  price: z
+    .string()
+    .min(1, { message: "Price is required" })
+    .transform((val) => Number(val)),
+  stock: z
+    .string()
+    .min(1, { message: "Stock is required" })
+    .transform((val) => Number(val)),
 });
 
 export function CreateProductForm() {
+  const { toast } = useToast();
+
   const form = useForm({
     resolver: zodResolver(productSchema), // Resolver de zod
     defaultValues: {
       name: "",
       description: "",
-      categoryId: "1",
+      categoryId: 1,
       image: "",
       material: "",
-      price: "0",
-      stock: "0",
+      price: 0,
+      stock: 0,
     },
   });
 
-  /*const onSubmit = (data: any) => {
-    console.log(data);
-  };*/
+  const onSubmit = async (values: z.infer<typeof productSchema>) => {
+    try {
+      ProductService.createProduct({
+        ...values,
+        categoryId: Number(values.categoryId),
+        price: Number(values.price),
+        stock: Number(values.stock),
+      });
+      toast({
+        variant: "default",
+        title: "Producto creado exitosamente",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error al crear un producto",
+        description:
+          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+          "Ocurrió un error al crear un producto",
+      });
+      throw error;
+    }
+  };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button size="sm" className="h-7 gap-1">
           <PlusCircle className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Añadir Producto</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create Product</DialogTitle>
+          <DialogTitle>Crear Producto</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form /*onSubmit={form.handleSubmit(onSubmit)}*/>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
               {/* Primera fila: Name y Description */}
               <FormField
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nombre</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter product name" {...field} />
+                      <Input placeholder="Ingrese el nombre del producto" {...field} />
                     </FormControl>
                     <FormMessage>{form.formState.errors.name?.message}</FormMessage>
                   </FormItem>
@@ -71,13 +105,9 @@ export function CreateProductForm() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Descripción</FormLabel>
                     <FormControl>
-                      <Input
-                        className="h-32 w-full rounded-md border border-input bg-background p-2 text-sm shadow-sm resize-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        placeholder="Enter description"
-                        {...field}
-                      />
+                      <Input placeholder="Ingrese la descripción" {...field} />
                     </FormControl>
                     <FormMessage>{form.formState.errors.description?.message}</FormMessage>
                   </FormItem>
@@ -90,7 +120,7 @@ export function CreateProductForm() {
                   name="categoryId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category ID</FormLabel>
+                      <FormLabel>Categoría</FormLabel>
                       <FormControl>
                         <Select value={field.value} onValueChange={field.onChange}>
                           <SelectTrigger>
@@ -111,9 +141,9 @@ export function CreateProductForm() {
                   name="image"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Image</FormLabel>
+                      <FormLabel>Imagen</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter image URL" {...field} />
+                        <Input placeholder="Ingrese la URL de la imagen" {...field} />
                       </FormControl>
                       <FormMessage>{form.formState.errors.image?.message}</FormMessage>
                     </FormItem>
@@ -129,7 +159,7 @@ export function CreateProductForm() {
                     <FormItem>
                       <FormLabel>Material</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter material" {...field} />
+                        <Input placeholder="Ingrese el material" {...field} />
                       </FormControl>
                       <FormMessage>{form.formState.errors.material?.message}</FormMessage>
                     </FormItem>
@@ -139,9 +169,9 @@ export function CreateProductForm() {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Precio</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Enter price" {...field} />
+                        <Input type="number" placeholder="Ingrese el precio" {...field} />
                       </FormControl>
                       <FormMessage>{form.formState.errors.price?.message}</FormMessage>
                     </FormItem>
@@ -157,7 +187,7 @@ export function CreateProductForm() {
                     <FormItem>
                       <FormLabel>Stock</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Enter stock quantity" {...field} />
+                        <Input type="number" placeholder="Ingrese el stock" {...field} />
                       </FormControl>
                       <FormMessage>{form.formState.errors.stock?.message}</FormMessage>
                     </FormItem>
@@ -166,7 +196,7 @@ export function CreateProductForm() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit">Guardar cambios</Button>
             </DialogFooter>
           </form>
         </Form>

@@ -8,6 +8,7 @@ export interface ProductState {
   selectedProduct?: Product;
 
   getAllProducts: () => Promise<void>;
+  getProductById: (id: number) => Promise<void>;
 }
 
 const storeApi: StateCreator<ProductState> = (set) => ({
@@ -20,6 +21,16 @@ const storeApi: StateCreator<ProductState> = (set) => ({
       set({ products: data });
     } catch (error) {
       set({ products: [] });
+      throw error;
+    }
+  },
+
+  getProductById: async (id) => {
+    try {
+      const { data } = await ProductService.getProductById(id);
+      set({ selectedProduct: data });
+    } catch (error) {
+      set({ selectedProduct: undefined });
       throw error;
     }
   },

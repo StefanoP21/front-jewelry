@@ -2,7 +2,7 @@ export interface CreateProductDto {
   name: string;
   description: string;
   categoryId: number;
-  image: string;
+  image?: string;
   material: string;
   price: number;
   stock: number;
