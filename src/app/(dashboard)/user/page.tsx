@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { File, ListFilter, MoreHorizontal, Search } from "lucide-react";
+import { File, ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -27,19 +27,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateProductForm } from "@/components/product/CreateProductForm";
-import { UpdateProductForm } from "@/components/product/UpdateProductForm";
-import { DeleteProductForm } from "@/components/product/DeleteProductForm";
-import { useProductStore } from "@/core/store/product.store";
 import { useEffect } from "react";
+import { useUserStore } from "@/core/store/user.store";
+import { DeleteUserForm } from "@/components/user/DeleteUserForm";
+import RegisterForm from "@/components/auth/RegisterForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 //import RegisterForm from "@/components/auth/RegisterForm";
 
 export default function UserPage() {
-  const { products, getAllProducts } = useProductStore((state) => state);
+  const { users, getAllUsers } = useUserStore((state) => state);
 
   useEffect(() => {
-    getAllProducts();
+    getAllUsers();
   }, []);
 
   return (
@@ -125,7 +125,20 @@ export default function UserPage() {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
               </Button>
-              <CreateProductForm />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button size="sm" className="h-7 gap-1">
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Registrar Usuario</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Crear Usuario</DialogTitle>
+                  </DialogHeader>
+                  <RegisterForm />
+                </DialogContent>
+              </Dialog>
               {/*<Button size="sm" className="h-7 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
@@ -156,24 +169,24 @@ export default function UserPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {products.map((product) => (
-                      <TableRow key={product.id}>
+                    {users.map((user) => (
+                      <TableRow key={user.user.id}>
                         <TableCell className="hidden sm:table-cell">
                           <Image
-                            alt={product.description}
+                            alt={user.user.name}
                             className="aspect-square rounded-md object-cover"
                             height="64"
-                            src={product.image}
+                            src={user.user.name}
                             width="64"
                           />
                         </TableCell>
-                        <TableCell className="font-medium">{product.name}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{product.material}</Badge>
+                        <TableCell className="font-medium">
+                          {user.user.name} {user.user.lastname}
                         </TableCell>
-                        <TableCell>{product.price}</TableCell>
-                        <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
-                        <TableCell className="hidden md:table-cell">{product.description}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{user.user.dni}</Badge>
+                        </TableCell>
+                        <TableCell>{user.user.role}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -185,10 +198,7 @@ export default function UserPage() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                <UpdateProductForm />
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                <DeleteProductForm />
+                                <DeleteUserForm />
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

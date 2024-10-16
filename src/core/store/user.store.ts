@@ -36,4 +36,4 @@ const storeApi: StateCreator<UserState> = (set) => ({
   },
 });
 
-export const useProductStore = create<UserState>()(devtools(persist(storeApi, { name: "user-store" })));
+export const useUserStore = create<UserState>()(devtools(persist(storeApi, { name: "user-store" })));
