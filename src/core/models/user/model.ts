@@ -1,3 +1,7 @@
+export interface UserListResponse {
+  data: Data[];
+}
+
 export interface UserResponse {
   data: Data;
 }
