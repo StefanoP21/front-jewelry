@@ -6,6 +6,7 @@ import { ShoppingBasket, Gem, Package, TicketX, User } from "lucide-react";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import { useAuthStore } from "@/core/store/auth.store";
+import { FullScreenLoader } from "./components/loader";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -17,7 +18,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   if (status === "loading") {
     checkAuthStatus();
-    return <div>Loading...</div>;
+    return <FullScreenLoader />;
   }
 
   if (status === "unauthenticated") {

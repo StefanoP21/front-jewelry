@@ -10,3 +10,9 @@ export interface RegisterDto {
   password: string;
   role: string;
 }
+
+export interface UpdatePasswordDto {
+  dni: string;
+  password: string;
+  newPassword: string;
+}
