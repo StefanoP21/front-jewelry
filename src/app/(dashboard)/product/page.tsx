@@ -37,10 +37,10 @@ export const description =
   "An products dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. It displays a list of products in a table with actions.";
 
 export default function ProductPage() {
-  const { products, getAllProducts } = useProductStore((state) => state);
+  const { products, setAllProducts } = useProductStore((state) => state);
 
   useEffect(() => {
-    getAllProducts();
+    setAllProducts();
   }, []);
 
   return (
@@ -150,6 +150,7 @@ export default function ProductPage() {
                       <TableHead>Material</TableHead>
                       <TableHead>Price</TableHead>
                       <TableHead className="hidden md:table-cell">Total Stock</TableHead>
+                      <TableHead className="hidden md:table-cell">Category</TableHead>
                       <TableHead className="hidden md:table-cell">Description</TableHead>
                       <TableHead>
                         <span className="sr-only">Actions</span>
@@ -174,6 +175,7 @@ export default function ProductPage() {
                         </TableCell>
                         <TableCell>{product.price}</TableCell>
                         <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
+                        <TableCell className="hidden md:table-cell">{product.category.name}</TableCell>
                         <TableCell className="hidden md:table-cell">{product.description}</TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -189,7 +191,7 @@ export default function ProductPage() {
                                 <UpdateProductForm />
                               </DropdownMenuItem>
                               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                <DeleteProductForm />
+                                <DeleteProductForm id={Number(product.id)} />
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

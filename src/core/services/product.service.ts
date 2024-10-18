@@ -17,4 +17,9 @@ export const ProductService = {
     const { data } = await api.post<ProductResponse>("/api/product", dto);
     return data;
   },
+
+  deleteProductById: async (id: number): Promise<ProductResponse> => {
+    const { data } = await api.delete<ProductResponse>("/api/product/" + id);
+    return data;
+  },
 };

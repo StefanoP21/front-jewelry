@@ -6,12 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
+import { ProductService } from "@/core/services/product.service";
 
 const productSchema = z.object({
   id: z.string().min(1, { message: "ID is required" }),
 });
 
-export function DeleteProductForm() {
+export function DeleteProductForm(props: { id: number }) {
   const form = useForm({
     resolver: zodResolver(productSchema), // Resolver de zod
     defaultValues: {
@@ -19,9 +20,9 @@ export function DeleteProductForm() {
     },
   });
 
-  /*const onSubmit = (data: any) => {
-    console.log(data);
-  };*/
+  const onSubmit = (values: z.infer<typeof productSchema>) => {
+    ProductService.deleteProductById(Number(values.id));
+  };
 
   return (
     <Dialog>
@@ -32,10 +33,10 @@ export function DeleteProductForm() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete Product</DialogTitle>
+          <DialogTitle>Delete Product with ID {props.id}?</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form /*onSubmit={form.handleSubmit(onSubmit)}*/>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogFooter>
               <Button type="submit">Delete</Button>
             </DialogFooter>

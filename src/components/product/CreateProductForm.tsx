@@ -12,6 +12,8 @@ import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@
 import { ProductService } from "@/core/services/product.service";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
+import { useEffect } from "react";
+import { useCategoryStore } from "@/core/store/category.store";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
@@ -49,6 +51,8 @@ export function CreateProductForm() {
     },
   });
 
+  const { categories, setAllCategories } = useCategoryStore((state) => state);
+
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
       ProductService.createProduct({
@@ -72,6 +76,10 @@ export function CreateProductForm() {
       throw error;
     }
   };
+
+  useEffect(() => {
+    setAllCategories();
+  }, []);
 
   return (
     <Dialog>
@@ -118,18 +126,23 @@ export function CreateProductForm() {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   name="categoryId"
-                  render={({ field }) => (
+                  render={() => (
                     <FormItem>
                       <FormLabel>Categoría</FormLabel>
                       <FormControl>
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select defaultValue="default">
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder="Seleccione la categoría" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1">Category 1</SelectItem>
-                            <SelectItem value="2">Category 2</SelectItem>
-                            <SelectItem value="3">Category 3</SelectItem>
+                            <SelectItem disabled value="default">
+                              Seleccione la categoría
+                            </SelectItem>
+                            {categories.map((category) => (
+                              <SelectItem key={category.id} value={String(category.id)}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>

@@ -5,32 +5,20 @@ import { ProductService } from "../services/product.service";
 
 export interface ProductState {
   products: Product[];
-  selectedProduct?: Product;
 
-  getAllProducts: () => Promise<void>;
-  getProductById: (id: number) => Promise<void>;
+  setAllProducts: () => Promise<void>;
 }
 
 const storeApi: StateCreator<ProductState> = (set) => ({
   products: [],
   selectedProduct: undefined,
 
-  getAllProducts: async () => {
+  setAllProducts: async () => {
     try {
       const { data } = await ProductService.getAllProducts();
       set({ products: data });
     } catch (error) {
       set({ products: [] });
-      throw error;
-    }
-  },
-
-  getProductById: async (id) => {
-    try {
-      const { data } = await ProductService.getProductById(id);
-      set({ selectedProduct: data });
-    } catch (error) {
-      set({ selectedProduct: undefined });
       throw error;
     }
   },

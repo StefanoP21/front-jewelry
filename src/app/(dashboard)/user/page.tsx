@@ -36,10 +36,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 //import RegisterForm from "@/components/auth/RegisterForm";
 
 export default function UserPage() {
-  const { users, getAllUsers } = useUserStore((state) => state);
+  const { users, setAllUsers } = useUserStore((state) => state);
 
   useEffect(() => {
-    getAllUsers();
+    setAllUsers();
   }, []);
 
   return (
@@ -159,10 +159,9 @@ export default function UserPage() {
                         <span className="sr-only">Image</span>
                       </TableHead>
                       <TableHead>Name</TableHead>
-                      <TableHead>Material</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead className="hidden md:table-cell">Total Stock</TableHead>
-                      <TableHead className="hidden md:table-cell">Description</TableHead>
+                      <TableHead>Lastname</TableHead>
+                      <TableHead>DNI</TableHead>
+                      <TableHead className="hidden md:table-cell">Role</TableHead>
                       <TableHead>
                         <span className="sr-only">Actions</span>
                       </TableHead>
@@ -197,8 +196,12 @@ export default function UserPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                <DeleteUserForm />
+                              <DropdownMenuItem
+                                onSelect={(e) => {
+                                  e.preventDefault();
+                                }}
+                              >
+                                <DeleteUserForm id={user.user.id} />
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
