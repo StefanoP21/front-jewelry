@@ -4,7 +4,7 @@ const nextConfig = {
     API_URL: process.env.API_URL,
   },
   images: {
-    domains: ["images.pexels.com"]
+    domains: ["images.pexels.com"],
   }
 };
 
