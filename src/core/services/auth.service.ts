@@ -1,5 +1,5 @@
 import { api } from "../lib/api";
-import { LoginDto, RegisterDto, UserResponse } from "../models";
+import { LoginDto, RegisterDto, UpdatePasswordDto, UserResponse } from "../models";
 
 export const AuthService = {
   login: async (dto: LoginDto): Promise<UserResponse> => {
@@ -15,6 +15,11 @@ export const AuthService = {
 
   renew: async (): Promise<UserResponse> => {
     const { data } = await api.get<UserResponse>("/api/auth/renew");
+    return data;
+  },
+
+  updatePassword: async (dto: UpdatePasswordDto): Promise<unknown> => {
+    const { data } = await api.put<unknown>("/api/auth/update", dto);
     return data;
   },
 };

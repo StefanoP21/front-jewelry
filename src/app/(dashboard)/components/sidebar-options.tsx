@@ -1,7 +1,5 @@
 import { MoreVertical, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,22 +8,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  // DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useTheme } from "next-themes";
 import { useAuthStore } from "@/core/store/auth.store";
 import { redirect } from "next/navigation";
+import { ChangePasswordForm } from "./change-password";
+import { useState } from "react";
 
 export default function SidebarOptions() {
   const { setTheme } = useTheme();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const logoutUser = useAuthStore((state) => state.logoutUser);
 
   const handleLogout = () => {
@@ -33,9 +25,13 @@ export default function SidebarOptions() {
     redirect("/login");
   };
 
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   return (
     <>
-      <Dialog>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <MoreVertical size={20} />
@@ -67,37 +63,8 @@ export default function SidebarOptions() {
             <DropdownMenuItem onClick={handleLogout}>Cerrar sesión</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Cambiar Contraseña</DialogTitle>
-            <DialogDescription>Cambia la contraseña de la cuenta de usuario actual.</DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="space-y-1">
-              <Label htmlFor="password" className="text-right">
-                Contraseña actual:
-              </Label>
-              <Input id="password" type="password" placeholder="********" className="col-span-3" />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="password" className="text-right">
-                Contraseña nueva:
-              </Label>
-              <Input id="password" type="password" placeholder="********" className="col-span-3" />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="password" className="text-right">
-                Repetir contraseña nueva:
-              </Label>
-              <Input id="password" type="password" placeholder="********" className="col-span-3" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Guardar</Button>
-          </DialogFooter>
+          <ChangePasswordForm closeDialog={closeDialog} />
         </DialogContent>
       </Dialog>
     </>

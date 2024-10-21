@@ -20,7 +20,7 @@ export default function Sidebar({ children, user }: SidebarProps) {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <aside className="h-screen">
+    <aside className="min-h-screen">
       <nav className="h-full flex flex-col bg-[hsl(var(--card))] border-r shadow-sm">
         <div className="p-4 pb-2 flex justify-between items-center">
           <Logo expanded={expanded} />
