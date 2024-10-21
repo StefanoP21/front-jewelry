@@ -3,17 +3,17 @@ import { UserResponse, UserListResponse } from "../models/user/model";
 
 export const UserService = {
   getAllUsers: async (): Promise<UserListResponse> => {
-    const { data } = await api.get<UserListResponse>("/api/users");
+    const { data } = await api.get<UserListResponse>("/api/auth");
     return data;
   },
 
   getUserById: async (id: number): Promise<UserResponse> => {
-    const { data } = await api.get<UserResponse>("/api/users/" + id);
+    const { data } = await api.get<UserResponse>("/api/auth/" + id);
     return data;
   },
 
   deleteUserById: async (id: number): Promise<UserResponse> => {
-    const { data } = await api.delete<UserResponse>("/api/users/" + id);
+    const { data } = await api.delete<UserResponse>("/api/auth/" + id);
     return data;
   },
 

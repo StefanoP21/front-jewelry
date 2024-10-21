@@ -14,25 +14,17 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { useCategoryStore } from "@/core/store/category.store";
+import { Textarea } from "@/components/ui/textarea";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z
-    .string()
-    .min(1, { message: "Category is required" })
-    .transform((val) => Number(val)),
+  categoryId: z.number().min(1, { message: "Category is required" }), // Ahora es un número directo
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z
-    .string()
-    .min(1, { message: "Price is required" })
-    .transform((val) => Number(val)),
-  stock: z
-    .string()
-    .min(1, { message: "Stock is required" })
-    .transform((val) => Number(val)),
+  price: z.number().min(0.01, { message: "Price is required" }),
+  stock: z.number().min(0, { message: "Stock is required" }),
 });
 
 export function CreateProductForm() {
@@ -43,7 +35,7 @@ export function CreateProductForm() {
     defaultValues: {
       name: "",
       description: "",
-      categoryId: 1,
+      categoryId: 1, // Usamos undefined para que sea más claro
       image: "",
       material: "",
       price: 0,
@@ -55,12 +47,7 @@ export function CreateProductForm() {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
-      ProductService.createProduct({
-        ...values,
-        categoryId: Number(values.categoryId),
-        price: Number(values.price),
-        stock: Number(values.stock),
-      });
+      await ProductService.createProduct(values);
       toast({
         variant: "default",
         title: "Producto creado exitosamente",
@@ -115,7 +102,7 @@ export function CreateProductForm() {
                   <FormItem>
                     <FormLabel>Descripción</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ingrese la descripción" {...field} />
+                      <Textarea placeholder="Ingrese la descripción" className="resize-none" {...field} />
                     </FormControl>
                     <FormMessage>{form.formState.errors.description?.message}</FormMessage>
                   </FormItem>
@@ -126,16 +113,19 @@ export function CreateProductForm() {
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   name="categoryId"
-                  render={() => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormLabel>Categoría</FormLabel>
                       <FormControl>
-                        <Select defaultValue="default">
+                        <Select
+                          onValueChange={(value) => field.onChange(Number(value))} // Convertir a número
+                          value={String(field.value)} // Mostrar como string
+                        >
                           <SelectTrigger>
                             <SelectValue placeholder="Seleccione la categoría" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem disabled value="default">
+                            <SelectItem disabled value="">
                               Seleccione la categoría
                             </SelectItem>
                             {categories.map((category) => (

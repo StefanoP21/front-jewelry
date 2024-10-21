@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { File, ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
 
@@ -32,6 +31,7 @@ import { useUserStore } from "@/core/store/user.store";
 import { DeleteUserForm } from "@/components/user/DeleteUserForm";
 import RegisterForm from "@/components/auth/RegisterForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import Avatar from "../components/avatar";
 
 //import RegisterForm from "@/components/auth/RegisterForm";
 
@@ -171,13 +171,7 @@ export default function UserPage() {
                     {users.map((user) => (
                       <TableRow key={user.user.id}>
                         <TableCell className="hidden sm:table-cell">
-                          <Image
-                            alt={user.user.name}
-                            className="aspect-square rounded-md object-cover"
-                            height="64"
-                            src={user.user.name}
-                            width="64"
-                          />
+                          <Avatar name={user.user.name} />
                         </TableCell>
                         <TableCell className="font-medium">
                           {user.user.name} {user.user.lastname}
@@ -201,7 +195,7 @@ export default function UserPage() {
                                   e.preventDefault();
                                 }}
                               >
-                                <DeleteUserForm id={user.user.id} />
+                                <DeleteUserForm id={user.user.id} dni={user.user.dni} />
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

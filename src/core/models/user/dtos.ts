@@ -8,5 +8,5 @@ export interface RegisterDto {
   lastname: string;
   dni: string;
   password: string;
-  role: string;
+  email: string;
 }
