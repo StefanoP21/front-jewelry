@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +10,7 @@ import { Form } from "@/components/ui/form";
 import { UserService } from "@/core/services/user.service";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const userSchema = z.object({
   id: z.string().min(1, { message: "ID is required" }),
@@ -16,6 +18,8 @@ const userSchema = z.object({
 
 export function DeleteUserForm(props: { id: number; dni: string }) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(userSchema),
@@ -24,40 +28,58 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof userSchema>) => {
-    try {
-      UserService.deleteUserById(Number(values.id));
+  const deleteUserMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return await UserService.deleteUserById(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       toast({
         variant: "default",
         title: "Usuario eliminado exitosamente",
       });
-    } catch (error) {
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
       toast({
         variant: "destructive",
         title: "Error al eliminar un usuario",
-        description:
-          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
-          "Ocurrió un error al eliminar un usuario",
+        description: error.response?.data?.message || "Ocurrió un error",
       });
-      throw error;
-    }
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof userSchema>) => {
+    deleteUserMutation.mutate(Number(values.id));
+    setIsOpen(false);
   };
 
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
-          Delete
+        <span
+          className="w-full d-block"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpen();
+          }}
+        >
+          Eliminar
         </span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete User with DNI {props.dni}?</DialogTitle>
+          <DialogTitle>Eliminar usuario con DNI {props.dni}?</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogFooter>
-              <Button type="submit">Delete</Button>
+              <Button type="submit">Guardar cambios</Button>
+              <Button type="button" variant="secondary" onClick={handleClose}>
+                Cancelar
+              </Button>
             </DialogFooter>
           </form>
         </Form>

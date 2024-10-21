@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, ListFilter, MoreHorizontal, PlusCircle, Search } from "lucide-react";
+import { File, ListFilter, MoreHorizontal, Search } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,21 +26,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect } from "react";
-import { useUserStore } from "@/core/store/user.store";
 import { DeleteUserForm } from "@/components/user/DeleteUserForm";
 import RegisterForm from "@/components/auth/RegisterForm";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Avatar from "../components/avatar";
-
-//import RegisterForm from "@/components/auth/RegisterForm";
+import { useQuery } from "@tanstack/react-query";
+import { UserService } from "@/core/services/user.service";
 
 export default function UserPage() {
-  const { users, setAllUsers } = useUserStore((state) => state);
+  const { data, error, isLoading } = useQuery({ queryKey: ["users"], queryFn: UserService.getAllUsers });
 
-  useEffect(() => {
-    setAllUsers();
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error al obtener los usuarios: {(error as Error).message}</p>;
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -55,12 +51,12 @@ export default function UserPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Users</Link>
+                <Link href="#">Usuarios</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>All Users</BreadcrumbPage>
+              <BreadcrumbPage>Todos los usuarios</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -72,37 +68,16 @@ export default function UserPage() {
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-              <Image
-                src="/placeholder-user.jpg"
-                width={36}
-                height={36}
-                alt="Avatar"
-                className="overflow-hidden rounded-full"
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
       </header>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
           <div className="flex items-center">
             <TabsList>
-              <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="draft">Draft</TabsTrigger>
+              <TabsTrigger value="all">Todos</TabsTrigger>
+              <TabsTrigger value="active">Activos</TabsTrigger>
+              <TabsTrigger value="draft">Borrador</TabsTrigger>
               <TabsTrigger value="archived" className="hidden sm:flex">
-                Archived
+                Archivados
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
@@ -110,65 +85,47 @@ export default function UserPage() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="h-7 gap-1">
                     <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Filter</span>
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Filtrar</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                  <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Archived</DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem checked>Activos</DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem>Borrador</DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem>Archivados</DropdownMenuCheckboxItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button size="sm" variant="outline" className="h-7 gap-1">
                 <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Export</span>
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
               </Button>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="sm" className="h-7 gap-1">
-                    <PlusCircle className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Registrar Usuario</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Crear Usuario</DialogTitle>
-                  </DialogHeader>
-                  <RegisterForm />
-                </DialogContent>
-              </Dialog>
-              {/*<Button size="sm" className="h-7 gap-1">
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
-              </Button>*/}
+              <RegisterForm />
             </div>
           </div>
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Users</CardTitle>
-                <CardDescription>Manage your users.</CardDescription>
+                <CardTitle>Usuarios</CardTitle>
+                <CardDescription>Manejar tus usuarios</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="hidden w-[100px] sm:table-cell">
-                        <span className="sr-only">Image</span>
+                        <span className="sr-only">Imagen</span>
                       </TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Lastname</TableHead>
+                      <TableHead>Nombre Completo</TableHead>
                       <TableHead>DNI</TableHead>
-                      <TableHead className="hidden md:table-cell">Role</TableHead>
+                      <TableHead className="hidden md:table-cell">Rol</TableHead>
                       <TableHead>
-                        <span className="sr-only">Actions</span>
+                        <span className="sr-only">Acciones</span>
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {users.map((user) => (
+                    {data?.data.map((user) => (
                       <TableRow key={user.user.id}>
                         <TableCell className="hidden sm:table-cell">
                           <Avatar name={user.user.name} />
@@ -185,11 +142,11 @@ export default function UserPage() {
                             <DropdownMenuTrigger asChild>
                               <Button aria-haspopup="true" size="icon" variant="ghost">
                                 <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
+                                <span className="sr-only">Mostrar el menú</span>
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                               <DropdownMenuItem
                                 onSelect={(e) => {
                                   e.preventDefault();
@@ -207,7 +164,7 @@ export default function UserPage() {
               </CardContent>
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Showing <strong>1-10</strong> of <strong>32</strong> products
+                  Mostrando <strong>1-10</strong> de <strong>32</strong> usuarios
                 </div>
               </CardFooter>
             </Card>
@@ -216,10 +173,4 @@ export default function UserPage() {
       </main>
     </div>
   );
-  /*return (
-    <div>
-      <h1>User Page</h1>
-      <RegisterForm />
-    </div>*
-  );*/
 }
