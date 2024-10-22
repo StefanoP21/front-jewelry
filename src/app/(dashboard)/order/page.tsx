@@ -1,18 +1,6 @@
 import * as React from "react";
-// import Image from "next/image";
 import Link from "next/link";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  File,
-  ListFilter,
-  MoreVertical,
-  Search,
-  Truck,
-} from "lucide-react";
-
+import { ChevronLeft, ChevronRight, Copy, CreditCard, File, ListFilter, MoreVertical, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
@@ -40,9 +28,6 @@ import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const description =
-  "An orders dashboard with a sidebar navigation. The sidebar has icon navigation. The content area has a breadcrumb and search in the header. The main area has a list of recent orders with a filter and export button. The main area also has a detailed view of a single order with order details, shipping information, billing information, customer information, and payment information.";
-
 export default function OrderPage() {
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -57,12 +42,12 @@ export default function OrderPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Orders</Link>
+                <Link href="#">Ventas</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Recent Orders</BreadcrumbPage>
+              <BreadcrumbPage>Ventas Recientes</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -70,7 +55,7 @@ export default function OrderPage() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search..."
+            placeholder="Buscar..."
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
@@ -101,84 +86,85 @@ export default function OrderPage() {
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             <Card className="sm:col-span-2" x-chunk="dashboard-05-chunk-0">
               <CardHeader className="pb-3">
-                <CardTitle>Your Orders</CardTitle>
+                <CardTitle>Tus Ventas</CardTitle>
                 <CardDescription className="text-balance max-w-lg leading-relaxed">
-                  Introducing Our Dynamic Orders Dashboard for Seamless Management and Insightful Analysis.
+                  Introduciendo nuestro dashboard dinámico para el manejo y análisis de seguimiento de ventas.
                 </CardDescription>
               </CardHeader>
               <CardFooter>
-                <Button>Create New Order</Button>
+                <Button>Crear Nueva Venta</Button>
               </CardFooter>
             </Card>
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
-                <CardDescription>This Week</CardDescription>
-                <CardTitle className="text-4xl">$1,329</CardTitle>
+                <CardDescription>Esta Semana</CardDescription>
+                <CardTitle className="text-4xl">$0</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-xs text-muted-foreground">+25% from last week</div>
+                {/*<div className="text-xs text-muted-foreground">+25% from last week</div>*/}
+                <div className="text-xs text-muted-foreground">No hay información disponible</div>
               </CardContent>
               <CardFooter>
-                <Progress value={25} aria-label="25% increase" />
+                <Progress value={0} aria-label="25% increase" />
               </CardFooter>
             </Card>
             <Card x-chunk="dashboard-05-chunk-2">
               <CardHeader className="pb-2">
-                <CardDescription>This Month</CardDescription>
-                <CardTitle className="text-4xl">$5,329</CardTitle>
+                <CardDescription>Este Mes</CardDescription>
+                <CardTitle className="text-4xl">$0</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-xs text-muted-foreground">+10% from last month</div>
+                {/*<div className="text-xs text-muted-foreground">+10% from last month</div>*/}
+                <div className="text-xs text-muted-foreground">No hay información disponible</div>
               </CardContent>
               <CardFooter>
-                <Progress value={12} aria-label="12% increase" />
+                <Progress value={0} aria-label="12% increase" />
               </CardFooter>
             </Card>
           </div>
           <Tabs defaultValue="week">
             <div className="flex items-center">
               <TabsList>
-                <TabsTrigger value="week">Week</TabsTrigger>
-                <TabsTrigger value="month">Month</TabsTrigger>
-                <TabsTrigger value="year">Year</TabsTrigger>
+                <TabsTrigger value="week">Semana</TabsTrigger>
+                <TabsTrigger value="month">Mes</TabsTrigger>
+                <TabsTrigger value="year">Año</TabsTrigger>
               </TabsList>
               <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="h-7 gap-1 text-sm">
                       <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filter</span>
+                      <span className="sr-only sm:not-sr-only">Filtro</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                    <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem checked>Fulfilled</DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Declined</DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Refunded</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem checked>Completado</DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>Cancelado</DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
                   <File className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only">Export</span>
+                  <span className="sr-only sm:not-sr-only">Exportar</span>
                 </Button>
               </div>
             </div>
             <TabsContent value="week">
               <Card x-chunk="dashboard-05-chunk-3">
                 <CardHeader className="px-7">
-                  <CardTitle>Orders</CardTitle>
-                  <CardDescription>Recent orders from your store.</CardDescription>
+                  <CardTitle>Ventas</CardTitle>
+                  <CardDescription>Ventas recientes de tu tienda.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Customer</TableHead>
-                        <TableHead className="hidden sm:table-cell">Type</TableHead>
-                        <TableHead className="hidden sm:table-cell">Status</TableHead>
-                        <TableHead className="hidden md:table-cell">Date</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
+                        <TableHead>Cliente</TableHead>
+                        <TableHead className="hidden sm:table-cell">Tipo</TableHead>
+                        <TableHead className="hidden sm:table-cell">Estado</TableHead>
+                        <TableHead className="hidden md:table-cell">Fecha</TableHead>
+                        <TableHead className="text-right">Monto</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -187,10 +173,10 @@ export default function OrderPage() {
                           <div className="font-medium">Liam Johnson</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">liam@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Sale</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="secondary">
-                            Fulfilled
+                            Completado
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
@@ -201,13 +187,13 @@ export default function OrderPage() {
                           <div className="font-medium">Olivia Smith</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">olivia@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Refund</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="outline">
-                            Declined
+                            Cancelado
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">2023-06-24</TableCell>
+                        <TableCell className="hidden md:table-cell">2024-06-24</TableCell>
                         <TableCell className="text-right">$150.00</TableCell>
                       </TableRow>
                       {/* <TableRow>
@@ -235,13 +221,13 @@ export default function OrderPage() {
                           <div className="font-medium">Noah Williams</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">noah@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Subscription</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="secondary">
-                            Fulfilled
+                            Completado
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">2023-06-25</TableCell>
+                        <TableCell className="hidden md:table-cell">2024-06-25</TableCell>
                         <TableCell className="text-right">$350.00</TableCell>
                       </TableRow>
                       <TableRow>
@@ -249,13 +235,13 @@ export default function OrderPage() {
                           <div className="font-medium">Emma Brown</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">emma@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Sale</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="secondary">
-                            Fulfilled
+                            Completado
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">2023-06-26</TableCell>
+                        <TableCell className="hidden md:table-cell">2024-06-26</TableCell>
                         <TableCell className="text-right">$450.00</TableCell>
                       </TableRow>
                       <TableRow>
@@ -263,13 +249,13 @@ export default function OrderPage() {
                           <div className="font-medium">Liam Johnson</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">liam@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Sale</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="secondary">
-                            Fulfilled
+                            Completado
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
+                        <TableCell className="hidden md:table-cell">2024-06-23</TableCell>
                         <TableCell className="text-right">$250.00</TableCell>
                       </TableRow>
                       <TableRow>
@@ -277,13 +263,13 @@ export default function OrderPage() {
                           <div className="font-medium">Olivia Smith</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">olivia@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Refund</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="outline">
-                            Declined
+                            Cancelado
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">2023-06-24</TableCell>
+                        <TableCell className="hidden md:table-cell">2024-06-24</TableCell>
                         <TableCell className="text-right">$150.00</TableCell>
                       </TableRow>
                       <TableRow>
@@ -291,13 +277,13 @@ export default function OrderPage() {
                           <div className="font-medium">Emma Brown</div>
                           <div className="hidden text-sm text-muted-foreground md:inline">emma@example.com</div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">Sale</TableCell>
+                        <TableCell className="hidden sm:table-cell">Venta</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           <Badge className="text-xs" variant="secondary">
-                            Fulfilled
+                            Completado
                           </Badge>
                         </TableCell>
-                        <TableCell className="hidden md:table-cell">2023-06-26</TableCell>
+                        <TableCell className="hidden md:table-cell">2024-06-26</TableCell>
                         <TableCell className="text-right">$450.00</TableCell>
                       </TableRow>
                     </TableBody>
@@ -312,52 +298,55 @@ export default function OrderPage() {
             <CardHeader className="flex flex-row items-start bg-muted/50">
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">
-                  Order Oe31b70H
+                  Venta con ID
                   <Button
                     size="icon"
                     variant="outline"
                     className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                   >
                     <Copy className="h-3 w-3" />
-                    <span className="sr-only">Copy Order ID</span>
+                    <span className="sr-only">Copiar el ID de la venta</span>
                   </Button>
                 </CardTitle>
-                <CardDescription>Date: November 23, 2023</CardDescription>
+                <CardDescription>Fecha: Octubre 22, 2024</CardDescription>
               </div>
               <div className="ml-auto flex items-center gap-1">
+                {/*
                 <Button size="sm" variant="outline" className="h-8 gap-1">
                   <Truck className="h-3.5 w-3.5" />
                   <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">Track Order</span>
                 </Button>
+                */}
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size="icon" variant="outline" className="h-8 w-8">
                       <MoreVertical className="h-3.5 w-3.5" />
-                      <span className="sr-only">More</span>
+                      <span className="sr-only">Más</span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Export</DropdownMenuItem>
+                    <DropdownMenuItem>Editar</DropdownMenuItem>
+                    <DropdownMenuItem>Exportar</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Trash</DropdownMenuItem>
+                    <DropdownMenuItem>Eliminar</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </CardHeader>
             <CardContent className="p-6 text-sm">
               <div className="grid gap-3">
-                <div className="font-semibold">Order Details</div>
+                <div className="font-semibold">Detalles de la Venta</div>
                 <ul className="grid gap-3">
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">
-                      Glimmer Lamps x <span>2</span>
+                      Anillo de Oro x <span>2</span>
                     </span>
                     <span>$250.00</span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">
-                      Aqua Filters x <span>1</span>
+                      Reloj de Plata x <span>1</span>
                     </span>
                     <span>$49.00</span>
                   </li>
@@ -368,12 +357,14 @@ export default function OrderPage() {
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>$299.00</span>
                   </li>
+                  {/*
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Shipping</span>
                     <span>$5.00</span>
                   </li>
+                  */}
                   <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Tax</span>
+                    <span className="text-muted-foreground">Impuestos</span>
                     <span>$25.00</span>
                   </li>
                   <li className="flex items-center justify-between font-semibold">
@@ -383,26 +374,11 @@ export default function OrderPage() {
                 </ul>
               </div>
               <Separator className="my-4" />
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-3">
-                  <div className="font-semibold">Shipping Information</div>
-                  <address className="grid gap-0.5 not-italic text-muted-foreground">
-                    <span>Liam Johnson</span>
-                    <span>1234 Main St.</span>
-                    <span>Anytown, CA 12345</span>
-                  </address>
-                </div>
-                <div className="grid auto-rows-max gap-3">
-                  <div className="font-semibold">Billing Information</div>
-                  <div className="text-muted-foreground">Same as shipping address</div>
-                </div>
-              </div>
-              <Separator className="my-4" />
               <div className="grid gap-3">
-                <div className="font-semibold">Customer Information</div>
+                <div className="font-semibold">Información del Cliente</div>
                 <dl className="grid gap-3">
                   <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Customer</dt>
+                    <dt className="text-muted-foreground">Cliente</dt>
                     <dd>Liam Johnson</dd>
                   </div>
                   <div className="flex items-center justify-between">
@@ -412,7 +388,7 @@ export default function OrderPage() {
                     </dd>
                   </div>
                   <div className="flex items-center justify-between">
-                    <dt className="text-muted-foreground">Phone</dt>
+                    <dt className="text-muted-foreground">Teléfono</dt>
                     <dd>
                       <a href="tel:">+1 234 567 890</a>
                     </dd>
@@ -421,7 +397,7 @@ export default function OrderPage() {
               </div>
               <Separator className="my-4" />
               <div className="grid gap-3">
-                <div className="font-semibold">Payment Information</div>
+                <div className="font-semibold">Información de Pago</div>
                 <dl className="grid gap-3">
                   <div className="flex items-center justify-between">
                     <dt className="flex items-center gap-1 text-muted-foreground">
@@ -435,20 +411,20 @@ export default function OrderPage() {
             </CardContent>
             <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
               <div className="text-xs text-muted-foreground">
-                Updated <time dateTime="2023-11-23">November 23, 2023</time>
+                Actualizado <time dateTime="2023-11-23">Octubre 22, 2024</time>
               </div>
               <Pagination className="ml-auto mr-0 w-auto">
                 <PaginationContent>
                   <PaginationItem>
                     <Button size="icon" variant="outline" className="h-6 w-6">
                       <ChevronLeft className="h-3.5 w-3.5" />
-                      <span className="sr-only">Previous Order</span>
+                      <span className="sr-only">Venta Anterior</span>
                     </Button>
                   </PaginationItem>
                   <PaginationItem>
                     <Button size="icon" variant="outline" className="h-6 w-6">
                       <ChevronRight className="h-3.5 w-3.5" />
-                      <span className="sr-only">Next Order</span>
+                      <span className="sr-only">Siguiente Venta</span>
                     </Button>
                   </PaginationItem>
                 </PaginationContent>
