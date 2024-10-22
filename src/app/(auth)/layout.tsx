@@ -3,6 +3,7 @@
 import React from "react";
 import { redirect } from "next/navigation";
 import { useAuthStore } from "@/core/store/auth.store";
+import { FullScreenLoader } from "../(dashboard)/components/loader";
 
 const AuthLayout = ({
   children,
@@ -13,7 +14,7 @@ const AuthLayout = ({
 
   if (status === "loading") {
     checkAuthStatus();
-    return <div>Loading...</div>;
+    return <FullScreenLoader />;
   }
 
   if (status === "authenticated") {
