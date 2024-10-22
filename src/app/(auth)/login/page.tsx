@@ -1,6 +1,5 @@
 "use client";
 
-import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
@@ -34,7 +33,6 @@ export default function LoginPage() {
     try {
       setIsLoading(true);
       await loginUser(values.dni, values.password);
-      redirect("/order");
     } catch (error) {
       setIsLoading(false);
       toast({

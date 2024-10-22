@@ -34,9 +34,9 @@ const storeApi: StateCreator<AuthState> = (set) => ({
     try {
       const { data } = await AuthService.renew();
       set({ user: data.user, token: data.token, status: "authenticated" });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       set({ user: undefined, token: undefined, status: "unauthenticated" });
-      throw error;
     }
   },
 
