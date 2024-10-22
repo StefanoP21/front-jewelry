@@ -11,8 +11,9 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { PlusCircle } from "lucide-react";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 const registerSchema = z.object({
   name: z.string({ message: "El nombre debe tener al menos 8 caracteres" }),
@@ -48,6 +49,8 @@ export default function RegisterForm() {
         variant: "default",
         title: "Usuario creado exitosamente",
       });
+
+      form.reset();
       setIsOpen(false);
     },
     onError: (error: AxiosError<{ message: string }>) => {
@@ -64,7 +67,6 @@ export default function RegisterForm() {
   };
 
   const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -83,105 +85,124 @@ export default function RegisterForm() {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Registrar usuario</DialogTitle>
+          <DialogDescription>Cree un nuevo usuario en la aplicación.</DialogDescription>
+        </DialogHeader>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-4 rounded-lg shadow-md w-80 mx-auto">
-            <h1 className="text-2xl font-bold text-center">Registrar usuario</h1>
-            <FormField
-              name="name"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <input
-                      {...field}
-                      type="text"
-                      placeholder="Ingrese su nombre"
-                      className="mt-1 block w-full p-2 border rounded-md"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="lastname"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Apellido</FormLabel>
-                  <FormControl>
-                    <input
-                      {...field}
-                      type="text"
-                      placeholder="Ingrese su apellido"
-                      className="mt-1 block w-full p-2 border rounded-md"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="email"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <input
-                      {...field}
-                      type="email"
-                      placeholder="Ingrese su email"
-                      className="mt-1 block w-full p-2 border rounded-md"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="dni"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>DNI</FormLabel>
-                  <FormControl>
-                    <input
-                      {...field}
-                      type="text"
-                      placeholder="Ingrese su DNI"
-                      className="mt-1 block w-full p-2 border rounded-md"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              name="password"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contraseña</FormLabel>
-                  <FormControl>
-                    <input
-                      {...field}
-                      type="password"
-                      placeholder="Ingrese su contraseña"
-                      className="mt-1 block w-full p-2 border rounded-md"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={registerUserMutation.isPending}>
-              {registerUserMutation.isPending ? "Guardando..." : "Guardar cambios"}
-            </Button>
-            <Button type="button" variant="secondary" onClick={handleClose} disabled={registerUserMutation.isPending}>
-              Cancelar
-            </Button>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid gap-4 py-3">
+              <div className="space-y-1">
+                <FormField
+                  name="name"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nombre</FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          type="text"
+                          placeholder="Ingrese su nombre"
+                          className="mt-1 block w-full p-2 border rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-1"></div>
+              <FormField
+                name="lastname"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Apellido</FormLabel>
+                    <FormControl>
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="Ingrese su apellido"
+                        className="mt-1 block w-full p-2 border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="space-y-1">
+                <FormField
+                  name="email"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          type="email"
+                          placeholder="Ingrese su email"
+                          className="mt-1 block w-full p-2 border rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <FormField
+                  name="dni"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>DNI</FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          type="text"
+                          placeholder="Ingrese su DNI"
+                          className="mt-1 block w-full p-2 border rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="space-y-1">
+                <FormField
+                  name="password"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contraseña</FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          type="password"
+                          placeholder="Ingrese su contraseña"
+                          className="mt-1 block w-full p-2 border rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <DialogFooter>
+                <Button className="bg-primary" type="submit" disabled={registerUserMutation.isPending}>
+                  {registerUserMutation.isPending ? "Agregando..." : "Agregar"}
+                </Button>
+              </DialogFooter>
+            </div>
           </form>
         </Form>
       </DialogContent>

@@ -57,7 +57,7 @@ export default function UserPage() {
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search..."
+            placeholder="Buscar..."
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
@@ -100,12 +100,12 @@ export default function UserPage() {
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
                 <CardTitle>Usuarios</CardTitle>
-                <CardDescription>Maneja tus usuarios</CardDescription>
+                <CardDescription>Maneja tus usuarios.</CardDescription>
               </CardHeader>
               {isLoading ? <AllUsersSkeleton /> : <AllUsers users={users} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>32</strong> usuarios
+                  Mostrando <strong>1-10</strong> de <strong>{users.length}</strong> usuarios
                 </div>
               </CardFooter>
             </Card>

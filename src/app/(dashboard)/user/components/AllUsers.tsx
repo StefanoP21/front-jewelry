@@ -30,6 +30,7 @@ export default function AllUsers({ users }: AllUsersProps) {
               </TableHead>
               <TableHead>Nombre Completo</TableHead>
               <TableHead>DNI</TableHead>
+              <TableHead>Email</TableHead>
               <TableHead className="hidden md:table-cell">Rol</TableHead>
               <TableHead>
                 <span className="sr-only">Acciones</span>
@@ -48,6 +49,7 @@ export default function AllUsers({ users }: AllUsersProps) {
                 <TableCell>
                   <Badge variant="outline">{user.user.dni}</Badge>
                 </TableCell>
+                <TableCell>{user.user.email}</TableCell>
                 <TableCell>{user.user.role}</TableCell>
                 <TableCell>
                   <DropdownMenu>

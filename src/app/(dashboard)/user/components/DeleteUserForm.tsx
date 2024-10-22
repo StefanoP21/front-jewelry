@@ -55,7 +55,6 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
   };
 
   const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -70,18 +69,18 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
           Eliminar
         </span>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Eliminar usuario con DNI {props.dni}?</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid gap-4 py-2">
+              <span>Esta acción no se podrá deshacer.</span>
+            </div>
             <DialogFooter>
-              <Button type="submit" disabled={deleteUserMutation.isPending}>
-                {deleteUserMutation.isPending ? "Eliminando..." : "Guardar cambios"}
-              </Button>
-              <Button type="button" variant="secondary" onClick={handleClose} disabled={deleteUserMutation.isPending}>
-                Cancelar
+              <Button type="submit" variant="destructive" disabled={deleteUserMutation.isPending}>
+                {deleteUserMutation.isPending ? "Eliminando..." : "Eliminar"}
               </Button>
             </DialogFooter>
           </form>

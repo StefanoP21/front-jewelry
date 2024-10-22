@@ -150,7 +150,7 @@ export function ChangePasswordForm({ closeDialog }: { closeDialog: () => void })
               {/* Botón de enviar */}
               <Button
                 type="submit"
-                className="w-full bg-primary text-white"
+                className="w-full bg-primary"
                 aria-label="Guardar nueva contraseña"
                 disabled={isLoading}
               >

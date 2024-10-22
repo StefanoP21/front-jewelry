@@ -14,6 +14,7 @@ export default function AllUsersSkeleton() {
               </TableHead>
               <TableHead>Nombre Completo</TableHead>
               <TableHead className="hidden md:table-cell">DNI</TableHead>
+              <TableHead className="hidden md:table-cell">Email</TableHead>
               <TableHead className="hidden md:table-cell">Rol</TableHead>
               <TableHead>
                 <span className="sr-only">Acciones</span>
@@ -27,7 +28,10 @@ export default function AllUsersSkeleton() {
                   <Skeleton className="w-[64px] h-[64px]" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="w-[100px] h-[20px]" />
+                  <Skeleton className="w-[200px] h-[20px]" />
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  <Skeleton className="w-[120px] h-[20px]" />
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
                   <Skeleton className="w-[180px] h-[20px]" />
