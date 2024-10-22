@@ -28,12 +28,12 @@ export function DeleteProductForm(props: { id: number }) {
     <Dialog>
       <DialogTrigger asChild>
         <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
-          Delete
+          Eliminar
         </span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete Product with ID {props.id}?</DialogTitle>
+          <DialogTitle>¿Seguro que quieres eliminar el producto con ID: {props.id}?</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

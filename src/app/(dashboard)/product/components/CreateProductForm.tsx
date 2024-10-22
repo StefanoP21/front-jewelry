@@ -7,59 +7,90 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { PlusCircle } from "lucide-react";
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select";
+import { ProductService } from "@/core/services/product.service";
+import { useToast } from "@/hooks/use-toast";
+import { AxiosError } from "axios";
+import { Textarea } from "@/components/ui/textarea";
+import { useCategories } from "@/hooks/useCategories";
+import { useState } from "react";
+import { useProducts } from "@/hooks/useProducts";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z.enum(["1", "2", "3"], { required_error: "Category is required" }),
+  categoryId: z.number().min(1, { message: "Category is required" }), // Ahora es un número directo
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z.string().min(1, { message: "Price is required" }),
-  stock: z.string().min(1, { message: "Stock is required" }),
+  price: z.number().min(0.01, { message: "Price is required" }),
 });
 
-export function UpdateProductForm() {
+export function CreateProductForm() {
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { refetch } = useProducts();
+
   const form = useForm({
     resolver: zodResolver(productSchema), // Resolver de zod
     defaultValues: {
       name: "",
       description: "",
-      categoryId: "1",
+      categoryId: 1, // Usamos undefined para que sea más claro
       image: "",
       material: "",
-      price: "0",
-      stock: "0",
+      price: 0,
     },
   });
 
-  /*const onSubmit = (data: any) => {
-    console.log(data);
-  };*/
+  const onSubmit = async (values: z.infer<typeof productSchema>) => {
+    try {
+      await ProductService.createProduct(values);
+      toast({
+        variant: "default",
+        title: "Producto creado exitosamente",
+      });
+      form.reset();
+      setIsDialogOpen(false);
+      refetch();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error al crear un producto",
+        description:
+          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+          "Ocurrió un error al crear un producto",
+      });
+      throw error;
+    }
+  };
+
+  const { categories } = useCategories();
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
-          Edit
-        </span>
+        <Button size="sm" className="h-7 gap-1">
+          <PlusCircle className="h-3.5 w-3.5" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Añadir Producto</span>
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Crear Producto</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form /*onSubmit={form.handleSubmit(onSubmit)}*/>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
               {/* Primera fila: Name y Description */}
               <FormField
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Nombre</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter product name" {...field} />
+                      <Input placeholder="Ingrese el nombre del producto" {...field} />
                     </FormControl>
                     <FormMessage>{form.formState.errors.name?.message}</FormMessage>
                   </FormItem>
@@ -69,13 +100,9 @@ export function UpdateProductForm() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>Descripción</FormLabel>
                     <FormControl>
-                      <Input
-                        className="h-32 w-full rounded-md border border-input bg-background p-2 text-sm shadow-sm resize-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        placeholder="Enter description"
-                        {...field}
-                      />
+                      <Textarea placeholder="Ingrese la descripción" className="resize-none" {...field} />
                     </FormControl>
                     <FormMessage>{form.formState.errors.description?.message}</FormMessage>
                   </FormItem>
@@ -88,16 +115,24 @@ export function UpdateProductForm() {
                   name="categoryId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Category ID</FormLabel>
+                      <FormLabel>Categoría</FormLabel>
                       <FormControl>
-                        <Select value={field.value} onValueChange={field.onChange}>
+                        <Select
+                          onValueChange={(value) => field.onChange(Number(value))} // Convertir a número
+                          value={String(field.value)} // Mostrar como string
+                        >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
+                            <SelectValue placeholder="Seleccione la categoría" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1">Category 1</SelectItem>
-                            <SelectItem value="2">Category 2</SelectItem>
-                            <SelectItem value="3">Category 3</SelectItem>
+                            <SelectItem disabled value="0">
+                              Seleccione la categoría
+                            </SelectItem>
+                            {categories.map((category) => (
+                              <SelectItem key={category.id} value={String(category.id)}>
+                                {category.name}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -109,9 +144,9 @@ export function UpdateProductForm() {
                   name="image"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Image</FormLabel>
+                      <FormLabel>Imagen</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter image URL" {...field} />
+                        <Input placeholder="Ingrese la URL de la imagen" {...field} />
                       </FormControl>
                       <FormMessage>{form.formState.errors.image?.message}</FormMessage>
                     </FormItem>
@@ -127,7 +162,7 @@ export function UpdateProductForm() {
                     <FormItem>
                       <FormLabel>Material</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter material" {...field} />
+                        <Input placeholder="Ingrese el material" {...field} />
                       </FormControl>
                       <FormMessage>{form.formState.errors.material?.message}</FormMessage>
                     </FormItem>
@@ -137,34 +172,26 @@ export function UpdateProductForm() {
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price</FormLabel>
+                      <FormLabel>Precio</FormLabel>
                       <FormControl>
-                        <Input type="number" placeholder="Enter price" {...field} />
+                        <Input
+                          type="number"
+                          placeholder="Ingrese el precio"
+                          {...field}
+                          onChange={(e) => {
+                            const value = parseFloat(e.target.value);
+                            field.onChange(isNaN(value) ? "" : value); // Convertir a número o dejar vacío
+                          }}
+                        />
                       </FormControl>
                       <FormMessage>{form.formState.errors.price?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
               </div>
-
-              {/* Cuarta fila: Stock */}
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  name="stock"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Stock</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="Enter stock quantity" {...field} />
-                      </FormControl>
-                      <FormMessage>{form.formState.errors.stock?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-              </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit">Crear Producto</Button>
             </DialogFooter>
           </form>
         </Form>
