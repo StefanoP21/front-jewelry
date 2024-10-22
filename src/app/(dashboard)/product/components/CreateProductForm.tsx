@@ -16,12 +16,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCategories } from "@/hooks/useCategories";
 import { useState } from "react";
 import { useProducts } from "@/hooks/useProducts";
+import { materials } from "@/core/constants";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z.string().min(1, { message: "Category is required" }), // Ahora es un número directo
+  categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
   price: z.number().min(0.01, { message: "Price is required" }),
@@ -33,11 +34,11 @@ export function CreateProductForm() {
   const { refetch } = useProducts();
 
   const form = useForm({
-    resolver: zodResolver(productSchema), // Resolver de zod
+    resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
       description: "",
-      categoryId: "1", // Usamos undefined para que sea más claro
+      categoryId: "",
       image: "",
       material: "",
       price: 0,
@@ -46,7 +47,15 @@ export function CreateProductForm() {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
-      await ProductService.createProduct({ ...values, categoryId: Number(values.categoryId) });
+      await ProductService.createProduct({
+        name: values.name,
+        description: values.description,
+        categoryId: parseInt(values.categoryId),
+        image: values.image,
+        material: values.material,
+        price: values.price,
+      });
+
       toast({
         variant: "default",
         title: "Producto creado exitosamente",
@@ -76,7 +85,7 @@ export function CreateProductForm() {
           <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Añadir Producto</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle>Crear Producto</DialogTitle>
         </DialogHeader>
@@ -117,29 +126,24 @@ export function CreateProductForm() {
                     <FormItem>
                       <FormLabel>Categoría</FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={(value) => field.onChange(Number(value))} // Convertir a número
-                          value={String(field.value)} // Mostrar como string
-                        >
+                        <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
                           <SelectTrigger>
                             <SelectValue placeholder="Seleccione la categoría" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem disabled value="0">
-                              Seleccione la categoría
-                            </SelectItem>
                             {categories.map((category) => (
-                              <SelectItem key={category.id} value={String(category.id)}>
+                              <SelectItem key={category.id} value={category.id.toString()}>
                                 {category.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormMessage>{form.formState.errors.categoryId?.message}</FormMessage>
+                      <FormMessage>{form.formState.errors.material?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   name="image"
                   render={({ field }) => (
@@ -162,12 +166,24 @@ export function CreateProductForm() {
                     <FormItem>
                       <FormLabel>Material</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ingrese el material" {...field} />
+                        <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccione el material" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {materials.map((material) => (
+                              <SelectItem key={material.id} value={material.name}>
+                                {material.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage>{form.formState.errors.material?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   name="price"
                   render={({ field }) => (
@@ -180,7 +196,7 @@ export function CreateProductForm() {
                           {...field}
                           onChange={(e) => {
                             const value = parseFloat(e.target.value);
-                            field.onChange(isNaN(value) ? "" : value); // Convertir a número o dejar vacío
+                            field.onChange(isNaN(value) ? "" : value);
                           }}
                         />
                       </FormControl>
