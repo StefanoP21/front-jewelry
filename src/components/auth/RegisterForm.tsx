@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
-import { PlusCircle } from "lucide-react";
+import { LoaderCircle, PlusCircle } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 const registerSchema = z.object({
@@ -199,7 +199,13 @@ export default function RegisterForm() {
 
               <DialogFooter>
                 <Button className="bg-primary" type="submit" disabled={registerUserMutation.isPending}>
-                  {registerUserMutation.isPending ? "Agregando..." : "Agregar"}
+                  {registerUserMutation.isPending ? (
+                    <>
+                      <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Creando Usuario
+                    </>
+                  ) : (
+                    <span>Crear Usuario</span>
+                  )}
                 </Button>
               </DialogFooter>
             </div>

@@ -4,7 +4,20 @@ const nextConfig = {
     API_URL: process.env.API_URL,
   },
   images: {
-    domains: ["images.pexels.com", "media.istockphoto.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "media.istockphoto.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

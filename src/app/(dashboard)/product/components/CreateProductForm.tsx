@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { PlusCircle } from "lucide-react";
+import { LoaderCircle, PlusCircle } from "lucide-react";
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select";
 import { ProductService } from "@/core/services/product.service";
 import { useToast } from "@/hooks/use-toast";
@@ -31,7 +31,7 @@ const productSchema = z.object({
 export function CreateProductForm() {
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { refetch } = useProducts();
+  const { refetch, isLoading } = useProducts();
 
   const form = useForm({
     resolver: zodResolver(productSchema),
@@ -60,6 +60,7 @@ export function CreateProductForm() {
         variant: "default",
         title: "Producto creado exitosamente",
       });
+
       form.reset();
       setIsDialogOpen(false);
       refetch();
@@ -206,8 +207,17 @@ export function CreateProductForm() {
                 />
               </div>
             </div>
+
             <DialogFooter>
-              <Button type="submit">Crear Producto</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Creando Producto
+                  </>
+                ) : (
+                  <span>Crear Producto</span>
+                )}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
