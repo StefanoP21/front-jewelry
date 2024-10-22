@@ -43,13 +43,13 @@ export default function AllUsers({ users }: AllUsersProps) {
                 <TableCell className="hidden sm:table-cell">
                   <Avatar name={user.user.name} />
                 </TableCell>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium w-[300px]">
                   {user.user.name} {user.user.lastname}
                 </TableCell>
-                <TableCell>
+                <TableCell className="w-[300px]">
                   <Badge variant="outline">{user.user.dni}</Badge>
                 </TableCell>
-                <TableCell>{user.user.email}</TableCell>
+                <TableCell className="w-[300px]">{user.user.email}</TableCell>
                 <TableCell>{user.user.role}</TableCell>
                 <TableCell>
                   <DropdownMenu>
