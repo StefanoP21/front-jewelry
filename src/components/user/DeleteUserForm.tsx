@@ -30,6 +30,7 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (id: number) => {
+      // Realiza la eliminación del usuario llamando al servicio
       return await UserService.deleteUserById(id);
     },
     onSuccess: () => {
@@ -38,6 +39,7 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
         variant: "default",
         title: "Usuario eliminado exitosamente",
       });
+      setIsOpen(false);
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast({
@@ -50,7 +52,6 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
 
   const onSubmit = async (values: z.infer<typeof userSchema>) => {
     deleteUserMutation.mutate(Number(values.id));
-    setIsOpen(false);
   };
 
   const handleOpen = () => setIsOpen(true);
@@ -76,8 +77,10 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogFooter>
-              <Button type="submit">Guardar cambios</Button>
-              <Button type="button" variant="secondary" onClick={handleClose}>
+              <Button type="submit" disabled={deleteUserMutation.isPending}>
+                {deleteUserMutation.isPending ? "Eliminando..." : "Guardar cambios"}
+              </Button>
+              <Button type="button" variant="secondary" onClick={handleClose} disabled={deleteUserMutation.isPending}>
                 Cancelar
               </Button>
             </DialogFooter>

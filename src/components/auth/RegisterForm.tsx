@@ -48,6 +48,7 @@ export default function RegisterForm() {
         variant: "default",
         title: "Usuario creado exitosamente",
       });
+      setIsOpen(false);
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast({
@@ -60,7 +61,6 @@ export default function RegisterForm() {
 
   const onSubmit = (data: RegisterDto) => {
     registerUserMutation.mutate(data);
-    setIsOpen(false);
   };
 
   const handleOpen = () => setIsOpen(true);
@@ -176,8 +176,10 @@ export default function RegisterForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Guardar cambios</Button>
-            <Button type="button" variant="secondary" onClick={handleClose}>
+            <Button type="submit" disabled={registerUserMutation.isPending}>
+              {registerUserMutation.isPending ? "Guardando..." : "Guardar cambios"}
+            </Button>
+            <Button type="button" variant="secondary" onClick={handleClose} disabled={registerUserMutation.isPending}>
               Cancelar
             </Button>
           </form>

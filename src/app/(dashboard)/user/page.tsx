@@ -107,7 +107,7 @@ export default function UserPage() {
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
                 <CardTitle>Usuarios</CardTitle>
-                <CardDescription>Manejar tus usuarios</CardDescription>
+                <CardDescription>Maneja tus usuarios</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
