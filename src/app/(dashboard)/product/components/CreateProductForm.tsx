@@ -21,7 +21,7 @@ import { useProducts } from "@/hooks/useProducts";
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z.number().min(1, { message: "Category is required" }), // Ahora es un número directo
+  categoryId: z.string().min(1, { message: "Category is required" }), // Ahora es un número directo
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
   price: z.number().min(0.01, { message: "Price is required" }),
@@ -37,7 +37,7 @@ export function CreateProductForm() {
     defaultValues: {
       name: "",
       description: "",
-      categoryId: 1, // Usamos undefined para que sea más claro
+      categoryId: "1", // Usamos undefined para que sea más claro
       image: "",
       material: "",
       price: 0,
@@ -46,7 +46,7 @@ export function CreateProductForm() {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
-      await ProductService.createProduct(values);
+      await ProductService.createProduct({ ...values, categoryId: Number(values.categoryId) });
       toast({
         variant: "default",
         title: "Producto creado exitosamente",
