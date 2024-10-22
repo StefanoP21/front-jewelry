@@ -10,29 +10,28 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select";
 import { Textarea } from "../../../../components/ui/textarea";
 import { useCategories } from "@/hooks/useCategories";
+import { materials } from "@/core/constants";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z.enum(["1", "2", "3"], { required_error: "Category is required" }),
+  categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z.string().min(1, { message: "Price is required" }),
-  stock: z.string().min(1, { message: "Stock is required" }),
+  price: z.number().min(0.01, { message: "Price is required" }),
 });
 
 export function UpdateProductForm() {
   const form = useForm({
-    resolver: zodResolver(productSchema), // Resolver de zod
+    resolver: zodResolver(productSchema),
     defaultValues: {
       name: "",
       description: "",
-      categoryId: "1",
+      categoryId: "",
       image: "",
       material: "",
-      price: "0",
-      stock: "0",
+      price: 0,
     },
   });
 
@@ -46,12 +45,12 @@ export function UpdateProductForm() {
     <Dialog>
       <DialogTrigger asChild>
         <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
-          Edit
+          Editar
         </span>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[450px]">
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Editar Producto</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form /*onSubmit={form.handleSubmit(onSubmit)}*/>
@@ -90,29 +89,24 @@ export function UpdateProductForm() {
                     <FormItem>
                       <FormLabel>Categoría</FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={(value) => field.onChange(Number(value))} // Convertir a número
-                          value={String(field.value)} // Mostrar como string
-                        >
+                        <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
                           <SelectTrigger>
                             <SelectValue placeholder="Seleccione la categoría" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem disabled value="0">
-                              Seleccione la categoría
-                            </SelectItem>
                             {categories.map((category) => (
-                              <SelectItem key={category.id} value={String(category.id)}>
+                              <SelectItem key={category.id} value={category.id.toString()}>
                                 {category.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormMessage>{form.formState.errors.categoryId?.message}</FormMessage>
+                      <FormMessage>{form.formState.errors.material?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   name="image"
                   render={({ field }) => (
@@ -135,12 +129,24 @@ export function UpdateProductForm() {
                     <FormItem>
                       <FormLabel>Material</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ingrese el material" {...field} />
+                        <Select onValueChange={(value) => field.onChange(value)} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Seleccione el material" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {materials.map((material) => (
+                              <SelectItem key={material.id} value={material.name}>
+                                {material.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage>{form.formState.errors.material?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
+
                 <FormField
                   name="price"
                   render={({ field }) => (
