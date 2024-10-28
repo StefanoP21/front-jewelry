@@ -11,6 +11,7 @@ import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@
 import { Textarea } from "../../../../components/ui/textarea";
 import { useCategories } from "@/hooks/useCategories";
 import { materials } from "@/core/constants";
+import { Product } from "@/core/models";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
@@ -22,16 +23,20 @@ const productSchema = z.object({
   price: z.number().min(0.01, { message: "Price is required" }),
 });
 
-export function UpdateProductForm() {
+interface UpdateProductForm {
+  product: Product;
+}
+
+export function UpdateProductForm({ product }: UpdateProductForm) {
   const form = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      categoryId: "",
-      image: "",
-      material: "",
-      price: 0,
+      name: product.name || "",
+      description: product.description || "",
+      categoryId: product.category.id.toString() || "",
+      image: product.image || "",
+      material: product.material || "",
+      price: product.price || 0,
     },
   });
 
@@ -149,6 +154,7 @@ export function UpdateProductForm() {
 
                 <FormField
                   name="price"
+                  disabled={product.price == 0}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Precio</FormLabel>

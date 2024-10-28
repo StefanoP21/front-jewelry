@@ -37,6 +37,9 @@ export function DeleteProductForm(props: { id: number }) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid gap-4 py-2">
+              <span>Esta acción no se podrá deshacer.</span>
+            </div>
             <DialogFooter>
               <Button type="submit">Delete</Button>
             </DialogFooter>
