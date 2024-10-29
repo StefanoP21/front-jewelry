@@ -126,11 +126,7 @@ export default function ProductPage() {
                 <CardTitle>Productos</CardTitle>
                 <CardDescription>Administra todos los productos y verifica su información.</CardDescription>
               </CardHeader>
-              {isLoading ? (
-                <AllProductsSkeleton />
-              ) : (
-                <AllProducts products={products.sort((a, b) => parseInt(a.id) - parseInt(b.id))} />
-              )}
+              {isLoading ? <AllProductsSkeleton /> : <AllProducts products={products} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
                   Mostrando <strong>1-10</strong> de <strong>{products.length}</strong> productos
