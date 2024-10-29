@@ -11,6 +11,13 @@ import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@
 import { Textarea } from "../../../../components/ui/textarea";
 import { useCategories } from "@/hooks/useCategories";
 import { materials } from "@/core/constants";
+import { Product } from "@/core/models";
+import { ProductService } from "@/core/services/product.service";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { useProducts } from "@/hooks/useProducts";
+import { AxiosError } from "axios";
+import { LoaderCircle } from "lucide-react";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
@@ -19,30 +26,69 @@ const productSchema = z.object({
   categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z.number().min(0.01, { message: "Price is required" }),
+  price: z
+    .string()
+    .min(0.01, { message: "Price is required" })
+    .transform((val) => parseFloat(val)) // Transforma el valor de cadena a número
+    .refine((val) => !isNaN(val) && val > 0, { message: "Price must be a positive number" }), // Validación adicional,
 });
 
-export function UpdateProductForm() {
+interface UpdateProductForm {
+  product: Product;
+}
+
+export function UpdateProductForm({ product }: UpdateProductForm) {
+  const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { refetch, isLoading } = useProducts();
+
   const form = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: "",
-      description: "",
-      categoryId: "",
-      image: "",
-      material: "",
-      price: 0,
+      name: product.name || "",
+      description: product.description || "",
+      categoryId: product.category.id.toString() || "",
+      image: product.image || "",
+      material: product.material || "",
+      price: product.price || 0,
     },
   });
 
-  /*const onSubmit = (data: any) => {
-    console.log(data);
-  };*/
+  const onSubmit = async (values: z.infer<typeof productSchema>) => {
+    try {
+      await ProductService.updateProductById(Number(product.id), {
+        name: values.name,
+        description: values.description,
+        categoryId: parseInt(values.categoryId),
+        image: values.image,
+        material: values.material,
+        price: values.price,
+      });
+
+      toast({
+        variant: "default",
+        title: "Producto actualizado exitosamente",
+      });
+
+      form.reset();
+      setIsDialogOpen(false);
+      refetch();
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error al actualizar un producto",
+        description:
+          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+          "Ocurrió un error al actualizar un producto",
+      });
+      throw error;
+    }
+  };
 
   const { categories } = useCategories();
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
         <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
           Editar
@@ -53,7 +99,7 @@ export function UpdateProductForm() {
           <DialogTitle>Editar Producto</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form /*onSubmit={form.handleSubmit(onSubmit)}*/>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-4">
               {/* Primera fila: Name y Description */}
               <FormField
@@ -157,10 +203,7 @@ export function UpdateProductForm() {
                           type="number"
                           placeholder="Ingrese el precio"
                           {...field}
-                          onChange={(e) => {
-                            const value = parseFloat(e.target.value);
-                            field.onChange(isNaN(value) ? "" : value); // Convertir a número o dejar vacío
-                          }}
+                          onChange={(e) => field.onChange(e.target.value)}
                         />
                       </FormControl>
                       <FormMessage>{form.formState.errors.price?.message}</FormMessage>
@@ -170,7 +213,15 @@ export function UpdateProductForm() {
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Guardar Cambios</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Actualizando Producto
+                  </>
+                ) : (
+                  <span>Actualizar Producto</span>
+                )}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
