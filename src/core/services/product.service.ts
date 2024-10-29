@@ -1,5 +1,5 @@
 import { api } from "../lib/api";
-import { CreateProductDto } from "../models";
+import { CreateProductDto, UpdateProductDto } from "../models";
 import { ProductListResponse, ProductResponse } from "../models/product/model";
 
 export const ProductService = {
@@ -15,6 +15,11 @@ export const ProductService = {
 
   createProduct: async (dto: CreateProductDto): Promise<ProductResponse> => {
     const { data } = await api.post<ProductResponse>("/api/product", dto);
+    return data;
+  },
+
+  updateProductById: async (id: number, dto: UpdateProductDto): Promise<ProductResponse> => {
+    const { data } = await api.put<ProductResponse>("/api/product/" + id, dto);
     return data;
   },
 
