@@ -2,18 +2,20 @@
 
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { ProductService } from "@/core/services/product.service";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
 import { useProducts } from "@/hooks/useProducts";
 import { LoaderCircle } from "lucide-react";
 import { AxiosError } from "axios";
 
-export function DeleteProductForm(props: { id: number }) {
+interface DeleteProductFormProps {
+  id: number;
+  onClose: () => void; // Añade el prop para cerrar el diálogo
+}
+
+export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
   const { toast } = useToast();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { refetch, isLoading } = useProducts();
 
   const form = useForm({
@@ -24,7 +26,7 @@ export function DeleteProductForm(props: { id: number }) {
 
   const onSubmit = async () => {
     try {
-      await ProductService.deleteProductById(props.id);
+      await ProductService.deleteProductById(id);
 
       toast({
         variant: "default",
@@ -32,7 +34,6 @@ export function DeleteProductForm(props: { id: number }) {
       });
 
       form.reset();
-      setIsDialogOpen(false);
       refetch();
     } catch (error) {
       toast({
@@ -44,38 +45,26 @@ export function DeleteProductForm(props: { id: number }) {
       });
       throw error;
     }
+    onClose();
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogTrigger asChild>
-        <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
-          Eliminar
-        </span>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>¿Seguro que quieres eliminar el producto con ID: {props.id}?</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid gap-4 py-2">
-              <span>Esta acción no se podrá deshacer.</span>
-            </div>
-            <DialogFooter>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Eliminando Producto
-                  </>
-                ) : (
-                  <span>Eliminar Producto</span>
-                )}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <h2 className="text-lg font-semibold leading-none tracking-tight">Eliminar Producto con ID {id}?</h2>
+        <div className="grid gap-4 py-2">
+          <span>Esta acción no se podrá deshacer.</span>
+        </div>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Eliminando Producto
+            </>
+          ) : (
+            <span>Eliminar Producto</span>
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 }
