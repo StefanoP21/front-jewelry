@@ -41,51 +41,46 @@ export default function AllProducts({ products }: AllProductsProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map(
-              (product) => (
-                console.log(product.id),
-                (
-                  <TableRow key={product.id}>
-                    <TableCell className="hidden sm:table-cell">
-                      <Image
-                        alt={product.description}
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src={product.image}
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium w-[200px]">{product.name}</TableCell>
-                    <TableCell className="hidden md:table-cell w-[400px]">{product.description}</TableCell>
-                    <TableCell className="hidden md:table-cell">{product.category.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{product.material}</Badge>
-                    </TableCell>
-                    <TableCell>{parseFloat(product.price.toString()).toFixed(2)}</TableCell>
-                    <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                            <UpdateProductForm product={product} />
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                            <DeleteProductForm id={Number(product.id)} />
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                )
-              ),
-            )}
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell className="hidden sm:table-cell">
+                  <Image
+                    alt={product.description}
+                    className="aspect-square rounded-md object-cover"
+                    height="64"
+                    src={product.image}
+                    width="64"
+                  />
+                </TableCell>
+                <TableCell className="font-medium w-[200px]">{product.name}</TableCell>
+                <TableCell className="hidden md:table-cell w-[400px]">{product.description}</TableCell>
+                <TableCell className="hidden md:table-cell">{product.category.name}</TableCell>
+                <TableCell>
+                  <Badge variant="outline">{product.material}</Badge>
+                </TableCell>
+                <TableCell>{parseFloat(product.price.toString()).toFixed(2)}</TableCell>
+                <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <UpdateProductForm product={product} />
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <DeleteProductForm id={Number(product.id)} />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>
