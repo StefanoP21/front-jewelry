@@ -34,7 +34,6 @@ export interface PurchaseDetail {
   product: ProductPurchaseDetail;
 }
 
-// Omitir campos
 export type CreatePurchaseDetail = Omit<PurchaseDetail, "id" | "purchaseId">;
 
 export interface PurchaseListResponse {
