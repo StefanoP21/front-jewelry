@@ -38,7 +38,7 @@ export default function RefundPage() {
   const [selectedRefund, setSelectedRefund] = useState<Refund | null>(refunds[0]);
 
   useEffect(() => {
-    if (refunds.length > 0) {
+    if (refunds.length >= 0) {
       setSelectedRefund(refunds[0]);
     }
   }, [refunds]);

@@ -26,14 +26,15 @@ export const materials = [
   { id: 25, name: "Peridot" },
   { id: 26, name: "Perla" },
   { id: 27, name: "Piedra preciosa" },
-  { id: 28, name: "Platino" },
-  { id: 29, name: "Rubí" },
-  { id: 30, name: "Sodalita" },
-  { id: 31, name: "Titanio" },
-  { id: 32, name: "Topacio" },
-  { id: 33, name: "Turquesa" },
-  { id: 34, name: "Zafiro" },
-  { id: 35, name: "Zirconia" },
+  { id: 28, name: "Plata" },
+  { id: 29, name: "Platino" },
+  { id: 30, name: "Rubí" },
+  { id: 31, name: "Sodalita" },
+  { id: 32, name: "Titanio" },
+  { id: 33, name: "Topacio" },
+  { id: 34, name: "Turquesa" },
+  { id: 35, name: "Zafiro" },
+  { id: 36, name: "Zirconia" },
 ];
 
 export const IGV = 0.18;

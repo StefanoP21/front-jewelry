@@ -43,7 +43,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
         <CardHeader className="flex flex-row items-start bg-muted/50">
           <div className="grid gap-0.5">
             <CardTitle className="group flex items-center gap-2 text-lg">
-              {`Compra con ID ${selectedPurchase?.id}`}
+              Compra con ID {selectedPurchase?.id || "..."}
               <Button
                 size="icon"
                 variant="outline"
@@ -53,20 +53,12 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                 <span className="sr-only">Copiar el ID de la compra</span>
               </Button>
             </CardTitle>
-            {/* Arreglar */}
-            <CardDescription>{`Fecha: ${formatFormalDate(selectedPurchase?.date || "")}`}</CardDescription>
+            <CardDescription>Fecha: {formatFormalDate(selectedPurchase?.date) || "..."}</CardDescription>
           </div>
           <div className="ml-auto flex items-center gap-1">
-            {/*
-                <Button size="sm" variant="outline" className="h-8 gap-1">
-                  <Truck className="h-3.5 w-3.5" />
-                  <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">Track Order</span>
-                </Button>
-                */}
-
             <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild disabled={!selectedPurchase}>
                   <Button size="icon" variant="outline" className="h-8 w-8">
                     <MoreVertical className="h-3.5 w-3.5" />
                     <span className="sr-only">Más</span>
@@ -105,12 +97,6 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                 <span className="text-muted-foreground">Subtotal</span>
                 <span>S/.{(parseFloat(selectedPurchase?.total || "0") * 0.82).toFixed(2)}</span>
               </li>
-              {/*
-                  <li className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Shipping</span>
-                    <span>$5.00</span>
-                  </li>
-                  */}
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Impuestos</span>
                 <span>S/.{(parseFloat(selectedPurchase?.total || "0") * 0.18).toFixed(2)}</span>
@@ -127,22 +113,24 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
             <dl className="grid gap-3">
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Proveedor</dt>
-                <dd>{selectedPurchase?.supplier.companyName}</dd>
+                <dd>{selectedPurchase?.supplier.companyName || `...`}</dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Contacto</dt>
-                <dd>{selectedPurchase?.supplier.nameContact}</dd>
+                <dd>{selectedPurchase?.supplier.nameContact || `...`}</dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Email</dt>
                 <dd>
-                  <a href="mailto:">{selectedPurchase?.supplier.email}</a>
+                  <a href="mailto:">{selectedPurchase?.supplier.email ? selectedPurchase?.supplier.email : `...`}</a>
                 </dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Teléfono</dt>
                 <dd>
-                  <a href="tel:">+51 {selectedPurchase?.supplier.phone}</a>
+                  <a href="tel:">
+                    {selectedPurchase?.supplier.phone ? `+51 ${selectedPurchase?.supplier.phone}` : `...`}
+                  </a>
                 </dd>
               </div>
             </dl>

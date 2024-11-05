@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { RefundService } from "@/core/services/refund.service";
 import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "@/hooks/useProducts";
+import { usePurchases } from "@/hooks/usePurchases";
 import { useRefunds } from "@/hooks/useRefunds";
 import { AxiosError } from "axios";
 import { LoaderCircle } from "lucide-react";
@@ -25,6 +27,8 @@ interface DeleteRefundFormProps {
 export function DeleteRefundForm({ id, onClose }: DeleteRefundFormProps) {
   const { toast } = useToast();
   const { refetch } = useRefunds();
+  const { refetch: refetchPurchases } = usePurchases();
+  const { refetch: refetchProducts } = useProducts();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
@@ -45,6 +49,8 @@ export function DeleteRefundForm({ id, onClose }: DeleteRefundFormProps) {
 
       form.reset();
       refetch();
+      refetchPurchases();
+      refetchProducts();
     } catch (error) {
       toast({
         variant: "destructive",

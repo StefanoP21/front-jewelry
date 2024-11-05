@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { PurchaseService } from "@/core/services/purchase.service";
 import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "@/hooks/useProducts";
 import { usePurchases } from "@/hooks/usePurchases";
 import { AxiosError } from "axios";
 import { LoaderCircle } from "lucide-react";
@@ -25,6 +26,7 @@ interface DeletePurchaseFormProps {
 export function DeletePurchaseForm({ id, onClose }: DeletePurchaseFormProps) {
   const { toast } = useToast();
   const { refetch } = usePurchases();
+  const { refetch: refetchProducts } = useProducts();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
@@ -45,6 +47,7 @@ export function DeletePurchaseForm({ id, onClose }: DeletePurchaseFormProps) {
 
       form.reset();
       refetch();
+      refetchProducts();
     } catch (error) {
       toast({
         variant: "destructive",

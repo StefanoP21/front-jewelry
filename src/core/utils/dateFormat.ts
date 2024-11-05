@@ -8,7 +8,9 @@ export function formatDate(date: string) {
   return `${day}/${month}/${year}`;
 }
 
-export function formatFormalDate(dateString: string | number) {
+export function formatFormalDate(dateString: string | number | undefined) {
+  if (!dateString) return "";
+
   const date = new Date(dateString);
 
   const months = [

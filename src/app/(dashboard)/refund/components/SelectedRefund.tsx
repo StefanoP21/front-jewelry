@@ -52,7 +52,7 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
       <CardHeader className="flex flex-row items-start bg-muted/50">
         <div className="grid gap-0.5">
           <CardTitle className="group flex items-center gap-2 text-lg">
-            {`Devolución con ID ${selectedRefund?.id}`}
+            Devolución con ID {selectedRefund?.id || "..."}
             <Button
               size="icon"
               variant="outline"
@@ -62,26 +62,19 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
               <span className="sr-only">Copiar el ID de la Devolución</span>
             </Button>
           </CardTitle>
-          <CardDescription>{`Fecha: ${formatFormalDate(selectedRefund?.date || "")}`}</CardDescription>
+          <CardDescription>Fecha: {formatFormalDate(selectedRefund?.date) || "..."}</CardDescription>
         </div>
         <div className="ml-auto flex items-center gap-1">
-          {/*
-          <Button size="sm" variant="outline" className="h-8 gap-1">
-            <Truck className="h-3.5 w-3.5" />
-            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">Track Order</span>
-          </Button>
-          */}
-
           <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger disabled={!selectedRefund} asChild>
                 <Button size="icon" variant="outline" className="h-8 w-8">
                   <MoreVertical className="h-3.5 w-3.5" />
                   <span className="sr-only">Más</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Editar</DropdownMenuItem>
+                <DropdownMenuItem>Exportar</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem>Eliminar</DropdownMenuItem>
@@ -124,22 +117,24 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
           <dl className="grid gap-3">
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Proveedor</dt>
-              <dd>{selectedRefund?.purchase.supplier.companyName}</dd>
+              <dd>{selectedRefund?.purchase.supplier.companyName || `...`}</dd>
             </div>
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Contacto</dt>
-              <dd>{selectedRefund?.purchase.supplier.nameContact}</dd>
+              <dd>{selectedRefund?.purchase.supplier.nameContact || `...`}</dd>
             </div>
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Email</dt>
               <dd>
-                <a href="mailto:">{selectedRefund?.purchase.supplier.email}</a>
+                <a href="mailto:">{selectedRefund?.purchase.supplier.email || `...`}</a>
               </dd>
             </div>
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Teléfono</dt>
               <dd>
-                <a href="tel:">+51 {selectedRefund?.purchase.supplier.phone}</a>
+                <a href="tel:">
+                  {selectedRefund?.purchase.supplier.phone ? `+51 ${selectedRefund?.purchase.supplier.phone}` : `...`}
+                </a>
               </dd>
             </div>
           </dl>

@@ -345,7 +345,7 @@ export function CreateRefundForm() {
                           variant="outline"
                           size="icon"
                           className="h-6 w-6 shrink-0 rounded-full"
-                          onClick={() => onClick(-1)}
+                          onClick={() => onClick(-5)}
                           disabled={quantity <= 0}
                         >
                           <Minus className="h-4 w-4" />
@@ -359,7 +359,7 @@ export function CreateRefundForm() {
                           variant="outline"
                           size="icon"
                           className="h-6 w-6 shrink-0 rounded-full"
-                          onClick={() => onClick(1)}
+                          onClick={() => onClick(5)}
                           disabled={quantity >= selectedPurchaseDetail.purchaseDetail.quantity}
                         >
                           <Plus className="h-4 w-4" />
