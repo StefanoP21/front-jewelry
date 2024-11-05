@@ -95,11 +95,17 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
             <ul className="grid gap-3">
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>S/.{(parseFloat(selectedPurchase?.total || "0") * 0.82).toFixed(2)}</span>
+                <span>S/.{(parseFloat(selectedPurchase?.total || "0") / 1.18).toFixed(2)}</span>
               </li>
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Impuestos</span>
-                <span>S/.{(parseFloat(selectedPurchase?.total || "0") * 0.18).toFixed(2)}</span>
+                <span>
+                  S/.
+                  {(
+                    parseFloat(selectedPurchase?.total || "0") -
+                    parseFloat(selectedPurchase?.total || "0") / 1.18
+                  ).toFixed(2)}
+                </span>
               </li>
               <li className="flex items-center justify-between font-semibold">
                 <span className="text-muted-foreground">Total</span>

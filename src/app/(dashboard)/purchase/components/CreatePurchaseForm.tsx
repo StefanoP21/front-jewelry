@@ -82,7 +82,7 @@ export function CreatePurchaseForm() {
   const [index, setIndex] = useState(0);
   const [originalProduct, setOriginalProduct] = useState<CreatePurchaseDetail | undefined>(undefined);
 
-  const totalUnitPrice = purchaseDetailList.reduce((total, item) => total + item.unitPrice, 0);
+  const totalUnitPrice = purchaseDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
 
   const onClick = (udjusment: number) => {
     setQuantity(quantity + udjusment);
@@ -376,8 +376,8 @@ export function CreatePurchaseForm() {
                   <CardHeader>
                     <CardTitle className="text-sm">Detalle de la Compra</CardTitle>
                   </CardHeader>
-                  <CardContent className="flex flex-col items-center justify-center text-center">
-                    <span className="text-xs">{`ID - ${selectedProduct.productId}`}</span>
+                  <CardContent className="flex flex-col items-center justify-center text-center gap-2">
+                    <span className="text-sm">{selectedProduct.product.name}</span>
 
                     <div className="grid gap-1 items-center justify-center">
                       <Image
@@ -388,10 +388,7 @@ export function CreatePurchaseForm() {
                         width={80}
                       />
 
-                      <span className="text-sm">{selectedProduct.product.name}</span>
-                      <span className="text-xs">{selectedProduct.product.description}</span>
-
-                      <div className="flex items-center m-auto w-[120px]">
+                      <div className="flex items-center m-auto w-[120px] mt-2">
                         <Button
                           type="button"
                           variant="outline"
@@ -425,7 +422,7 @@ export function CreatePurchaseForm() {
                           id="unitPrice"
                           type="number"
                           placeholder="0.00"
-                          className="w-20 h-6 text-right"
+                          className="w-20 h-6 text-right mt-2"
                           value={selectedProduct?.unitPrice ?? ""}
                           onChange={(e) => {
                             const unitPrice = parseFloat(e.target.value);
@@ -434,7 +431,7 @@ export function CreatePurchaseForm() {
                         />
                       </div>
 
-                      <div className="relative flex flex-col items-center mt-6">
+                      <div className="relative flex flex-col items-center mt-7">
                         <span className="absolute -top-6 text-sm font-medium">{profit}%</span>
                         <Slider
                           value={[profit]}
@@ -481,7 +478,7 @@ export function CreatePurchaseForm() {
                         <TableCell className="text-center">{purchaseDetail.unitPrice}</TableCell>
                         <TableCell className="text-center">
                           <div className="">{purchaseDetail.profit}%</div>
-                          <div>{(purchaseDetail.unitPrice * (1 + purchaseDetail.profit / 100)).toFixed(2)}</div>
+                          <div>S/.{(purchaseDetail.unitPrice * (1 + purchaseDetail.profit / 100)).toFixed(2)}</div>
                         </TableCell>
                         <TableCell className="text-center">
                           <div className="flex items-center justify-center gap-2">
