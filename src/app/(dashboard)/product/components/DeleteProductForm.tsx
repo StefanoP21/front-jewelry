@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useProducts } from "@/hooks/useProducts";
 import { LoaderCircle } from "lucide-react";
 import { AxiosError } from "axios";
+import { useState } from "react";
 
 interface DeleteProductFormProps {
   id: number;
@@ -16,7 +17,8 @@ interface DeleteProductFormProps {
 
 export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
   const { toast } = useToast();
-  const { refetch, isLoading } = useProducts();
+  const { refetch } = useProducts();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm({
     defaultValues: {
@@ -26,6 +28,7 @@ export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
 
   const onSubmit = async () => {
     try {
+      setIsLoading(true);
       await ProductService.deleteProductById(id);
 
       toast({
@@ -36,6 +39,7 @@ export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
       form.reset();
       refetch();
     } catch (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Error al eliminar un producto",
