@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useProducts } from "@/hooks/useProducts";
 import { AxiosError } from "axios";
 import { LoaderCircle } from "lucide-react";
+import { useState } from "react";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
@@ -24,7 +25,7 @@ const productSchema = z.object({
   categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z.coerce.number().min(1, { message: "Price is required" }),
+  price: z.coerce.number().optional(),
 });
 
 interface UpdateProductForm {
@@ -34,7 +35,8 @@ interface UpdateProductForm {
 
 export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
   const { toast } = useToast();
-  const { refetch, isLoading } = useProducts();
+  const { refetch } = useProducts();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm({
     resolver: zodResolver(productSchema),
@@ -50,13 +52,14 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
+      setIsLoading(true);
       await ProductService.updateProductById(Number(product.id), {
         name: values.name,
         description: values.description,
         categoryId: parseInt(values.categoryId),
         image: values.image,
         material: values.material,
-        price: values.price,
+        price: values.price || 0,
       });
 
       toast({
@@ -67,6 +70,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
       form.reset();
       refetch();
     } catch (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Error al actualizar un producto",
@@ -185,12 +189,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
                 <FormItem>
                   <FormLabel>Precio</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Ingrese el precio"
-                      {...field}
-                      onChange={(e) => field.onChange(e.target.value)}
-                    />
+                    <Input type="number" placeholder="Ingrese el precio" {...field} />
                   </FormControl>
                   <FormMessage>{form.formState.errors.price?.message}</FormMessage>
                 </FormItem>
