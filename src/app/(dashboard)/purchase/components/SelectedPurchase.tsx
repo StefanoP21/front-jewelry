@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Copy, CreditCard, MoreVertical } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, MoreVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination";
@@ -95,7 +95,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                   <span className="text-muted-foreground">
                     {detail.product.name} x <span>{detail.quantity}</span>
                   </span>
-                  <span>${parseFloat(detail.unitPrice.toString()).toFixed(2)}</span>
+                  <span>S/.{parseFloat(detail.unitPrice.toString()).toFixed(2)}</span>
                 </li>
               ))}
             </ul>
@@ -103,7 +103,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
             <ul className="grid gap-3">
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${(parseFloat(selectedPurchase?.total || "0") * 0.82).toFixed(2)}</span>
+                <span>S/.{(parseFloat(selectedPurchase?.total || "0") * 0.82).toFixed(2)}</span>
               </li>
               {/*
                   <li className="flex items-center justify-between">
@@ -113,11 +113,11 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                   */}
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Impuestos</span>
-                <span>${(parseFloat(selectedPurchase?.total || "0") * 0.18).toFixed(2)}</span>
+                <span>S/.{(parseFloat(selectedPurchase?.total || "0") * 0.18).toFixed(2)}</span>
               </li>
               <li className="flex items-center justify-between font-semibold">
                 <span className="text-muted-foreground">Total</span>
-                <span>${parseFloat(selectedPurchase?.total || "0").toFixed(2)}</span>
+                <span>S/.{parseFloat(selectedPurchase?.total || "0").toFixed(2)}</span>
               </li>
             </ul>
           </div>
@@ -147,35 +147,33 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
               </div>
             </dl>
           </div>
-          <Separator className="my-4" />
-          <div className="grid gap-3">
-            <div className="font-semibold">Información de Pago</div>
-            <dl className="grid gap-3">
-              <div className="flex items-center justify-between">
-                <dt className="flex items-center gap-1 text-muted-foreground">
-                  <CreditCard className="h-4 w-4" />
-                  Visa
-                </dt>
-                <dd>**** **** **** 4532</dd>
-              </div>
-            </dl>
-          </div>
         </CardContent>
         <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
           <div className="text-xs text-muted-foreground">
-            {/*fecha actual*/}
             Actualizado <time dateTime={Date.now().toString()}>{formatFormalDate(Date.now())}</time>
           </div>
           <Pagination className="ml-auto mr-0 w-auto">
             <PaginationContent>
               <PaginationItem>
-                <Button onClick={handlePrevious} size="icon" variant="outline" className="h-6 w-6">
+                <Button
+                  disabled={selectedPurchase === purchases[0]}
+                  onClick={handlePrevious}
+                  size="icon"
+                  variant="outline"
+                  className="h-6 w-6"
+                >
                   <ChevronLeft className="h-3.5 w-3.5" />
                   <span className="sr-only">Compra Anterior</span>
                 </Button>
               </PaginationItem>
               <PaginationItem>
-                <Button onClick={handleNext} size="icon" variant="outline" className="h-6 w-6">
+                <Button
+                  disabled={selectedPurchase === purchases[purchases.length - 1]}
+                  onClick={handleNext}
+                  size="icon"
+                  variant="outline"
+                  className="h-6 w-6"
+                >
                   <ChevronRight className="h-3.5 w-3.5" />
                   <span className="sr-only">Siguiente Compra</span>
                 </Button>

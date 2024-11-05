@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { usePurchases } from "@/hooks/usePurchases";
 import { AxiosError } from "axios";
 import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { Check, ChevronsUpDown, DollarSign, LoaderCircle, Minus, Plus, Trash } from "lucide-react";
+import { Check, ChevronsUpDown, DollarSign, Edit, LoaderCircle, Minus, Plus, Trash } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { useProducts } from "@/hooks/useProducts";
 import { Product } from "@/core/models";
@@ -31,21 +31,8 @@ import { CreatePurchaseDetail } from "@/core/models/purchase/model";
 import { Separator } from "@radix-ui/react-separator";
 import { Slider } from "@/components/ui/slider";
 import { useAuthStore } from "@/core/store/auth.store";
-
-/*export interface PurchaseDetail {
-  productId: number;
-  quantity: number;
-  unitPrice: number;
-  profit: number;
-}
-
-export interface CreatePurchaseDto {
-  supplierId: number;
-  total: number;
-  bill: string;
-  userDNI: string;
-  purchaseDetail: PurchaseDetail[];
-} */
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { IGV } from "@/core/constants";
 
 const purchaseDetailSchema = z.object({
   productId: z.number().min(1, { message: "El producto es requerido" }),
@@ -86,13 +73,14 @@ export function CreatePurchaseForm() {
   const { refetch } = usePurchases();
   const { user } = useAuthStore();
 
-  // Estado para manejar `purchaseDetail` y productos seleccionados
-  // const [purchaseDetail, setPurchaseDetail] = useState<PurchaseDetail[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<CreatePurchaseDetail>();
   const [purchaseDetailList, setPurchaseDetailList] = useState<CreatePurchaseDetail[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
   const [profit, setProfit] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [index, setIndex] = useState(0);
+  const [originalProduct, setOriginalProduct] = useState<CreatePurchaseDetail | undefined>(undefined);
 
   const totalUnitPrice = purchaseDetailList.reduce((total, item) => total + item.unitPrice, 0);
 
@@ -161,14 +149,12 @@ export function CreatePurchaseForm() {
   });
 
   useEffect(() => {
-    // Actualiza el total cada vez que purchaseDetailList cambie
     form.setValue("total", totalUnitPrice);
   }, [totalUnitPrice, form]);
 
   const onSubmit = async (values: z.infer<typeof purchaseSchema>) => {
     setIsLoading(true);
     try {
-      // Limpia purchaseDetail antes de agregar los elementos
       values.purchaseDetail = [];
 
       purchaseDetailList.forEach((pd) => {
@@ -180,12 +166,10 @@ export function CreatePurchaseForm() {
         });
       });
 
-      console.log(values);
-
       await PurchaseService.createPurchase({
         supplierId: parseInt(values.supplierId),
         bill: values.bill,
-        total: totalUnitPrice,
+        total: totalUnitPrice * (1 + IGV),
         userDNI: user!.dni,
         purchaseDetail: values.purchaseDetail,
       });
@@ -196,6 +180,10 @@ export function CreatePurchaseForm() {
       });
 
       form.reset();
+      setPurchaseDetailList([]);
+      setQuantity(0);
+      setProfit(0);
+      setSelectedProduct(undefined);
       refetch();
       refetchProducts();
     } catch (error) {
@@ -213,6 +201,39 @@ export function CreatePurchaseForm() {
     setIsSheetOpen(false);
   };
 
+  const handleEditPurchaseDetail = (purchaseDetail: CreatePurchaseDetail, index: number) => {
+    setIndex(index);
+    setOriginalProduct(purchaseDetail);
+
+    setPurchaseDetailList((prevList) => prevList.filter((pd) => pd.productId !== purchaseDetail.productId));
+    setIsEditing(true);
+    setSelectedProduct(purchaseDetail);
+    setQuantity(purchaseDetail.quantity);
+    setProfit(purchaseDetail.profit);
+  };
+
+  const handleCancelSelected = () => {
+    if (isEditing && originalProduct) {
+      setPurchaseDetailList((prevList) => {
+        const newList = [...prevList];
+        newList.splice(index, 0, originalProduct);
+        return newList;
+      });
+      setIndex(0);
+      setIsEditing(false);
+      setOriginalProduct(undefined);
+      setSelectedProduct(undefined);
+
+      setQuantity(0);
+      setProfit(0);
+    } else {
+      setSelectedProduct(undefined);
+
+      setQuantity(0);
+      setProfit(0);
+    }
+  };
+
   return (
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
       <SheetTrigger asChild>
@@ -227,9 +248,8 @@ export function CreatePurchaseForm() {
         </SheetHeader>
 
         <Form {...form}>
-          {/*<form onSubmit={form.handleSubmit(onSubmit)}>*/}
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid gap-3 py-3">
+            <div className="grid gap-3 py-3 place-items-center">
               {/*Combobox para el proveedor*/}
               <FormField
                 name="supplierId"
@@ -325,7 +345,16 @@ export function CreatePurchaseForm() {
                                     !purchaseDetailList.some((pd) => pd.productId === product.id),
                                 )
                                 .map((product) => (
-                                  <CommandItem key={product.id} onSelect={() => addProduct(product)}>
+                                  <CommandItem
+                                    key={product.id}
+                                    onSelect={() => {
+                                      setSelectedProduct(undefined);
+                                      setQuantity(0);
+                                      setProfit(0);
+
+                                      addProduct(product);
+                                    }}
+                                  >
                                     <Image src={product.image} alt={product.name} width={24} height={24} />
                                     {product.name}
                                   </CommandItem>
@@ -393,6 +422,7 @@ export function CreatePurchaseForm() {
                       <div className="flex items-center justify-center">
                         <DollarSign className="h-4 w-4" />
                         <Input
+                          id="unitPrice"
                           type="number"
                           placeholder="0.00"
                           className="w-20 h-6 text-right"
@@ -419,7 +449,7 @@ export function CreatePurchaseForm() {
                   <CardFooter className="flex justify-between w-full">
                     <Button
                       type="button"
-                      onClick={() => setSelectedProduct(undefined)}
+                      onClick={handleCancelSelected}
                       variant="destructive"
                       className="h-6 px-2 text-xs"
                     >
@@ -436,66 +466,101 @@ export function CreatePurchaseForm() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Producto</TableHead>
-                      <TableHead>Cantidad</TableHead>
-                      <TableHead>Costo</TableHead>
-                      <TableHead>%</TableHead>
+                      <TableHead className="text-center">Producto</TableHead>
+                      <TableHead className="text-center">Cantidad</TableHead>
+                      <TableHead className="text-center">Costo</TableHead>
+                      <TableHead className="text-center">%</TableHead>
                       <TableHead className="hidden md:table-cell">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {purchaseDetailList.map((purchaseDetail) => (
+                    {purchaseDetailList.map((purchaseDetail, index) => (
                       <TableRow key={purchaseDetail.productId}>
-                        <TableCell className="flex items-center gap-2">
-                          <Image
-                            src={purchaseDetail.product.image}
-                            alt={purchaseDetail.product.name}
-                            width={24}
-                            height={24}
-                          />
-                          {purchaseDetail.product.name}
-                        </TableCell>
+                        <TableCell className="text-center">{purchaseDetail.product.name}</TableCell>
                         <TableCell className="text-center">{purchaseDetail.quantity}</TableCell>
                         <TableCell className="text-center">{purchaseDetail.unitPrice}</TableCell>
-                        <TableCell>{purchaseDetail.profit}%</TableCell>
                         <TableCell className="text-center">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={() => removePurchaseDetail(purchaseDetail)}
-                          >
-                            <Trash className="h-4 w-4" />
-                            <span className="sr-only">Delete</span>
-                          </Button>
+                          <div className="">{purchaseDetail.profit}%</div>
+                          <div>{(purchaseDetail.unitPrice * (1 + purchaseDetail.profit / 100)).toFixed(2)}</div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-6 w-6"
+                              onClick={() => removePurchaseDetail(purchaseDetail)}
+                            >
+                              <Trash className="h-4 w-4" />
+                              <span className="sr-only">Delete</span>
+                            </Button>
+
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-6 w-6"
+                              onClick={() => handleEditPurchaseDetail(purchaseDetail, index)}
+                            >
+                              <Edit className="h-4 w-4" />
+                              <span className="sr-only">Delete</span>
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               )}
-
-              <div className="flex justify-end">
-                <FormField
-                  name="total"
-                  render={() => (
-                    <FormItem className="text-right">
-                      <FormLabel>Total de Productos</FormLabel>
-                      <FormControl>
-                        <Input
-                          readOnly
-                          value={totalUnitPrice.toFixed(2)} // Asegura que `totalUnitPrice` esté formateado
-                          className="ml-auto w-[100px] text-right"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </div>
             </div>
 
-            <SheetFooter>
+            {!selectedProduct?.productId && (
+              <div className="mt-2 grid gap-2">
+                <div className="flex justify-end">
+                  <div className="text-right flex items-center gap-2">
+                    <Label className="text-sm">Subtotal</Label>
+                    <Input
+                      readOnly
+                      value={`S/. ${totalUnitPrice.toFixed(2)}`}
+                      className="ml-auto w-[120px] h-6 text-right"
+                    />
+                  </div>
+                </div>
+
+                <div className=" flex justify-end">
+                  <div className="text-right flex items-center gap-2">
+                    <Label className="text-sm">IGV</Label>
+                    <Input
+                      readOnly
+                      value={`S/. ${(totalUnitPrice * IGV).toFixed(2)}`}
+                      className="ml-auto w-[120px] h-6 text-right"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <FormField
+                    name="total"
+                    render={() => (
+                      <FormItem className="text-right flex items-center gap-2">
+                        <FormLabel>Total</FormLabel>
+                        <FormControl>
+                          <Input
+                            readOnly
+                            value={`S/. ${(totalUnitPrice + totalUnitPrice * IGV).toFixed(2)}`}
+                            className="ml-auto w-[120px] h-6 text-right"
+                            style={{ marginTop: 0 }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+
+            <SheetFooter className="mt-4">
               <div className="flex flex-col space-y-2 sm:flex-row sm:justify-end sm:space-x-2 sm:space-y-0">
                 <Button type="button" onClick={handleCancel} variant="destructive">
                   Cancelar

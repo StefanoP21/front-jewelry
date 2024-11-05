@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function SelectedPurchaseSkeleton() {
+export function SelectedRefundSkeleton() {
   return (
     <Card>
       <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -20,7 +20,7 @@ export function SelectedPurchaseSkeleton() {
       </CardHeader>
       <CardContent className="p-6 text-sm">
         <div className="grid gap-3">
-          <div className="font-semibold">Detalles de la Compra</div>
+          <div className="font-semibold">Detalles de la Devolución</div>
           <ul className="grid gap-3">
             {Array.from({ length: 3 }).map((_, index) => (
               <li className="flex items-center justify-between" key={index}>
@@ -29,6 +29,14 @@ export function SelectedPurchaseSkeleton() {
               </li>
             ))}
           </ul>
+          <Separator className="my-4" />
+          <div className="grid gap-3">
+            <div className="font-semibold">Comentario</div>
+            <dl className="grid gap-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-20" />
+            </dl>
+          </div>
           <Separator className="my-2" />
           <ul className="grid gap-3">
             {["Subtotal", "Impuestos", "Total"].map((label) => (

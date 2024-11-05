@@ -35,3 +35,5 @@ export const materials = [
   { id: 34, name: "Zafiro" },
   { id: 35, name: "Zirconia" },
 ];
+
+export const IGV = 0.18;
