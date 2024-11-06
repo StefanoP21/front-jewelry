@@ -14,12 +14,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from "react";
 
 interface AllProductsProps {
   products: Product[];
 }
 
 export default function AllProducts({ products }: AllProductsProps) {
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+
+  const handleEditOpen = (id: number) => {
+    setSelectedProductId(id);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteOpen = (id: number) => {
+    setSelectedProductId(id);
+    setIsDeleteDialogOpen(true);
+  };
+
   return (
     <>
       <CardContent>
@@ -62,7 +78,7 @@ export default function AllProducts({ products }: AllProductsProps) {
                 <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
                 <TableCell>
                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger>
                       <Button aria-haspopup="true" size="icon" variant="ghost">
                         <MoreHorizontal className="h-4 w-4" />
                         <span className="sr-only">Toggle menu</span>
@@ -70,12 +86,8 @@ export default function AllProducts({ products }: AllProductsProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                        <UpdateProductForm />
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                        <DeleteProductForm id={Number(product.id)} />
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleEditOpen(Number(product.id))}>Actualizar</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDeleteOpen(Number(product.id))}>Eliminar</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -84,6 +96,35 @@ export default function AllProducts({ products }: AllProductsProps) {
           </TableBody>
         </Table>
       </CardContent>
+
+      {/* Dialog for Edit Product */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          {selectedProductId !== null ? (
+            <>
+              {products.find((p) => Number(p.id) === selectedProductId) ? (
+                <UpdateProductForm
+                  product={products.find((p) => Number(p.id) === selectedProductId)!}
+                  onClose={() => setIsEditDialogOpen(false)}
+                />
+              ) : (
+                <p>Producto no encontrado.</p>
+              )}
+            </>
+          ) : (
+            <p>Seleccione un producto para editar.</p>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog for Delete Product */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          {selectedProductId && (
+            <DeleteProductForm id={selectedProductId} onClose={() => setIsDeleteDialogOpen(false)} />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

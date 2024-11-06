@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import Sidebar, { SidebarItem } from "./components/sidebar";
-import { ShoppingBasket, Gem, Package, TicketX, User } from "lucide-react";
+import { ShoppingBasket, Gem, Package, TicketX, User, PersonStanding } from "lucide-react";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import { useAuthStore } from "@/core/store/auth.store";
@@ -39,6 +39,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </Link>
         <Link href="/refund">
           <SidebarItem icon={<TicketX size={20} />} text="Devoluciones" active={pathname === "/refund"} />
+        </Link>
+        <Link href="/customer">
+          <SidebarItem icon={<PersonStanding size={20} />} text="Clientes" active={pathname === "/customer"} />
         </Link>
         {user?.role === "ADMIN" && (
           <Link href="/user">

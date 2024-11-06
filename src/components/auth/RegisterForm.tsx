@@ -44,7 +44,7 @@ export default function RegisterForm() {
       return await AuthService.register(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] }); // Invalida la consulta para refrescar la lista de usuarios
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       toast({
         variant: "default",
         title: "Usuario creado exitosamente",

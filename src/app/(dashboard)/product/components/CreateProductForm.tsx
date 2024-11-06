@@ -25,7 +25,6 @@ const productSchema = z.object({
   categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
   material: z.string().min(1, { message: "Material is required" }),
-  price: z.number().min(0.01, { message: "Price is required" }),
 });
 
 export function CreateProductForm() {
@@ -41,7 +40,6 @@ export function CreateProductForm() {
       categoryId: "",
       image: "",
       material: "",
-      price: 0,
     },
   });
 
@@ -53,7 +51,6 @@ export function CreateProductForm() {
         categoryId: parseInt(values.categoryId),
         image: values.image,
         material: values.material,
-        price: values.price,
       });
 
       toast({
@@ -181,27 +178,6 @@ export function CreateProductForm() {
                         </Select>
                       </FormControl>
                       <FormMessage>{form.formState.errors.material?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Precio</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Ingrese el precio"
-                          {...field}
-                          onChange={(e) => {
-                            const value = parseFloat(e.target.value);
-                            field.onChange(isNaN(value) ? "" : value);
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage>{form.formState.errors.price?.message}</FormMessage>
                     </FormItem>
                   )}
                 />

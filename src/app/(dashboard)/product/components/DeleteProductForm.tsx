@@ -1,48 +1,74 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { ProductService } from "@/core/services/product.service";
+import { useToast } from "@/hooks/use-toast";
+import { useProducts } from "@/hooks/useProducts";
+import { LoaderCircle } from "lucide-react";
+import { AxiosError } from "axios";
+import { useState } from "react";
 
-const productSchema = z.object({
-  id: z.string().min(1, { message: "ID is required" }),
-});
+interface DeleteProductFormProps {
+  id: number;
+  onClose: () => void; // Añade el prop para cerrar el diálogo
+}
 
-export function DeleteProductForm(props: { id: number }) {
+export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
+  const { toast } = useToast();
+  const { refetch } = useProducts();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const form = useForm({
-    resolver: zodResolver(productSchema), // Resolver de zod
     defaultValues: {
       id: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof productSchema>) => {
-    ProductService.deleteProductById(Number(values.id));
+  const onSubmit = async () => {
+    try {
+      setIsLoading(true);
+      await ProductService.deleteProductById(id);
+
+      toast({
+        variant: "default",
+        title: "Producto eliminado exitosamente",
+      });
+
+      form.reset();
+      refetch();
+    } catch (error) {
+      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Error al eliminar un producto",
+        description:
+          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+          "Ocurrió un error al eliminar un producto",
+      });
+      throw error;
+    }
+    onClose();
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <span className="w-full d-block" onClick={(e) => e.stopPropagation()}>
-          Eliminar
-        </span>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>¿Seguro que quieres eliminar el producto con ID: {props.id}?</DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogFooter>
-              <Button type="submit">Delete</Button>
-            </DialogFooter>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <h2 className="text-lg font-semibold leading-none tracking-tight">Eliminar Producto con ID {id}?</h2>
+        <div className="grid gap-4 py-2">
+          <span>Esta acción no se podrá deshacer.</span>
+        </div>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Eliminando Producto
+            </>
+          ) : (
+            <span>Eliminar Producto</span>
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 }
