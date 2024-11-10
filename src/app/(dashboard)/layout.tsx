@@ -40,7 +40,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         <Link href="/refund">
           <SidebarItem icon={<TicketX size={20} />} text="Devoluciones" active={pathname === "/refund"} />
         </Link>
-        <Link href="/customer">
+        <Link href="/category">
           <SidebarItem icon={<PersonStanding size={20} />} text="Clientes" active={pathname === "/customer"} />
         </Link>
         {user?.role === "ADMIN" && (
@@ -48,6 +48,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <SidebarItem icon={<User size={20} />} text="Usuarios" active={pathname === "/user"} />
           </Link>
         )}
+        <Link href="/other">
+          <SidebarItem icon={<PersonStanding size={20} />} text="Otros" active={pathname === "/other"} />
+        </Link>
       </Sidebar>
 
       {/* Main Content */}
