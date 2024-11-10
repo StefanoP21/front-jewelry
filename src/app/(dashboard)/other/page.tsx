@@ -22,11 +22,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateProductForm } from "@/app/(dashboard)/product/components/CreateProductForm";
 import { useProducts } from "@/hooks/useProducts";
 import AllCategories from "./components/AllCategories";
 import AllCategoriesSkeleton from "./components/AllCategoriesSkeleton";
 import { useCategories } from "@/hooks/useCategories";
+import { CreateCategoryForm } from "./components/CreateCategoryForm";
 
 export default function OtherPage() {
   const { isLoading, categories } = useCategories();
@@ -112,7 +112,7 @@ export default function OtherPage() {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
               </Button>
-              <CreateProductForm />
+              <CreateCategoryForm />
               {/*<Button size="sm" className="h-7 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
