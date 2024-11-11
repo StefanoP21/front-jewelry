@@ -6,3 +6,6 @@ export * from "./product/model";
 
 export * from "./category/dtos";
 export * from "./category/model";
+
+export * from "./customer/dtos";
+export * from "./customer/model";

@@ -2,7 +2,7 @@ import { CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export default function AllUsersSkeleton() {
+export default function AllCustomersSkeleton() {
   return (
     <>
       <CardContent>
@@ -15,7 +15,7 @@ export default function AllUsersSkeleton() {
               <TableHead>Nombre Completo</TableHead>
               <TableHead className="hidden md:table-cell">DNI</TableHead>
               <TableHead className="hidden md:table-cell">Email</TableHead>
-              <TableHead className="hidden md:table-cell">Rol</TableHead>
+              <TableHead className="hidden md:table-cell">Teléfono</TableHead>
               <TableHead>
                 <span className="sr-only">Acciones</span>
               </TableHead>
