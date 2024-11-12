@@ -23,13 +23,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import RegisterForm from "@/components/auth/RegisterForm";
-import AllUsersSkeleton from "./components/AllUsersSkeleton";
-import AllUsers from "./components/AllUsers";
-import { useUsers } from "@/hooks/useUsers";
+import { useCustomers } from "@/hooks/useCustomers";
+import AllCustomers from "./components/AllCustomers";
+import AllCustomersSkeleton from "./components/AllCustomersSkeleton";
+import CreateCustomerForm from "./components/CreateCustomerForm";
 
 export default function CustomerPage() {
-  const { isLoading, users } = useUsers();
+  const { isLoading, customers } = useCustomers();
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -44,12 +44,12 @@ export default function CustomerPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Usuarios</Link>
+                <Link href="#">Clientes</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Todos los usuarios</BreadcrumbPage>
+              <BreadcrumbPage>Todos los clientes</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -93,19 +93,19 @@ export default function CustomerPage() {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
               </Button>
-              <RegisterForm />
+              <CreateCustomerForm />
             </div>
           </div>
           <TabsContent value="all">
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
-                <CardTitle>Usuarios</CardTitle>
-                <CardDescription>Maneja tus usuarios.</CardDescription>
+                <CardTitle>Clientes</CardTitle>
+                <CardDescription>Maneja tus clientes.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllUsersSkeleton /> : <AllUsers users={users} />}
+              {isLoading ? <AllCustomersSkeleton /> : <AllCustomers customers={customers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{users.length}</strong> usuarios
+                  Mostrando <strong>1-10</strong> de <strong>{customers.length}</strong> clientes
                 </div>
               </CardFooter>
             </Card>
