@@ -9,3 +9,6 @@ export * from "./category/model";
 
 export * from "./customer/dtos";
 export * from "./customer/model";
+
+export * from "./material/dtos";
+export * from "./material/model";

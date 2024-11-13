@@ -1,10 +1,10 @@
-import { CategoryService } from "@/core/services/category.service";
+import { MaterialService } from "@/core/services/material.service";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCategories = () => {
+export const useMaterials = () => {
   const { isLoading, isError, error, data, refetch, isFetching } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => CategoryService.getAllCategories(),
+    queryKey: ["materials"],
+    queryFn: () => MaterialService.getAllMaterials(),
     staleTime: 1000 * 60 * 60,
   });
 
@@ -12,7 +12,7 @@ export const useCategories = () => {
     isLoading,
     isError,
     error,
-    categories: data?.data || [],
+    materials: data?.data || [],
     refetch,
     isFetching,
   };
