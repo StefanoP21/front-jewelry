@@ -15,6 +15,7 @@ import { formatFormalDate } from "@/core/utils/dateFormat";
 import { DeletePurchaseForm } from "./DeletePurchaseForm";
 import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useState } from "react";
+import { IGV } from "@/core/constants";
 
 interface SelectedPurchaseProps {
   purchases: Purchase[];
@@ -95,7 +96,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
             <ul className="grid gap-3">
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>S/.{(parseFloat(selectedPurchase?.total || "0") / 1.18).toFixed(2)}</span>
+                <span>S/.{(parseFloat(selectedPurchase?.total || "0") / (IGV + 1)).toFixed(2)}</span>
               </li>
               <li className="flex items-center justify-between">
                 <span className="text-muted-foreground">Impuestos</span>
@@ -103,7 +104,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                   S/.
                   {(
                     parseFloat(selectedPurchase?.total || "0") -
-                    parseFloat(selectedPurchase?.total || "0") / 1.18
+                    parseFloat(selectedPurchase?.total || "0") / (IGV + 1)
                   ).toFixed(2)}
                 </span>
               </li>
@@ -134,9 +135,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
               <div className="flex items-center justify-between">
                 <dt className="text-muted-foreground">Teléfono</dt>
                 <dd>
-                  <a href="tel:">
-                    {selectedPurchase?.supplier.phone ? `+51 ${selectedPurchase?.supplier.phone}` : `...`}
-                  </a>
+                  <a href="tel:">{`+51 ${selectedPurchase?.supplier.phone}` || `...`}</a>
                 </dd>
               </div>
             </dl>
