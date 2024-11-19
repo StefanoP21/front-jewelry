@@ -64,8 +64,6 @@ export function CreateOrderForm() {
   const [index, setIndex] = useState(0);
   const [originalProduct, setOriginalProduct] = useState<CreateOrderDetail | undefined>(undefined);
 
-  const totalUnitPrice = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
-
   const onClick = (udjusment: number) => {
     setQuantity(quantity + udjusment);
   };
@@ -120,6 +118,9 @@ export function CreateOrderForm() {
     setSelectedProduct(undefined);
   };
 
+  const [totalDesc, setTotalDesc] = useState(0);
+  const totalUnitPrice = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0) - totalDesc;
+
   const form = useForm({
     resolver: zodResolver(orderSchema),
     defaultValues: {
@@ -130,6 +131,10 @@ export function CreateOrderForm() {
       orderDetail: [],
     },
   });
+
+  useEffect(() => {
+    setTotalDesc(form.getValues("totalDesc"));
+  }, [totalUnitPrice, form]);
 
   useEffect(() => {
     form.setValue("total", totalUnitPrice);
@@ -532,6 +537,7 @@ export function CreateOrderForm() {
               <div className="mt-2 grid gap-2">
                 <div className="flex justify-end">
                   <div className="text-right flex items-center gap-2">
+                    {totalDesc != 0 ? <Label className="text-xs text-red-500">- {totalDesc}</Label> : ""}
                     <Label className="text-sm">Subtotal</Label>
                     <Input
                       readOnly
