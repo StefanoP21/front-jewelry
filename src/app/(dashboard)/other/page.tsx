@@ -23,14 +23,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useProducts } from "@/hooks/useProducts";
-import AllCategories from "./components/AllCategories";
-import AllCategoriesSkeleton from "./components/AllCategoriesSkeleton";
+import AllCategories from "./components/category/AllCategories";
+import AllCategoriesSkeleton from "./components/category/AllCategoriesSkeleton";
 import { useCategories } from "@/hooks/useCategories";
-import { CreateCategoryForm } from "./components/CreateCategoryForm";
+import { CreateCategoryForm } from "./components/category/CreateCategoryForm";
+import AllMaterialsSkeleton from "./components/material/AllMaterialsSkeleton";
+import AllMaterials from "./components/material/AllMaterials";
+import { useMaterials } from "@/hooks/useMaterials";
+import { useState } from "react";
+import { CreateMaterialForm } from "./components/material/CreateMaterialForm";
 
 export default function OtherPage() {
   const { isLoading, categories } = useCategories();
   const { products } = useProducts();
+  const { materials } = useMaterials();
+  const [currentTab, setCurrentTab] = useState<"categories" | "suppliers" | "materials">("categories");
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -88,9 +95,15 @@ export default function OtherPage() {
         <Tabs defaultValue="categories">
           <div className="flex items-center">
             <TabsList>
-              <TabsTrigger value="categories">Categorías</TabsTrigger>
-              <TabsTrigger value="suppliers">Proveedores</TabsTrigger>
-              <TabsTrigger value="materials">Materiales</TabsTrigger>
+              <TabsTrigger value="categories" onClick={() => setCurrentTab("categories")}>
+                Categorías
+              </TabsTrigger>
+              <TabsTrigger value="suppliers" onClick={() => setCurrentTab("suppliers")}>
+                Proveedores
+              </TabsTrigger>
+              <TabsTrigger value="materials" onClick={() => setCurrentTab("materials")}>
+                Materiales
+              </TabsTrigger>
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
               <DropdownMenu>
@@ -112,7 +125,8 @@ export default function OtherPage() {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
               </Button>
-              <CreateCategoryForm />
+              {currentTab === "categories" && <CreateCategoryForm />}
+              {currentTab === "materials" && <CreateMaterialForm />}
               {/*<Button size="sm" className="h-7 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Add Product</span>
@@ -153,7 +167,7 @@ export default function OtherPage() {
                 <CardTitle>Materiales</CardTitle>
                 <CardDescription>Administra todos los materiales y verifica su información.</CardDescription>
               </CardHeader>
-              {/*isLoading ? <AllProductsSkeleton /> : <AllProducts products={products} />*/}
+              {isLoading ? <AllMaterialsSkeleton /> : <AllMaterials materials={materials} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
                   Mostrando <strong>1-10</strong> de <strong>{products.length}</strong> materiales
