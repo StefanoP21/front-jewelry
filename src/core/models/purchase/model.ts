@@ -30,7 +30,6 @@ export interface PurchaseDetail {
   productId: string;
   quantity: number;
   unitPrice: number;
-  profit: number;
   product: ProductPurchaseDetail;
 }
 

@@ -74,7 +74,7 @@ export default function AllProducts({ products }: AllProductsProps) {
                 <TableCell>
                   <Badge variant="outline">{product.material}</Badge>
                 </TableCell>
-                <TableCell>{parseFloat(product.price.toString()).toFixed(2)}</TableCell>
+                <TableCell>S/. {parseFloat(product.price.toString()).toFixed(2)}</TableCell>
                 <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
                 <TableCell>
                   <DropdownMenu>

@@ -29,7 +29,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import Image from "next/image";
 import { CreatePurchaseDetail } from "@/core/models/purchase/model";
 import { Separator } from "@radix-ui/react-separator";
-import { Slider } from "@/components/ui/slider";
 import { useAuthStore } from "@/core/store/auth.store";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { IGV } from "@/core/constants";
@@ -39,7 +38,6 @@ const purchaseDetailSchema = z.object({
   productId: z.number().min(1, { message: "El producto es requerido" }),
   quantity: z.number().min(1, { message: "La cantidad es requerida" }),
   unitPrice: z.number().min(1, { message: "El precio unitario es requerido" }),
-  profit: z.number().min(1, { message: "El margen de ganancia es requerido" }),
 });
 
 const purchaseSchema = z.object({
@@ -59,7 +57,6 @@ export function CreatePurchaseForm() {
   const [selectedProduct, setSelectedProduct] = useState<CreatePurchaseDetail>();
   const [purchaseDetailList, setPurchaseDetailList] = useState<CreatePurchaseDetail[]>([]);
   const [quantity, setQuantity] = useState<number>(0);
-  const [profit, setProfit] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [index, setIndex] = useState(0);
@@ -76,7 +73,6 @@ export function CreatePurchaseForm() {
       productId: product.id,
       quantity: 1,
       unitPrice: 0,
-      profit: 0,
       product: {
         name: product.name,
         description: product.description,
@@ -93,7 +89,6 @@ export function CreatePurchaseForm() {
           productId: selectedProduct.productId,
           quantity: quantity,
           unitPrice: selectedProduct.unitPrice,
-          profit: profit,
           product: {
             name: selectedProduct.product.name,
             description: selectedProduct.product.description,
@@ -103,7 +98,6 @@ export function CreatePurchaseForm() {
       ]);
 
       setQuantity(0);
-      setProfit(0);
       setSelectedProduct(undefined);
     }
   };
@@ -117,7 +111,6 @@ export function CreatePurchaseForm() {
     form.reset();
     setPurchaseDetailList([]);
     setQuantity(0);
-    setProfit(0);
     setSelectedProduct(undefined);
   };
 
@@ -145,7 +138,6 @@ export function CreatePurchaseForm() {
           productId: parseInt(pd.productId),
           quantity: pd.quantity,
           unitPrice: pd.unitPrice,
-          profit: pd.profit / 100,
         });
       });
 
@@ -165,7 +157,6 @@ export function CreatePurchaseForm() {
       form.reset();
       setPurchaseDetailList([]);
       setQuantity(0);
-      setProfit(0);
       setSelectedProduct(undefined);
       refetch();
       refetchProducts();
@@ -192,7 +183,6 @@ export function CreatePurchaseForm() {
     setIsEditing(true);
     setSelectedProduct(purchaseDetail);
     setQuantity(purchaseDetail.quantity);
-    setProfit(purchaseDetail.profit);
   };
 
   const handleCancelSelected = () => {
@@ -208,12 +198,10 @@ export function CreatePurchaseForm() {
       setSelectedProduct(undefined);
 
       setQuantity(0);
-      setProfit(0);
     } else {
       setSelectedProduct(undefined);
 
       setQuantity(0);
-      setProfit(0);
     }
   };
 
@@ -333,7 +321,6 @@ export function CreatePurchaseForm() {
                                     onSelect={() => {
                                       setSelectedProduct(undefined);
                                       setQuantity(0);
-                                      setProfit(0);
 
                                       addProduct(product);
                                     }}
@@ -413,17 +400,6 @@ export function CreatePurchaseForm() {
                           }}
                         />
                       </div>
-
-                      <div className="relative flex flex-col items-center mt-7">
-                        <span className="absolute -top-6 text-sm font-medium">{profit}%</span>
-                        <Slider
-                          value={[profit]}
-                          onValueChange={(value) => setProfit(value[0])}
-                          max={100}
-                          step={1}
-                          className="w-[140px]"
-                        />
-                      </div>
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-between w-full">
@@ -449,7 +425,6 @@ export function CreatePurchaseForm() {
                       <TableHead className="text-center">Producto</TableHead>
                       <TableHead className="text-center">Cantidad</TableHead>
                       <TableHead className="text-center">Costo</TableHead>
-                      <TableHead className="text-center">%</TableHead>
                       <TableHead className="hidden md:table-cell">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -459,10 +434,6 @@ export function CreatePurchaseForm() {
                         <TableCell className="text-center">{purchaseDetail.product.name}</TableCell>
                         <TableCell className="text-center">{purchaseDetail.quantity}</TableCell>
                         <TableCell className="text-center">{purchaseDetail.unitPrice}</TableCell>
-                        <TableCell className="text-center">
-                          <div className="">{purchaseDetail.profit}%</div>
-                          <div>S/.{(purchaseDetail.unitPrice * (1 + purchaseDetail.profit / 100)).toFixed(2)}</div>
-                        </TableCell>
                         <TableCell className="text-center">
                           <div className="flex items-center justify-center gap-2">
                             <Button

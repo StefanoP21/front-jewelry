@@ -41,13 +41,25 @@ const orderDetailSchema = z.object({
   unitPrice: z.number().min(1, { message: "El precio unitario es requerido" }),
 });
 
-const orderSchema = z.object({
-  customerId: z.string().min(1, { message: "El cliente es requerido" }),
-  paymentMethod: z.string().min(1, { message: "El método de pago es requerido" }),
-  total: z.number().min(0, { message: "El total debe ser mayor o igual a 0" }),
-  totalDesc: z.coerce.number().min(0, { message: "El total debe ser mayor o igual a 0" }),
-  orderDetail: z.array(orderDetailSchema),
-});
+let subtotal: number;
+
+const orderSchema = z
+  .object({
+    customerId: z.string().min(1, { message: "El cliente es requerido" }),
+    paymentMethod: z.string().min(1, { message: "El método de pago es requerido" }),
+    total: z.number().min(0, { message: "El total debe ser mayor o igual a 0" }),
+    totalDesc: z.coerce.number().min(0, { message: "El total debe ser mayor o igual a 0" }),
+    orderDetail: z.array(orderDetailSchema),
+  })
+  .refine(
+    (data) => {
+      return data.totalDesc <= subtotal * 0.5;
+    },
+    {
+      message: "El descuento no puede ser mayor al 50% del total",
+      path: ["totalDesc"],
+    },
+  );
 
 export function CreateOrderForm() {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -120,6 +132,7 @@ export function CreateOrderForm() {
 
   const [totalDesc, setTotalDesc] = useState(0);
   const totalUnitPrice = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0) - totalDesc;
+  subtotal = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
 
   const form = useForm({
     resolver: zodResolver(orderSchema),
@@ -132,9 +145,9 @@ export function CreateOrderForm() {
     },
   });
 
-  useEffect(() => {
+  const handleBlur = () => {
     setTotalDesc(form.getValues("totalDesc"));
-  }, [totalUnitPrice, form]);
+  };
 
   useEffect(() => {
     form.setValue("total", totalUnitPrice);
@@ -170,6 +183,7 @@ export function CreateOrderForm() {
       form.reset();
       setOrderDetailList([]);
       setQuantity(0);
+      setTotalDesc(0);
       setSelectedProduct(undefined);
       refetch();
       refetchProducts();
@@ -296,9 +310,17 @@ export function CreateOrderForm() {
                   <FormItem>
                     <FormLabel>Descuento</FormLabel>
                     <FormControl>
-                      <Input type="number" className="w-[220px] text-right" placeholder="0.00" {...field} />
+                      <Input
+                        type="number"
+                        className="w-[220px] text-right"
+                        placeholder="0.00"
+                        {...field}
+                        onBlur={() => {
+                          handleBlur();
+                        }}
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage className="max-w-[220px]" />
                   </FormItem>
                 )}
               />

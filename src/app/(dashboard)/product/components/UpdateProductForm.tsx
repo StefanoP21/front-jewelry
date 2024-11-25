@@ -184,7 +184,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
 
             <FormField
               name="price"
-              disabled={product.price == 0}
+              disabled={product.stock === 0}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Precio</FormLabel>
