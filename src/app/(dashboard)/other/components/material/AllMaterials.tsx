@@ -14,6 +14,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { DeleteMaterialForm } from "./DeleteMaterialForm";
 import { UpdateMaterialForm } from "./UpdateMaterialForm";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface AllMaterialsProps {
   materials: Material[];
@@ -36,42 +37,49 @@ export default function AllMaterials({ materials }: AllMaterialsProps) {
 
   return (
     <>
-      <CardContent>
+      <CardContent className="w-full mx-auto max-w-4xl">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Nombre</TableHead>
+              <TableHead className="w-1/3 text-center">ID</TableHead>
+              <TableHead className="w-1/3 text-center">Nombre</TableHead>
+              <TableHead className="w-1/3 sr-only">Acciones</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {materials.map((material) => (
-              <TableRow key={material.id}>
-                <TableCell className="font-medium w-[200px]">{material.id}</TableCell>
-                <TableCell className="font-medium w-[200px]">{material.name}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Toggle menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => handleEditOpen(Number(material.id))}>
-                        Actualizar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleDeleteOpen(Number(material.id))}>
-                        Eliminar
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
         </Table>
+
+        <ScrollArea className="h-[calc(100vh-350px)] w-full">
+          <Table>
+            <TableBody>
+              {materials.map((material) => (
+                <TableRow key={material.id}>
+                  <TableCell className="font-medium text-center w-1/3">{material.id}</TableCell>
+                  <TableCell className="font-medium text-center w-1/3">{material.name}</TableCell>
+                  <TableCell className="w-1/3 text-center">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Toggle menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => handleEditOpen(Number(material.id))}>
+                          Actualizar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDeleteOpen(Number(material.id))}>
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <ScrollBar />
+        </ScrollArea>
       </CardContent>
 
       {/* Dialog for Edit Material */}

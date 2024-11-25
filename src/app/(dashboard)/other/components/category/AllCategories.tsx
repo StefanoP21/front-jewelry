@@ -36,20 +36,20 @@ export default function AllCategories({ categories }: AllCategoriesProps) {
 
   return (
     <>
-      <CardContent>
+      <CardContent className="w-full mx-auto max-w-4xl">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Nombre</TableHead>
+              <TableHead className="w-1/3 text-center">ID</TableHead>
+              <TableHead className="w-1/3 text-center">Nombre</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {categories.map((category) => (
               <TableRow key={category.id}>
-                <TableCell className="font-medium w-[200px]">{category.id}</TableCell>
-                <TableCell className="font-medium w-[200px]">{category.name}</TableCell>
-                <TableCell>
+                <TableCell className="font-medium text-center w-1/3">{category.id}</TableCell>
+                <TableCell className="font-medium text-center w-1/3">{category.name}</TableCell>
+                <TableCell className="w-1/3 text-center">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Button aria-haspopup="true" size="icon" variant="ghost">

@@ -24,7 +24,7 @@ const productSchema = z.object({
   description: z.string().min(1, { message: "Description is required" }),
   categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
-  material: z.string().min(1, { message: "Material is required" }),
+  materialId: z.string().min(1, { message: "Material is required" }),
   price: z.coerce.number().optional(),
 });
 
@@ -45,7 +45,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
       description: product.description,
       categoryId: product.category.id.toString(),
       image: product.image,
-      material: product.material,
+      materialId: product.material.id.toString(),
       price: product.price,
     },
   });
@@ -58,7 +58,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
         description: values.description,
         categoryId: parseInt(values.categoryId),
         image: values.image,
-        material: values.material,
+        materialId: parseInt(values.materialId),
         price: values.price || 0,
       });
 
@@ -137,7 +137,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormMessage>{form.formState.errors.material?.message}</FormMessage>
+                  <FormMessage>{form.formState.errors.categoryId?.message}</FormMessage>
                 </FormItem>
               )}
             />
@@ -159,7 +159,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
           {/* Tercera fila: Material y Price */}
           <div className="grid grid-cols-2 gap-4">
             <FormField
-              name="material"
+              name="materialId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Material</FormLabel>
@@ -170,14 +170,14 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
                       </SelectTrigger>
                       <SelectContent>
                         {materials.map((material) => (
-                          <SelectItem key={material.id} value={material.name}>
+                          <SelectItem key={material.id} value={material.id.toString()}>
                             {material.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  <FormMessage>{form.formState.errors.material?.message}</FormMessage>
+                  <FormMessage>{form.formState.errors.materialId?.message}</FormMessage>
                 </FormItem>
               )}
             />

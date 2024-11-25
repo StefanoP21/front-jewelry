@@ -170,7 +170,24 @@ export default function OtherPage() {
               {isLoading ? <AllMaterialsSkeleton /> : <AllMaterials materials={materials} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{products.length}</strong> materiales
+                  {(() => {
+                    switch (currentTab) {
+                      case "materials":
+                        return (
+                          <>
+                            Mostrando <strong>1 - 10</strong> de <strong>{materials.length}</strong> materiales
+                          </>
+                        );
+                      case "categories":
+                        return (
+                          <>
+                            Mostrando <strong>1 - 10</strong> de <strong>{categories.length}</strong> categorías
+                          </>
+                        );
+                      default:
+                        return <>No hay datos disponibles</>;
+                    }
+                  })()}
                 </div>
               </CardFooter>
             </Card>

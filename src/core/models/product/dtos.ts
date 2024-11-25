@@ -3,7 +3,7 @@ export interface CreateProductDto {
   description: string;
   categoryId: number;
   image?: string;
-  material: string;
+  materialId: number;
 }
 
 export interface UpdateProductDto {
@@ -11,6 +11,6 @@ export interface UpdateProductDto {
   description: string;
   categoryId: number;
   image?: string;
-  material: string;
+  materialId: number;
   price: number;
 }

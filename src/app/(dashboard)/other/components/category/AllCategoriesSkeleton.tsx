@@ -20,7 +20,7 @@ export default function AllProductsSkeleton() {
             {Array.from({ length: 10 }).map((_, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Skeleton className="w-[64px] h-[64px]" />
+                  <Skeleton className="w-[64px] h-[20px]" />
                 </TableCell>
                 <TableCell>
                   <Skeleton className="w-[100px] h-[20px]" />

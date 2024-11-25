@@ -119,7 +119,9 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
             </li>
             <li className="flex items-center justify-between">
               <span className="text-muted-foreground">Descuento</span>
-              <span className="text-red-500">- S/. {parseFloat(selectedOrder?.totalDesc || "0").toFixed(2)}</span>
+              <span className={selectedOrder?.totalDesc ? "text-red-500" : ""}>
+                - S/. {parseFloat(selectedOrder?.totalDesc || "0").toFixed(2)}
+              </span>
             </li>
             <li className="flex items-center justify-between font-semibold">
               <span className="text-muted-foreground">Total</span>
