@@ -9,7 +9,6 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "@/components/ui/select";
 import { Textarea } from "../../../../components/ui/textarea";
 import { useCategories } from "@/hooks/useCategories";
-import { materials } from "@/core/constants";
 import { Product } from "@/core/models";
 import { ProductService } from "@/core/services/product.service";
 import { useToast } from "@/hooks/use-toast";
@@ -17,6 +16,7 @@ import { useProducts } from "@/hooks/useProducts";
 import { AxiosError } from "axios";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
+import { useMaterials } from "@/hooks/useMaterials";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
@@ -84,6 +84,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
   };
 
   const { categories } = useCategories();
+  const { materials } = useMaterials();
 
   return (
     <Form {...form}>
