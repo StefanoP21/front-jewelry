@@ -94,28 +94,25 @@ export default function CreateCustomerForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-3">
-              <div className="space-y-1">
-                <FormField
-                  name="name"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nombre</FormLabel>
-                      <FormControl>
-                        <input
-                          {...field}
-                          type="text"
-                          placeholder="Ingrese su nombre"
-                          className="mt-1 block w-full p-2 border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                name="name"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre</FormLabel>
+                    <FormControl>
+                      <input
+                        {...field}
+                        type="text"
+                        placeholder="Ingrese su nombre"
+                        className="mt-1 block w-full p-2 border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-              <div className="space-y-1"></div>
               <FormField
                 name="lastName"
                 control={form.control}

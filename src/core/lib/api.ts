@@ -10,3 +10,13 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+
+export const apiDNI = axios.create({
+  baseURL: process.env.API_DNI,
+});
+
+apiDNI.interceptors.request.use((config) => {
+  const tokenDNI = process.env.TOKEN_DNI;
+  if (tokenDNI) config.headers.Authorization = `Bearer ${tokenDNI}`;
+  return config;
+});
