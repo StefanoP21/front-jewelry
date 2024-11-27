@@ -1,10 +1,10 @@
-import { CategoryService } from "@/core/services/category.service";
+import { OrderService } from "@/core/services/order.service";
 import { useQuery } from "@tanstack/react-query";
 
-export const useCategories = () => {
+export const useOrders = () => {
   const { isLoading, isError, error, data, refetch, isFetching } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => CategoryService.getAllCategories(),
+    queryKey: ["orders"],
+    queryFn: () => OrderService.getAllOrders(),
     staleTime: 1000 * 60 * 60,
   });
 
@@ -12,7 +12,7 @@ export const useCategories = () => {
     isLoading,
     isError,
     error,
-    categories: data?.data || [],
+    orders: data?.data || [],
     refetch,
     isFetching,
   };

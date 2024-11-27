@@ -2,7 +2,6 @@ export interface PurchaseDetailDto {
   productId: number;
   quantity: number;
   unitPrice: number;
-  profit: number;
 }
 
 export interface CreatePurchaseDto {

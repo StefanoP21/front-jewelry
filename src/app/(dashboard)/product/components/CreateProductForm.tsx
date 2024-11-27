@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCategories } from "@/hooks/useCategories";
 import { useState } from "react";
 import { useProducts } from "@/hooks/useProducts";
-import { materials } from "@/core/constants";
+import { useMaterials } from "@/hooks/useMaterials";
 
 // Esquema de validación con Zod
 const productSchema = z.object({
@@ -24,7 +24,7 @@ const productSchema = z.object({
   description: z.string().min(1, { message: "Description is required" }),
   categoryId: z.string().min(1, { message: "Category is required" }),
   image: z.string().url({ message: "Invalid URL" }).optional(),
-  material: z.string().min(1, { message: "Material is required" }),
+  materialId: z.string().min(1, { message: "Material is required" }),
 });
 
 export function CreateProductForm() {
@@ -39,7 +39,7 @@ export function CreateProductForm() {
       description: "",
       categoryId: "",
       image: "",
-      material: "",
+      materialId: "",
     },
   });
 
@@ -50,7 +50,7 @@ export function CreateProductForm() {
         description: values.description,
         categoryId: parseInt(values.categoryId),
         image: values.image,
-        material: values.material,
+        materialId: parseInt(values.materialId),
       });
 
       toast({
@@ -74,6 +74,7 @@ export function CreateProductForm() {
   };
 
   const { categories } = useCategories();
+  const { materials } = useMaterials();
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -137,7 +138,7 @@ export function CreateProductForm() {
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormMessage>{form.formState.errors.material?.message}</FormMessage>
+                      <FormMessage>{form.formState.errors.categoryId?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -159,7 +160,7 @@ export function CreateProductForm() {
               {/* Tercera fila: Material y Price */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField
-                  name="material"
+                  name="materialId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Material</FormLabel>
@@ -170,14 +171,14 @@ export function CreateProductForm() {
                           </SelectTrigger>
                           <SelectContent>
                             {materials.map((material) => (
-                              <SelectItem key={material.id} value={material.name}>
+                              <SelectItem key={material.id} value={material.id.toString()}>
                                 {material.name}
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
-                      <FormMessage>{form.formState.errors.material?.message}</FormMessage>
+                      <FormMessage>{form.formState.errors.materialId?.message}</FormMessage>
                     </FormItem>
                   )}
                 />

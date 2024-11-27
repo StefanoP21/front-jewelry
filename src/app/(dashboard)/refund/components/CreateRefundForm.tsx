@@ -390,7 +390,6 @@ export function CreateRefundForm() {
                     <TableRow>
                       <TableHead className="text-center">Producto</TableHead>
                       <TableHead className="text-center">Cantidad</TableHead>
-                      <TableHead className="text-center">Precio Unitario</TableHead>
                       <TableHead className="hidden md:table-cell">Acciones</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -399,7 +398,6 @@ export function CreateRefundForm() {
                       <TableRow key={refundDetail.purchaseDetailId}>
                         <TableCell className="text-center">{refundDetail.purchaseDetail.product.name}</TableCell>
                         <TableCell className="text-center">{refundDetail.quantity}</TableCell>
-                        <TableCell className="text-center">{refundDetail.purchaseDetail.unitPrice}</TableCell>
                         <TableCell className="text-center">
                           <div className="flex items-center justify-center gap-2">
                             <Button

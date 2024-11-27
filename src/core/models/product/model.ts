@@ -1,3 +1,5 @@
+import { Material } from "../material/model";
+
 export interface ProductListResponse {
   data: Product[];
 }
@@ -15,7 +17,7 @@ export interface Product {
     name: string;
   };
   image: string;
-  material: string;
+  material: Material;
   price: number;
   stock: number;
 }
