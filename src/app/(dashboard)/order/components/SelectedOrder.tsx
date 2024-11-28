@@ -63,7 +63,7 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
               <span className="sr-only">Copiar el ID de la venta</span>
             </Button>
           </CardTitle>
-          <CardDescription>Fecha: {formatFormalDate(selectedOrder?.date || "...")}</CardDescription>
+          <CardDescription>Fecha: {formatFormalDate(selectedOrder?.date) || "..."}</CardDescription>
         </div>
         <div className="ml-auto flex items-center gap-1">
           <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
@@ -135,7 +135,11 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
           <dl className="grid gap-3">
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Cliente</dt>
-              <dd>{selectedOrder?.customer.name + " " + selectedOrder?.customer.lastName || "..."}</dd>
+              <dd>
+                {!selectedOrder?.customer.name
+                  ? "..."
+                  : selectedOrder?.customer.name + " " + selectedOrder?.customer.lastName}
+              </dd>
             </div>
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Email</dt>
@@ -146,7 +150,7 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Teléfono</dt>
               <dd>
-                <a href="tel:"> {`+51 ${selectedOrder?.customer.phone}` || "..."}</a>
+                <a href="tel:"> {!selectedOrder?.customer.phone ? "..." : "+51 " + selectedOrder?.customer.phone}</a>
               </dd>
             </div>
           </dl>

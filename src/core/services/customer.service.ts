@@ -1,6 +1,6 @@
-import { api } from "../lib/api";
-import { CreateCustomerDto, UpdateCustomerDto } from "../models";
-import { CustomerListResponse, CustomerResponse } from "../models/customer/model";
+import { api, apiDNI } from "../lib/api";
+import { CreateCustomerDto, UpdateCustomerDto, CustomerAPIDNIDto } from "../models";
+import { CustomerAPIDNI, CustomerListResponse, CustomerResponse } from "../models/customer/model";
 
 export const CustomerService = {
   getAllCustomers: async (): Promise<CustomerListResponse> => {
@@ -10,6 +10,11 @@ export const CustomerService = {
 
   getCustomerById: async (id: number): Promise<CustomerResponse> => {
     const { data } = await api.get<CustomerResponse>("/api/customer/" + id);
+    return data;
+  },
+
+  getCustomerByDNI: async (dni: CustomerAPIDNIDto): Promise<CustomerAPIDNI> => {
+    const { data } = await apiDNI.post<CustomerAPIDNI>("/api/dni", dni);
     return data;
   },
 

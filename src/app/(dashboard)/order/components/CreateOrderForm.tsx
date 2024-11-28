@@ -34,6 +34,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import { IGV } from "@/core/constants";
 import { PaymentMethod, PaymentMethodLabels } from "@/core/constants";
 import { useCustomers } from "@/hooks/useCustomers";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const orderDetailSchema = z.object({
   productId: z.number().min(1, { message: "El producto es requerido" }),
@@ -41,7 +42,7 @@ const orderDetailSchema = z.object({
   unitPrice: z.number().min(1, { message: "El precio unitario es requerido" }),
 });
 
-let subtotal: number;
+let purchasePrices: number;
 
 const orderSchema = z
   .object({
@@ -53,10 +54,11 @@ const orderSchema = z
   })
   .refine(
     (data) => {
-      return data.totalDesc <= subtotal * 0.5;
+      console.log(purchasePrices);
+      return data.totalDesc <= purchasePrices;
     },
     {
-      message: "El descuento no puede ser mayor al 50% del total",
+      message: "El descuento no puede ser mayor al valor de compra de los productos",
       path: ["totalDesc"],
     },
   );
@@ -91,6 +93,7 @@ export function CreateOrderForm() {
         image: product.image,
         stock: product.stock,
         price: product.price,
+        purchasePrice: product.purchasePrice,
       },
     });
   };
@@ -109,6 +112,7 @@ export function CreateOrderForm() {
             image: selectedProduct.product.image,
             stock: selectedProduct.product.stock,
             price: selectedProduct.product.price,
+            purchasePrice: selectedProduct.product.purchasePrice,
           },
         },
       ]);
@@ -126,13 +130,14 @@ export function CreateOrderForm() {
     setIsSheetOpen(false);
     form.reset();
     setOrderDetailList([]);
+    setTotalDesc(0);
     setQuantity(0);
     setSelectedProduct(undefined);
   };
 
   const [totalDesc, setTotalDesc] = useState(0);
   const totalUnitPrice = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0) - totalDesc;
-  subtotal = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
+  purchasePrices = orderDetailList.reduce((total, item) => total + item.quantity * item.product.purchasePrice!, 0);
 
   const form = useForm({
     resolver: zodResolver(orderSchema),
@@ -304,26 +309,35 @@ export function CreateOrderForm() {
               />
 
               {/*Input para el descuento*/}
-              <FormField
-                name="totalDesc"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descuento</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        className="w-[220px] text-right"
-                        placeholder="0.00"
-                        {...field}
-                        onBlur={() => {
-                          handleBlur();
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage className="max-w-[220px]" />
-                  </FormItem>
-                )}
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <FormField
+                    name="totalDesc"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>Descuento</FormLabel>
+                        <FormControl>
+                          <TooltipTrigger type="button">
+                            <Input
+                              type="number"
+                              className="w-[220px] text-right"
+                              placeholder="0.00"
+                              {...field}
+                              onBlur={() => {
+                                handleBlur();
+                              }}
+                            />
+                          </TooltipTrigger>
+                        </FormControl>
+                        <FormMessage className="max-w-[220px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <TooltipContent side="top">
+                    <p className="text-sm">Precio de compra total: {purchasePrices}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               {/* Combobox para el metodo de pago */}
               <FormField
@@ -402,6 +416,7 @@ export function CreateOrderForm() {
                                 .filter(
                                   (product) =>
                                     product.stock > 0 &&
+                                    product.price > 0 &&
                                     selectedProduct?.productId !== product.id &&
                                     !orderDetailList.some((pd) => pd.productId === product.id),
                                 )

@@ -14,3 +14,15 @@ export interface CustomerListResponse {
 export interface CustomerResponse {
   data: Customer;
 }
+
+export interface CustomerAPIDNI {
+  success: boolean;
+  data: {
+    numero: string;
+    nombre_completo: string;
+    nombres: string;
+    apellido_paterno: string;
+    apellido_materno: string;
+    codigo_verificacion: string;
+  };
+}

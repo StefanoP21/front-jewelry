@@ -13,3 +13,7 @@ export interface UpdateCustomerDto {
   dni: string;
   phone: string;
 }
+
+export interface CustomerAPIDNIDto {
+  dni: string;
+}

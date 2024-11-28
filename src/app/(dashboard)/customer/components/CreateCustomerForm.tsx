@@ -9,10 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
-import { LoaderCircle, PlusCircle } from "lucide-react";
+import { LoaderCircle, PlusCircle, Search, X } from "lucide-react";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { useCustomers } from "@/hooks/useCustomers";
 import { CustomerService } from "@/core/services/customer.service";
+import { capitalizeFirstLetter } from "@/core/utils/CapitalizeStrings";
 
 const customerSchema = z.object({
   name: z.string({ message: "El nombre es obligatorio" }),
@@ -26,6 +27,7 @@ export default function CreateCustomerForm() {
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingDNI, setIsLoadingDNI] = useState(false);
   const { refetch } = useCustomers();
 
   const form = useForm({
@@ -39,6 +41,46 @@ export default function CreateCustomerForm() {
     },
   });
 
+  const [DNIfetched, setDNIfetched] = useState(false);
+
+  const handleDniSearch = async () => {
+    const dni = form.getValues("dni").toString().trim();
+    if (dni.length === 8) {
+      try {
+        setIsLoadingDNI(true);
+        const response = await CustomerService.getCustomerByDNI({ dni });
+
+        if (!response.success) {
+          form.setError("dni", {
+            type: "manual",
+            message: "No se encontró información para este DNI.",
+          });
+          setIsLoadingDNI(false);
+          return;
+        }
+
+        setDNIfetched(true);
+        form.setValue("name", capitalizeFirstLetter(response.data.nombres));
+        form.setValue(
+          "lastName",
+          capitalizeFirstLetter(response.data.apellido_paterno + " " + response.data.apellido_materno),
+        );
+        setIsLoadingDNI(false);
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error al obtener los datos del DNI",
+          description:
+            (error as AxiosError<{ message: string }>)?.response?.data?.message ||
+            "No se pudo obtener la información del DNI",
+        });
+        setIsLoadingDNI(false);
+      }
+    } else {
+      form.setError("dni", { type: "manual", message: "El DNI debe tener 8 caracteres" });
+    }
+  };
+
   const onSubmit = async (values: z.infer<typeof customerSchema>) => {
     setIsLoading(true);
     try {
@@ -50,6 +92,7 @@ export default function CreateCustomerForm() {
       });
 
       form.reset();
+      setDNIfetched(false);
       refetch();
       setIsOpen(false);
     } catch (error) {
@@ -68,6 +111,13 @@ export default function CreateCustomerForm() {
   };
 
   const handleOpen = () => setIsOpen(true);
+
+  const handleClearDni = () => {
+    form.setValue("dni", "");
+    form.setValue("name", "");
+    form.setValue("lastName", "");
+    setDNIfetched(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -94,6 +144,49 @@ export default function CreateCustomerForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-3">
+              <div className="flex items-center gap-2">
+                <FormField
+                  name="dni"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex-grow">
+                      <FormLabel>DNI</FormLabel>
+                      <FormControl>
+                        <input
+                          {...field}
+                          type="text"
+                          maxLength={8}
+                          disabled={DNIfetched}
+                          pattern="[0-9]{8}"
+                          placeholder="Ingrese su DNI"
+                          className="mt-1 block w-full p-2 border rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {DNIfetched ? (
+                  <Button
+                    type="button"
+                    className="rounded-full p-2 w-12 h-12 flex items-center justify-center bg-red-600 hover:bg-red-700"
+                    onClick={handleClearDni}
+                    disabled={isLoadingDNI}
+                  >
+                    <X className="h-5 w-5 text-white" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    className="rounded-full p-2 w-12 h-12 flex items-center justify-center"
+                    onClick={handleDniSearch}
+                    disabled={isLoadingDNI || DNIfetched}
+                  >
+                    {isLoadingDNI ? <LoaderCircle className="h-5 w-5 animate-spin" /> : <Search className="h-5 w-5" />}
+                  </Button>
+                )}
+              </div>
+
               <FormField
                 name="name"
                 control={form.control}
@@ -103,6 +196,7 @@ export default function CreateCustomerForm() {
                     <FormControl>
                       <input
                         {...field}
+                        readOnly
                         type="text"
                         placeholder="Ingrese su nombre"
                         className="mt-1 block w-full p-2 border rounded-md"
@@ -121,6 +215,7 @@ export default function CreateCustomerForm() {
                     <FormLabel>Apellido</FormLabel>
                     <FormControl>
                       <input
+                        readOnly
                         {...field}
                         type="text"
                         placeholder="Ingrese su apellido"
@@ -155,27 +250,6 @@ export default function CreateCustomerForm() {
 
               <div className="space-y-1">
                 <FormField
-                  name="dni"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>DNI</FormLabel>
-                      <FormControl>
-                        <input
-                          {...field}
-                          type="text"
-                          placeholder="Ingrese su DNI"
-                          className="mt-1 block w-full p-2 border rounded-md"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="space-y-1">
-                <FormField
                   name="phone"
                   control={form.control}
                   render={({ field }) => (
@@ -185,6 +259,7 @@ export default function CreateCustomerForm() {
                         <input
                           {...field}
                           type="tel"
+                          maxLength={9}
                           placeholder="Ingrese su teléfono"
                           className="mt-1 block w-full p-2 border rounded-md"
                         />
