@@ -6,30 +6,16 @@ interface TableRowData {
   description: string;
   quantity: number;
   price: string;
-  discount: string;
 }
 
 interface PDFProps {
-  companyName: string;
-  companyEmail: string;
-  companyPhone: string;
-  companyWebsite: string;
-  companyAddress: string;
-  personName: string;
-  personEmail: string;
-  personPhone: string;
-  personAddress: string;
   orderNumber: string;
   orderDate: string;
+  chargeToCompanyName: string;
   chargeToName: string;
   chargeToEmail: string;
   chargeToPhone: string;
-  chargeToAddress: string;
-  shippingAddress: string;
-  paymentInstructions: string;
   subtotal: string;
-  discount: string;
-  shippingCost: string;
   tax: string;
   total: string;
   tableData: TableRowData[];
@@ -66,49 +52,41 @@ const styles = StyleSheet.create({
     color: "hsl(47.9, 95.8%, 53.1%)",
   },
   table: {
+    width: "100%", // Asegura que la tabla ocupe todo el ancho disponible
+    overflow: "hidden", // Asegura que el contenido no se desborde
     marginTop: 10,
-    marginBottom: 10,
-    width: "100%",
   },
   tableRow: {
-    flexDirection: "row",
+    flexDirection: "row", // Las celdas estarán en una fila
+    width: "100%",
     borderBottomWidth: 1,
-    borderBottomColor: "gainsboro",
+    borderBottomColor: "#ddd",
+    paddingVertical: 4,
   },
   tableHeader: {
-    backgroundColor: "hsl(47.9, 95.8%, 53.1%)",
-    padding: 5,
+    flex: 1, // Esto asegura que los encabezados ocupen todo el espacio disponible
     fontWeight: "bold",
     textAlign: "center",
-    width: "25%",
-    fontSize: "12px",
+    fontSize: 14,
+    backgroundColor: "hsl(47.9, 95.8%, 53.1%)",
+    padding: 4,
   },
   tableCell: {
-    padding: 5,
+    flex: 1, // Esto asegura que las celdas ocupen todo el espacio disponible de la fila
     textAlign: "center",
-    width: "25%",
-    fontSize: "12px",
+    fontSize: 12,
   },
 });
 
 // Componente PDF que ahora recibe props en inglés
 const PDF: React.FC<PDFProps> = ({
-  companyName,
-  companyWebsite,
-  companyAddress,
-  personEmail,
-  personPhone,
   orderNumber,
   orderDate,
+  chargeToCompanyName,
   chargeToName,
   chargeToEmail,
   chargeToPhone,
-  chargeToAddress,
-  shippingAddress,
-  paymentInstructions,
   subtotal,
-  discount,
-  shippingCost,
   tax,
   total,
   tableData,
@@ -123,11 +101,10 @@ const PDF: React.FC<PDFProps> = ({
             <View style={styles.verticalItem}>
               <Text style={styles.text}>De</Text>
               <Text style={[styles.text, { marginBottom: "12px" }]}>Joyería y Relojería Jenny</Text>
-              <Text style={styles.text}>{companyName}</Text>
-              <Text style={styles.text}>{personEmail}</Text>
-              <Text style={styles.text}>{personPhone}</Text>
-              <Text style={styles.text}>{companyWebsite}</Text>
-              <Text style={styles.text}>{companyAddress}</Text>
+              <Text style={styles.text}>jrjenny@gmail.com</Text>
+              <Text style={styles.text}>123456789</Text>
+              <Text style={styles.text}>www.joyeriayrelojeriajenny.com</Text>
+              <Text style={styles.text}>av. test 1234</Text>
             </View>
           </View>
         </View>
@@ -139,53 +116,40 @@ const PDF: React.FC<PDFProps> = ({
           <View style={[styles.verticalRow, { minWidth: "200px", marginTop: "24px" }]}>
             <View style={[styles.verticalItem, { alignItems: "flex-end", marginBottom: "12px" }]}>
               <Text style={styles.text}>Cobrar a</Text>
+              <Text style={styles.text}>{chargeToCompanyName}</Text>
               <Text style={styles.text}>{chargeToName}</Text>
               <Text style={styles.text}>{chargeToEmail}</Text>
               <Text style={styles.text}>{chargeToPhone}</Text>
-              <Text style={styles.text}>{chargeToAddress}</Text>
-            </View>
-
-            <View style={[styles.verticalItem, { alignItems: "flex-end" }]}>
-              <Text style={styles.text}>Envío a</Text>
-              <Text style={styles.text}>{shippingAddress}</Text>
             </View>
           </View>
         </View>
       </View>
 
       {/* Tres filas verticales debajo de la fila horizontal */}
-      <View style={styles.verticalRow}>
+      <View style={[styles.verticalRow, { marginTop: "12px" }]}>
         <View style={styles.verticalItem}>
-          <Text style={styles.text}>Table</Text>
+          <Text style={styles.text}>Productos</Text>
         </View>
 
-        {/* Tabla con 4 campos y 2 filas de ejemplo */}
         <View style={styles.table}>
           <View style={styles.tableRow}>
-            <Text style={styles.tableHeader}>Description</Text>
-            <Text style={styles.tableHeader}>Quantity</Text>
-            <Text style={styles.tableHeader}>Price</Text>
-            <Text style={styles.tableHeader}>Discount</Text>
+            <Text style={styles.tableHeader}>Descripción</Text>
+            <Text style={styles.tableHeader}>Cantidad</Text>
+            <Text style={styles.tableHeader}>Precio</Text>
           </View>
           {tableData.map((data, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={styles.tableCell}>{data.description}</Text>
               <Text style={styles.tableCell}>{data.quantity}</Text>
               <Text style={styles.tableCell}>{data.price}</Text>
-              <Text style={styles.tableCell}>{data.discount}</Text>
             </View>
           ))}
         </View>
 
         {/* Otra fila horizontal dentro de las verticales */}
-        <View style={styles.row}>
-          <View style={styles.largeItem}>
-            <Text style={styles.text}>{paymentInstructions}</Text>
-          </View>
+        <View style={[styles.row, { marginTop: "12px" }]}>
           <View style={[styles.largeItem, { alignItems: "flex-end" }]}>
             <Text style={styles.text}>Subtotal: {subtotal}</Text>
-            <Text style={styles.text}>Discount (20%): {discount}</Text>
-            <Text style={styles.text}>Shipping Cost: {shippingCost}</Text>
             <Text style={styles.text}>Tax: {tax}</Text>
             <Text style={styles.text}>Total: {total}</Text>
           </View>
