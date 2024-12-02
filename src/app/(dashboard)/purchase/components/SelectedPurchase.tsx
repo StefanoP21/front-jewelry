@@ -109,7 +109,7 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                           tableData={getTableData()!}
                         />
                       }
-                      fileName={selectedPurchase?.bill + ".pdf"}
+                      fileName={selectedPurchase?.id + "_purchase.pdf"}
                     >
                       Exportar
                     </PDFDownloadLink>

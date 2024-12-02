@@ -26,6 +26,8 @@ import { formatFormalDate } from "@/core/utils/dateFormat";
 import { IGV } from "@/core/constants";
 import { useState } from "react";
 import { DeleteOrderForm } from "./DeleteOrderForm";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import OrderPDF from "@/components/pdf/OrderPDF";
 
 interface SelectedOrderProps {
   orders: Order[];
@@ -37,15 +39,26 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const handleNext = () => {
-    if (orders.indexOf(selectedOrder!) < orders.length - 1) {
-      setSelectedOrder(orders[orders.indexOf(selectedOrder!) + 1]);
+    if (selectedOrder && orders.indexOf(selectedOrder) < orders.length - 1) {
+      setSelectedOrder(orders[orders.indexOf(selectedOrder) + 1]);
     }
   };
 
   const handlePrevious = () => {
-    if (orders.indexOf(selectedOrder!) > 0) {
-      setSelectedOrder(orders[orders.indexOf(selectedOrder!) - 1]);
+    if (selectedOrder && orders.indexOf(selectedOrder) > 0) {
+      setSelectedOrder(orders[orders.indexOf(selectedOrder) - 1]);
     }
+  };
+
+  const getOrderTableData = () => {
+    const tableData = selectedOrder?.orderDetail.map((item) => {
+      return {
+        description: item.product.name || "",
+        quantity: item.quantity,
+        price: String(item.unitPrice),
+      };
+    });
+    return tableData || [];
   };
 
   return (
@@ -75,7 +88,31 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Exportar</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <PDFDownloadLink
+                    document={
+                      <OrderPDF
+                        orderNumber={String(selectedOrder?.id) || ""}
+                        orderDate={formatFormalDate(selectedOrder?.date)}
+                        chargeToName={`${selectedOrder?.customer.name} ${selectedOrder?.customer.lastName}`}
+                        chargeToEmail={selectedOrder?.customer.email || ""}
+                        chargeToPhone={selectedOrder?.customer.phone || ""}
+                        subtotal={(parseFloat(selectedOrder?.total || "0") / (IGV + 1)).toFixed(2)}
+                        tax={(
+                          parseFloat(selectedOrder?.total || "0") -
+                          parseFloat(selectedOrder?.total || "0") / (IGV + 1)
+                        ).toFixed(2)}
+                        discount={parseFloat(selectedOrder?.totalDesc || "0").toFixed(2)}
+                        total={parseFloat(selectedOrder?.total || "0").toFixed(2)}
+                        paymentInfo={selectedOrder?.paymentMethod || ""}
+                        tableData={getOrderTableData()}
+                      />
+                    }
+                    fileName={selectedOrder?.id + "_order.pdf"}
+                  >
+                    Exportar
+                  </PDFDownloadLink>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem>Eliminar</DropdownMenuItem>
@@ -144,13 +181,15 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Email</dt>
               <dd>
-                <a href="mailto:">{selectedOrder?.customer.email || "..."}</a>
+                <a href={`mailto:${selectedOrder?.customer.email}`}>{selectedOrder?.customer.email || "..."}</a>
               </dd>
             </div>
             <div className="flex items-center justify-between">
               <dt className="text-muted-foreground">Teléfono</dt>
               <dd>
-                <a href="tel:"> {!selectedOrder?.customer.phone ? "..." : "+51 " + selectedOrder?.customer.phone}</a>
+                <a href={`tel:+51${selectedOrder?.customer.phone || ""}`}>
+                  {selectedOrder?.customer.phone ? `+51 ${selectedOrder?.customer.phone}` : "..."}
+                </a>
               </dd>
             </div>
           </dl>
@@ -183,15 +222,6 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
                       </>
                     );
                   case "YAPE":
-                    return (
-                      <>
-                        <dt className="flex items-center gap-1 text-muted-foreground">
-                          <Smartphone className="h-4 w-4" />
-                          Plin
-                        </dt>
-                        <dd>{selectedOrder?.customer.phone}</dd>
-                      </>
-                    );
                   case "PLIN":
                     return (
                       <>
@@ -236,7 +266,7 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
           <PaginationContent>
             <PaginationItem>
               <Button
-                disabled={selectedOrder === orders[0]}
+                disabled={!selectedOrder || selectedOrder === orders[0]}
                 onClick={handlePrevious}
                 size="icon"
                 variant="outline"
@@ -248,7 +278,7 @@ export function SelectedOrder({ orders, selectedOrder, setSelectedOrder }: Selec
             </PaginationItem>
             <PaginationItem>
               <Button
-                disabled={selectedOrder === orders[orders.length - 1]}
+                disabled={!selectedOrder || selectedOrder === orders[orders.length - 1]}
                 onClick={handleNext}
                 size="icon"
                 variant="outline"
