@@ -260,6 +260,7 @@ export default function CreateCustomerForm() {
                           {...field}
                           type="tel"
                           maxLength={9}
+                          pattern="[0-9]{9}"
                           placeholder="Ingrese su teléfono"
                           className="mt-1 block w-full p-2 border rounded-md"
                         />
