@@ -73,6 +73,28 @@ export function UpdateCustomerForm({ customer, onClose }: UpdateCustomerFormProp
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="grid gap-4 py-3">
           <div className="space-y-1">
+            <div className="space-y-1">
+              <FormField
+                name="dni"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>DNI</FormLabel>
+                    <FormControl>
+                      <input
+                        {...field}
+                        type="text"
+                        readOnly
+                        placeholder="Ingrese su DNI"
+                        className="mt-1 block w-full p-2 border rounded-md"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               name="name"
               control={form.control}
@@ -83,6 +105,7 @@ export function UpdateCustomerForm({ customer, onClose }: UpdateCustomerFormProp
                     <input
                       {...field}
                       type="text"
+                      readOnly
                       placeholder="Ingrese su nombre"
                       className="mt-1 block w-full p-2 border rounded-md"
                     />
@@ -104,6 +127,7 @@ export function UpdateCustomerForm({ customer, onClose }: UpdateCustomerFormProp
                   <input
                     {...field}
                     type="text"
+                    readOnly
                     placeholder="Ingrese su apellido"
                     className="mt-1 block w-full p-2 border rounded-md"
                   />
@@ -136,27 +160,6 @@ export function UpdateCustomerForm({ customer, onClose }: UpdateCustomerFormProp
 
           <div className="space-y-1">
             <FormField
-              name="dni"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>DNI</FormLabel>
-                  <FormControl>
-                    <input
-                      {...field}
-                      type="text"
-                      placeholder="Ingrese su DNI"
-                      className="mt-1 block w-full p-2 border rounded-md"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-1">
-            <FormField
               name="phone"
               control={form.control}
               render={({ field }) => (
@@ -166,6 +169,8 @@ export function UpdateCustomerForm({ customer, onClose }: UpdateCustomerFormProp
                     <input
                       {...field}
                       type="tel"
+                      maxLength={9}
+                      pattern="[0-9]{9}"
                       placeholder="Ingrese su teléfono"
                       className="mt-1 block w-full p-2 border rounded-md"
                     />
