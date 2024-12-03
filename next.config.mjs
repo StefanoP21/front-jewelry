@@ -2,6 +2,8 @@
 const nextConfig = {
   env: {
     API_URL: process.env.API_URL,
+    API_DNI: process.env.API_DNI,
+    TOKEN_DNI: process.env.TOKEN_DNI,
   },
   images: {
     remotePatterns: [

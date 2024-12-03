@@ -15,6 +15,8 @@ import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/component
 import { useState } from "react";
 import { Refund } from "@/core/models/refunds/model";
 import { DeleteRefundForm } from "./DeleteRefundForm";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import RefundPDF from "@/components/pdf/RefundPDF";
 
 interface SelectedRefundProps {
   refunds: Refund[];
@@ -47,6 +49,28 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
     }, 0);
   };
 
+  const formatRefundDate = (date: string | undefined): string => {
+    if (!date) return "";
+    const _date = new Date(date);
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+    return new Intl.DateTimeFormat("es-ES", options).format(_date);
+  };
+
+  const getRefundTableData = () => {
+    const tableData = selectedRefund?.refundDetail.map((item) => {
+      return {
+        description: item.purchaseDetail.product.name,
+        quantity: item.quantity,
+        price: String(item.purchaseDetail.unitPrice),
+      };
+    });
+    return tableData;
+  };
+
   return (
     <Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">
       <CardHeader className="flex flex-row items-start bg-muted/50">
@@ -74,7 +98,26 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Exportar</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <PDFDownloadLink
+                    document={
+                      <RefundPDF
+                        orderNumber={String(selectedRefund?.id) || ""}
+                        orderDate={formatRefundDate(selectedRefund?.date)}
+                        chargeToCompanyName={selectedRefund?.purchase.supplier.companyName || ""}
+                        chargeToName={selectedRefund?.purchase.supplier.nameContact || ""}
+                        chargeToEmail={selectedRefund?.purchase.supplier.email || ""}
+                        chargeToPhone={selectedRefund?.purchase.supplier.phone || ""}
+                        comment={selectedRefund?.comment || ""}
+                        total={TotalRefund(selectedRefund!).toFixed(2)}
+                        tableData={getRefundTableData()!}
+                      />
+                    }
+                    fileName={selectedRefund?.id + "_refund.pdf"}
+                  >
+                    Exportar
+                  </PDFDownloadLink>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem>Eliminar</DropdownMenuItem>
@@ -154,8 +197,7 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
                 variant="outline"
                 className="h-6 w-6"
               >
-                <ChevronLeft className="h-3.5 w-3.5" />
-                <span className="sr-only">Devolución Anterior</span>
+                <ChevronLeft className="h-4 w-4" />
               </Button>
             </PaginationItem>
             <PaginationItem>
@@ -166,8 +208,7 @@ export function SelectedRefund({ refunds, selectedRefund, setSelectedRefund }: S
                 variant="outline"
                 className="h-6 w-6"
               >
-                <ChevronRight className="h-3.5 w-3.5" />
-                <span className="sr-only">Siguiente Devolución</span>
+                <ChevronRight className="h-4 w-4" />
               </Button>
             </PaginationItem>
           </PaginationContent>

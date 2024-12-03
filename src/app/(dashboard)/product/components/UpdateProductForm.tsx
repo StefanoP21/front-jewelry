@@ -17,16 +17,30 @@ import { AxiosError } from "axios";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useMaterials } from "@/hooks/useMaterials";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-// Esquema de validación con Zod
-const productSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  description: z.string().min(1, { message: "Description is required" }),
-  categoryId: z.string().min(1, { message: "Category is required" }),
-  image: z.string().url({ message: "Invalid URL" }).optional(),
-  materialId: z.string().min(1, { message: "Material is required" }),
-  price: z.coerce.number().optional(),
-});
+const productSchema = z
+  .object({
+    name: z.string().min(1, { message: "Name is required" }),
+    description: z.string().min(1, { message: "Description is required" }),
+    categoryId: z.string().min(1, { message: "Category is required" }),
+    image: z.string().url({ message: "Invalid URL" }).optional(),
+    materialId: z.string().min(1, { message: "Material is required" }),
+    price: z.coerce.number().optional(),
+    purchasePrice: z.coerce.number().min(0, { message: "Purchase price must be at least 0" }),
+  })
+  .refine(
+    (data) => {
+      if (data.price !== undefined && data.price < data.purchasePrice) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "El precio debe ser mayor o igual al precio de compra",
+      path: ["price"],
+    },
+  );
 
 interface UpdateProductForm {
   product: Product;
@@ -47,6 +61,7 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
       image: product.image,
       materialId: product.material.id.toString(),
       price: product.price,
+      purchasePrice: product.purchasePrice,
     },
   });
 
@@ -183,19 +198,28 @@ export function UpdateProductForm({ product, onClose }: UpdateProductForm) {
               )}
             />
 
-            <FormField
-              name="price"
-              disabled={product.stock === 0}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Precio</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Ingrese el precio" {...field} />
-                  </FormControl>
-                  <FormMessage>{form.formState.errors.price?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
+            <TooltipProvider>
+              <Tooltip>
+                <FormField
+                  name="price"
+                  disabled={product.stock === 0}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Precio</FormLabel>
+                      <FormControl>
+                        <TooltipTrigger type="button">
+                          <Input type="number" placeholder="Ingrese el precio" {...field} />
+                        </TooltipTrigger>
+                      </FormControl>
+                      <FormMessage>{form.formState.errors.price?.message}</FormMessage>
+                    </FormItem>
+                  )}
+                />
+                <TooltipContent side="top">
+                  <p className="text-sm">Precio de compra: {product.purchasePrice}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         <Button type="submit" disabled={isLoading}>

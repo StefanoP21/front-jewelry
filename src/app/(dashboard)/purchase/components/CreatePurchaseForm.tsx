@@ -32,7 +32,7 @@ import { Separator } from "@radix-ui/react-separator";
 import { useAuthStore } from "@/core/store/auth.store";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { IGV } from "@/core/constants";
-import { useSuppliers } from "@/hooks/useSupplier";
+import { useSuppliers } from "@/hooks/useSuppliers";
 
 const purchaseDetailSchema = z.object({
   productId: z.number().min(1, { message: "El producto es requerido" }),

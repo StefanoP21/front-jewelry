@@ -16,6 +16,8 @@ import { DeletePurchaseForm } from "./DeletePurchaseForm";
 import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { IGV } from "@/core/constants";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDF from "@/components/pdf/PDF";
 
 interface SelectedPurchaseProps {
   purchases: Purchase[];
@@ -36,6 +38,28 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
     if (purchases.indexOf(selectedPurchase!) > 0) {
       setSelectedPurchase(purchases[purchases.indexOf(selectedPurchase!) - 1]);
     }
+  };
+
+  const formatDate = (date: string | undefined): string => {
+    if (!date) return "";
+    const _date = new Date(date);
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    };
+    return new Intl.DateTimeFormat("es-ES", options).format(_date);
+  };
+
+  const getTableData = () => {
+    const tableData = selectedPurchase?.purchaseDetail.map((item) => {
+      return {
+        description: item.product.name,
+        quantity: item.quantity,
+        price: String(item.unitPrice),
+      };
+    });
+    return tableData;
   };
 
   return (
@@ -66,7 +90,30 @@ export function SelectedPurchase({ setSelectedPurchase, selectedPurchase, purcha
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem>Exportar</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <PDFDownloadLink
+                      document={
+                        <PDF
+                          orderNumber={String(selectedPurchase?.id) || ""}
+                          orderDate={formatDate(selectedPurchase?.date)}
+                          chargeToCompanyName={selectedPurchase?.supplier.companyName || ""}
+                          chargeToName={selectedPurchase?.supplier.nameContact || ""}
+                          chargeToEmail={selectedPurchase?.supplier.email || ""}
+                          chargeToPhone={selectedPurchase?.supplier.phone || ""}
+                          subtotal={(parseFloat(selectedPurchase?.total || "0") / (IGV + 1)).toFixed(2)}
+                          tax={(
+                            parseFloat(selectedPurchase?.total || "0") -
+                            parseFloat(selectedPurchase?.total || "0") / (IGV + 1)
+                          ).toFixed(2)}
+                          total={parseFloat(selectedPurchase?.total || "0").toFixed(2)}
+                          tableData={getTableData()!}
+                        />
+                      }
+                      fileName={selectedPurchase?.id + "_purchase.pdf"}
+                    >
+                      Exportar
+                    </PDFDownloadLink>
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem>Eliminar</DropdownMenuItem>

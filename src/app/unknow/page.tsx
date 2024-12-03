@@ -1,7 +1,3 @@
 export default function UnknownPage() {
-  return (
-    <div>
-      <h1>Unknown Page</h1>
-    </div>
-  );
+  return <h1>Unknown Page</h1>;
 }
