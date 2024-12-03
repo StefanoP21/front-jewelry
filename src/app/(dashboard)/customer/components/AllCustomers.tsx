@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import Avatar from "../../components/avatar";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { UpdateCustomerForm } from "./UpdateCustomerForm";
 import { DeleteCustomerForm } from "./DeleteCustomerForm";
@@ -94,7 +94,11 @@ export default function AllCustomers({ customers }: AllCustomersProps) {
       </CardContent>
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Actualizar cliente</DialogTitle>
+            <DialogDescription>Actualiza un cliente en la aplicación.</DialogDescription>
+          </DialogHeader>
           {selectedCustomerId !== null ? (
             <>
               {customers.find((p) => Number(p.id) === selectedCustomerId) ? (
