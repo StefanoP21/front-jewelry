@@ -9,13 +9,12 @@ export default function AllSuppliersSkeleton() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-center">ID</TableHead>
-              <TableHead className="text-center">Nombre del Contacto</TableHead>
-              <TableHead className="text-center">Correo Electrónico</TableHead>
-              <TableHead className="text-center">Teléfono</TableHead>
-              <TableHead className="text-center">Nombre de la Empresa</TableHead>
-              <TableHead className="text-center">RUC</TableHead>
-              <TableHead className="text-center">
+              <TableHead className="hidden md:table-cell">Contacto</TableHead>
+              <TableHead className="hidden md:table-cell">Email</TableHead>
+              <TableHead className="hidden md:table-cell">Teléfono</TableHead>
+              <TableHead className="hidden md:table-cell">Empresa</TableHead>
+              <TableHead className="hidden md:table-cell">RUC</TableHead>
+              <TableHead>
                 <span className="sr-only">Acciones</span>
               </TableHead>
             </TableRow>
@@ -23,26 +22,20 @@ export default function AllSuppliersSkeleton() {
           <TableBody>
             {Array.from({ length: 10 }).map((_, index) => (
               <TableRow key={index}>
-                <TableCell className="text-center">
-                  <Skeleton className="w-[64px] h-[20px]" />
+                <TableCell>
+                  <Skeleton className="w-[200px] h-[20px]" />
                 </TableCell>
-                <TableCell className="text-center">
-                  <Skeleton className="w-[150px] h-[20px]" />
-                </TableCell>
-                <TableCell className="text-center">
-                  <Skeleton className="w-[180px] h-[20px]" />
-                </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="hidden md:table-cell">
                   <Skeleton className="w-[120px] h-[20px]" />
                 </TableCell>
-                <TableCell className="text-center">
+                <TableCell className="hidden md:table-cell">
                   <Skeleton className="w-[180px] h-[20px]" />
                 </TableCell>
-                <TableCell className="text-center">
-                  <Skeleton className="w-[120px] h-[20px]" />
+                <TableCell className="hidden md:table-cell">
+                  <Skeleton className="w-[40px] h-[20px]" />
                 </TableCell>
-                <TableCell className="text-center">
-                  <Skeleton className="w-[150px] h-[20px]" />
+                <TableCell>
+                  <Skeleton className="w-[70px] h-[20px]" />
                 </TableCell>
               </TableRow>
             ))}

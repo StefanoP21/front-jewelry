@@ -12,3 +12,6 @@ export * from "./customer/model";
 
 export * from "./material/dtos";
 export * from "./material/model";
+
+export * from "./supplier/dtos";
+export * from "./supplier/model";

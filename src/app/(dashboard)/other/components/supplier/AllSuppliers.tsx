@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -36,29 +37,28 @@ export default function AllSuppliers({ suppliers }: AllSuppliersProps) {
 
   return (
     <>
-      <CardContent className="w-full mx-auto max-w-4xl">
+      <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/6 text-center">ID</TableHead>
-              <TableHead className="w-1/6 text-center">Nombre del Contacto</TableHead>
-              <TableHead className="w-1/6 text-center">Correo Electrónico</TableHead>
-              <TableHead className="w-1/6 text-center">Teléfono</TableHead>
-              <TableHead className="w-1/6 text-center">Nombre de la Empresa</TableHead>
-              <TableHead className="w-1/6 text-center">RUC</TableHead>
-              <TableHead className="w-1/6 text-center">Acciones</TableHead>
+              <TableHead>RUC</TableHead>
+              <TableHead>Empresa</TableHead>
+              <TableHead>Contacto</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Telefono</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {suppliers.map((supplier) => (
               <TableRow key={supplier.id}>
-                <TableCell className="font-medium text-center">{supplier.id}</TableCell>
-                <TableCell className="font-medium text-center">{supplier.nameContact}</TableCell>
-                <TableCell className="font-medium text-center">{supplier.email}</TableCell>
-                <TableCell className="font-medium text-center">{supplier.phone}</TableCell>
-                <TableCell className="font-medium text-center">{supplier.companyName}</TableCell>
-                <TableCell className="font-medium text-center">{supplier.ruc}</TableCell>
-                <TableCell className="text-center">
+                <TableCell className=" w-[300px] font-bold">{supplier.ruc}</TableCell>
+                <TableCell className=" w-[550px]">{supplier.companyName}</TableCell>
+                <TableCell className=" w-[300px]">{supplier.nameContact}</TableCell>
+                <TableCell className=" w-[300px]">{supplier.email}</TableCell>
+                <TableCell className=" w-[300px]">
+                  <Badge variant="outline">{supplier.phone}</Badge>
+                </TableCell>
+                <TableCell className="w-[100px]">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
                       <Button aria-haspopup="true" size="icon" variant="ghost">
@@ -83,7 +83,7 @@ export default function AllSuppliers({ suppliers }: AllSuppliersProps) {
         </Table>
       </CardContent>
 
-      {/* Dialog for Edit Supplier */}
+      {/* Dialog for Edit Product */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           {selectedSupplierId !== null ? (
@@ -98,12 +98,12 @@ export default function AllSuppliers({ suppliers }: AllSuppliersProps) {
               )}
             </>
           ) : (
-            <p>Seleccione un proveedor para editar.</p>
+            <p>Seleccione una proveedor para editar.</p>
           )}
         </DialogContent>
       </Dialog>
 
-      {/* Dialog for Delete Supplier */}
+      {/* Dialog for Delete Product */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           {selectedSupplierId && (

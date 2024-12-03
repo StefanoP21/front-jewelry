@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useProducts } from "@/hooks/useProducts";
 import AllCategories from "./components/category/AllCategories";
 import AllCategoriesSkeleton from "./components/category/AllCategoriesSkeleton";
 import { useCategories } from "@/hooks/useCategories";
@@ -32,11 +31,15 @@ import AllMaterials from "./components/material/AllMaterials";
 import { useMaterials } from "@/hooks/useMaterials";
 import { useState } from "react";
 import { CreateMaterialForm } from "./components/material/CreateMaterialForm";
+import AllSuppliers from "./components/supplier/AllSuppliers";
+import AllSuppliersSkeleton from "./components/supplier/AllSuppliersSkeleton";
+import { useSuppliers } from "@/hooks/useSuppliers";
+import { CreateSupplierForm } from "./components/supplier/CreateSupplierForm";
 
 export default function OtherPage() {
   const { isLoading, categories } = useCategories();
-  const { products } = useProducts();
   const { materials } = useMaterials();
+  const { suppliers } = useSuppliers();
   const [currentTab, setCurrentTab] = useState<"categories" | "suppliers" | "materials">("categories");
 
   return (
@@ -126,6 +129,7 @@ export default function OtherPage() {
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
               </Button>
               {currentTab === "categories" && <CreateCategoryForm />}
+              {currentTab === "suppliers" && <CreateSupplierForm />}
               {currentTab === "materials" && <CreateMaterialForm />}
               {/*<Button size="sm" className="h-7 gap-1">
                 <PlusCircle className="h-3.5 w-3.5" />
@@ -153,10 +157,10 @@ export default function OtherPage() {
                 <CardTitle>Proveedores</CardTitle>
                 <CardDescription>Administra todos los proveedores y verifica su información.</CardDescription>
               </CardHeader>
-              {/*isLoading ? <AllProductsSkeleton /> : <AllProducts products={products} />*/}
+              {isLoading ? <AllSuppliersSkeleton /> : <AllSuppliers suppliers={suppliers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{products.length}</strong> proveedores
+                  Mostrando <strong>1-10</strong> de <strong>{suppliers.length}</strong> proveedores
                 </div>
               </CardFooter>
             </Card>
