@@ -11,9 +11,16 @@ import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { LoaderCircle, PlusCircle } from "lucide-react";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
 const registerSchema = z.object({
   name: z.string({ message: "El nombre debe tener al menos 8 caracteres" }),

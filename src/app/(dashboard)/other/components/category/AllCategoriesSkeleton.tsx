@@ -5,28 +5,25 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 export default function AllProductsSkeleton() {
   return (
     <>
-      <CardContent>
+      <CardContent className="w-full mx-auto max-w-4xl">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Nombre</TableHead>
-              <TableHead>
-                <span className="sr-only">Actions</span>
-              </TableHead>
+              <TableHead className="w-1/3 text-center">ID</TableHead>
+              <TableHead className="w-1/3 text-center">Nombre</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {Array.from({ length: 10 }).map((_, index) => (
               <TableRow key={index}>
                 <TableCell>
-                  <Skeleton className="w-[64px] h-[20px]" />
+                  <Skeleton className="h-[20px] w-1/3" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="w-[100px] h-[20px]" />
+                  <Skeleton className="h-[20px] w-1/3" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="w-[180px] h-[20px]" />
+                  <Skeleton className="h-[20px] w-1/3" />
                 </TableCell>
               </TableRow>
             ))}

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useState } from "react";
 import { DeleteSupplierForm } from "./DeleteSupplierForm";
 import { UpdateSupplierForm } from "./UpdateSupplierForm";
@@ -86,6 +86,9 @@ export default function AllSuppliers({ suppliers }: AllSuppliersProps) {
       {/* Dialog for Edit Product */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Actualizar Proveedor</DialogTitle>
+          </DialogHeader>
           {selectedSupplierId !== null ? (
             <>
               {suppliers.find((s) => Number(s.id) === selectedSupplierId) ? (

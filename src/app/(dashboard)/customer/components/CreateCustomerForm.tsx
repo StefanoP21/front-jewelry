@@ -8,9 +8,16 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { LoaderCircle, PlusCircle, Search, X } from "lucide-react";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { useCustomers } from "@/hooks/useCustomers";
 import { CustomerService } from "@/core/services/customer.service";
 import { capitalizeFirstLetter } from "@/core/utils/CapitalizeStrings";

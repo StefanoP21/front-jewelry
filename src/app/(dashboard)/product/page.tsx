@@ -26,9 +26,14 @@ import { CreateProductForm } from "@/app/(dashboard)/product/components/CreatePr
 import { useProducts } from "@/hooks/useProducts";
 import AllProducts from "./components/AllProducts";
 import AllProductsSkeleton from "./components/AllProductsSkeleton";
+import { useState } from "react";
 
 export default function ProductPage() {
   const { isLoading, products } = useProducts();
+
+  const [searchText, setSearchText] = useState<string>("");
+
+  const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -57,30 +62,11 @@ export default function ProductPage() {
           <Input
             type="search"
             placeholder="Buscar..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="overflow-hidden rounded-full">
-              <Image
-                src="/placeholder-user.jpg"
-                width={36}
-                height={36}
-                alt="Avatar"
-                className="overflow-hidden rounded-full"
-              />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */}
       </header>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
@@ -126,7 +112,7 @@ export default function ProductPage() {
                 <CardTitle>Productos</CardTitle>
                 <CardDescription>Administra todos los productos y verifica su información.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllProductsSkeleton /> : <AllProducts products={products} />}
+              {isLoading ? <AllProductsSkeleton /> : <AllProducts products={filteredProducts} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
                   Mostrando <strong>1-10</strong> de <strong>{products.length}</strong> productos

@@ -29,7 +29,7 @@ import { CreateCategoryForm } from "./components/category/CreateCategoryForm";
 import AllMaterialsSkeleton from "./components/material/AllMaterialsSkeleton";
 import AllMaterials from "./components/material/AllMaterials";
 import { useMaterials } from "@/hooks/useMaterials";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CreateMaterialForm } from "./components/material/CreateMaterialForm";
 import AllSuppliers from "./components/supplier/AllSuppliers";
 import AllSuppliersSkeleton from "./components/supplier/AllSuppliersSkeleton";
@@ -40,7 +40,25 @@ export default function OtherPage() {
   const { isLoading, categories } = useCategories();
   const { materials } = useMaterials();
   const { suppliers } = useSuppliers();
+
   const [currentTab, setCurrentTab] = useState<"categories" | "suppliers" | "materials">("categories");
+  const [searchText, setSearchText] = useState<string>("");
+
+  const filteredCategories = categories.filter((categorie) =>
+    categorie.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  const filteredMaterials = materials.filter((material) =>
+    material.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  const filteredSuppliers = suppliers.filter((supplier) =>
+    supplier.companyName.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  useEffect(() => {
+    setSearchText("");
+  }, [currentTab]);
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -69,6 +87,8 @@ export default function OtherPage() {
           <Input
             type="search"
             placeholder="Buscar..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
@@ -143,10 +163,10 @@ export default function OtherPage() {
                 <CardTitle>Categorías</CardTitle>
                 <CardDescription>Administra todos las categorías y verifica su información.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllCategoriesSkeleton /> : <AllCategories categories={categories} />}
+              {isLoading ? <AllCategoriesSkeleton /> : <AllCategories categories={filteredCategories} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{categories.length}</strong> categorías
+                  Mostrando <strong>{categories.length}</strong> categorías
                 </div>
               </CardFooter>
             </Card>
@@ -157,10 +177,10 @@ export default function OtherPage() {
                 <CardTitle>Proveedores</CardTitle>
                 <CardDescription>Administra todos los proveedores y verifica su información.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllSuppliersSkeleton /> : <AllSuppliers suppliers={suppliers} />}
+              {isLoading ? <AllSuppliersSkeleton /> : <AllSuppliers suppliers={filteredSuppliers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{suppliers.length}</strong> proveedores
+                  Mostrando <strong>{suppliers.length}</strong> proveedores
                 </div>
               </CardFooter>
             </Card>
@@ -171,27 +191,10 @@ export default function OtherPage() {
                 <CardTitle>Materiales</CardTitle>
                 <CardDescription>Administra todos los materiales y verifica su información.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllMaterialsSkeleton /> : <AllMaterials materials={materials} />}
+              {isLoading ? <AllMaterialsSkeleton /> : <AllMaterials materials={filteredMaterials} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  {(() => {
-                    switch (currentTab) {
-                      case "materials":
-                        return (
-                          <>
-                            Mostrando <strong>1 - 10</strong> de <strong>{materials.length}</strong> materiales
-                          </>
-                        );
-                      case "categories":
-                        return (
-                          <>
-                            Mostrando <strong>1 - 10</strong> de <strong>{categories.length}</strong> categorías
-                          </>
-                        );
-                      default:
-                        return <>No hay datos disponibles</>;
-                    }
-                  })()}
+                  Mostrando <strong>{materials.length}</strong> materiales
                 </div>
               </CardFooter>
             </Card>

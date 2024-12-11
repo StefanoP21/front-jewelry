@@ -27,9 +27,14 @@ import RegisterForm from "@/components/auth/RegisterForm";
 import AllUsersSkeleton from "./components/AllUsersSkeleton";
 import AllUsers from "./components/AllUsers";
 import { useUsers } from "@/hooks/useUsers";
+import { useState } from "react";
 
 export default function UserPage() {
   const { isLoading, users } = useUsers();
+
+  const [searchText, setSearchText] = useState<string>("");
+
+  const filteredUsers = users.filter((user) => user.user.dni.includes(searchText));
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -58,6 +63,8 @@ export default function UserPage() {
           <Input
             type="search"
             placeholder="Buscar..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
@@ -102,7 +109,7 @@ export default function UserPage() {
                 <CardTitle>Usuarios</CardTitle>
                 <CardDescription>Maneja tus usuarios.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllUsersSkeleton /> : <AllUsers users={users} />}
+              {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredUsers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
                   Mostrando <strong>1-10</strong> de <strong>{users.length}</strong> usuarios

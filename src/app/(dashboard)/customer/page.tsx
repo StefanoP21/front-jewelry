@@ -27,9 +27,14 @@ import { useCustomers } from "@/hooks/useCustomers";
 import AllCustomers from "./components/AllCustomers";
 import AllCustomersSkeleton from "./components/AllCustomersSkeleton";
 import CreateCustomerForm from "./components/CreateCustomerForm";
+import { useState } from "react";
 
 export default function CustomerPage() {
   const { isLoading, customers } = useCustomers();
+
+  const [searchText, setSearchText] = useState<string>("");
+
+  const filteredCustomers = customers.filter((customer) => customer.dni.includes(searchText));
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -58,6 +63,8 @@ export default function CustomerPage() {
           <Input
             type="search"
             placeholder="Buscar..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
@@ -102,7 +109,7 @@ export default function CustomerPage() {
                 <CardTitle>Clientes</CardTitle>
                 <CardDescription>Maneja tus clientes.</CardDescription>
               </CardHeader>
-              {isLoading ? <AllCustomersSkeleton /> : <AllCustomers customers={customers} />}
+              {isLoading ? <AllCustomersSkeleton /> : <AllCustomers customers={filteredCustomers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
                   Mostrando <strong>1-10</strong> de <strong>{customers.length}</strong> clientes

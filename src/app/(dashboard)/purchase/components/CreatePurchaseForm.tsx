@@ -31,7 +31,6 @@ import { CreatePurchaseDetail } from "@/core/models/purchase/model";
 import { Separator } from "@radix-ui/react-separator";
 import { useAuthStore } from "@/core/store/auth.store";
 import { Label } from "@radix-ui/react-dropdown-menu";
-import { IGV } from "@/core/constants";
 import { useSuppliers } from "@/hooks/useSuppliers";
 
 const purchaseDetailSchema = z.object({
@@ -144,7 +143,7 @@ export function CreatePurchaseForm() {
       await PurchaseService.createPurchase({
         supplierId: parseInt(values.supplierId),
         bill: values.bill,
-        total: totalUnitPrice * (1 + IGV),
+        total: totalUnitPrice,
         userDNI: user!.dni,
         purchaseDetail: values.purchaseDetail,
       });
@@ -470,43 +469,13 @@ export function CreatePurchaseForm() {
               <div className="mt-2 grid gap-2">
                 <div className="flex justify-end">
                   <div className="text-right flex items-center gap-2">
-                    <Label className="text-sm">Subtotal</Label>
+                    <Label className="text-sm">Total</Label>
                     <Input
                       readOnly
                       value={`S/. ${totalUnitPrice.toFixed(2)}`}
                       className="ml-auto w-[120px] h-6 text-right"
                     />
                   </div>
-                </div>
-
-                <div className=" flex justify-end">
-                  <div className="text-right flex items-center gap-2">
-                    <Label className="text-sm">IGV</Label>
-                    <Input
-                      readOnly
-                      value={`S/. ${(totalUnitPrice * IGV).toFixed(2)}`}
-                      className="ml-auto w-[120px] h-6 text-right"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex justify-end">
-                  <FormField
-                    name="total"
-                    render={() => (
-                      <FormItem className="text-right flex items-center gap-2">
-                        <FormLabel>Total</FormLabel>
-                        <FormControl>
-                          <Input
-                            readOnly
-                            value={`S/. ${(totalUnitPrice + totalUnitPrice * IGV).toFixed(2)}`}
-                            className="ml-auto w-[120px] h-6 text-right"
-                            style={{ marginTop: 0 }}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
                 </div>
               </div>
             )}

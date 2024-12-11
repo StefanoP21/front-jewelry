@@ -31,17 +31,28 @@ import { AllOrdersSkeleton } from "./components/AllOrdersSkeleton";
 import { SelectedOrder } from "./components/SelectedOrder";
 import { SelectedOrderSkeleton } from "./components/SelectedOrderSkeleton";
 import { CreateOrderForm } from "./components/CreateOrderForm";
+import useAmount from "@/hooks/useAmount";
 
 export default function OrderPage() {
   const { isLoading, orders } = useOrders();
 
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(orders[0]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
+
+  const filteredOrders = orders.filter((order) => order.customer.dni.includes(searchText));
 
   useEffect(() => {
-    if (orders.length >= 0) {
-      setSelectedOrder(orders[0]);
-    }
+    setSelectedOrder(orders[0]);
   }, [orders]);
+
+  const {
+    totalThisWeek,
+    totalPreviousWeek,
+    totalThisMonth,
+    totalPreviousMonth,
+    percentageChangeWeek,
+    percentageChangeMonth,
+  } = useAmount(orders);
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -70,6 +81,8 @@ export default function OrderPage() {
           <Input
             type="search"
             placeholder="Buscar..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
           />
         </div>
@@ -91,27 +104,39 @@ export default function OrderPage() {
             <Card x-chunk="dashboard-05-chunk-1">
               <CardHeader className="pb-2">
                 <CardDescription>Esta Semana</CardDescription>
-                <CardTitle className="text-4xl">$0</CardTitle>
+                <CardTitle className="text-4xl">S/. {totalThisWeek.toFixed(2)}</CardTitle>
               </CardHeader>
               <CardContent>
-                {/*<div className="text-xs text-muted-foreground">+25% from last week</div>*/}
-                <div className="text-xs text-muted-foreground">No hay información disponible</div>
+                <div className="text-xs text-muted-foreground">
+                  {percentageChangeWeek >= 0
+                    ? `+${percentageChangeWeek.toFixed(2)}% desde la última Semana`
+                    : `${percentageChangeWeek.toFixed(2)}% desde la última Semana`}
+                </div>
               </CardContent>
               <CardFooter>
-                <Progress value={0} aria-label="25% increase" />
+                <Progress
+                  value={totalPreviousWeek === 0 ? 0 : Math.min(percentageChangeWeek, 100)}
+                  aria-label="Ventas esta semana"
+                />
               </CardFooter>
             </Card>
             <Card x-chunk="dashboard-05-chunk-2">
               <CardHeader className="pb-2">
                 <CardDescription>Este Mes</CardDescription>
-                <CardTitle className="text-4xl">$0</CardTitle>
+                <CardTitle className="text-4xl">S/. {totalThisMonth.toFixed(2)}</CardTitle>
               </CardHeader>
               <CardContent>
-                {/*<div className="text-xs text-muted-foreground">+10% from last month</div>*/}
-                <div className="text-xs text-muted-foreground">No hay información disponible</div>
+                <div className="text-xs text-muted-foreground">
+                  {percentageChangeMonth >= 0
+                    ? `+${percentageChangeMonth.toFixed(2)}% desde el último Mes`
+                    : `${percentageChangeMonth.toFixed(2)}% desde el último Mes`}
+                </div>
               </CardContent>
               <CardFooter>
-                <Progress value={0} aria-label="12% increase" />
+                <Progress
+                  value={totalPreviousMonth === 0 ? 0 : Math.min(percentageChangeMonth, 100)}
+                  aria-label="Ventas este mes"
+                />
               </CardFooter>
             </Card>
           </div>
@@ -153,7 +178,11 @@ export default function OrderPage() {
                   {isLoading ? (
                     <AllOrdersSkeleton />
                   ) : (
-                    <AllOrders orders={orders} selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
+                    <AllOrders
+                      orders={filteredOrders}
+                      selectedOrder={selectedOrder}
+                      setSelectedOrder={setSelectedOrder}
+                    />
                   )}
                 </CardContent>
               </Card>
@@ -164,7 +193,7 @@ export default function OrderPage() {
           {isLoading ? (
             <SelectedOrderSkeleton />
           ) : (
-            <SelectedOrder orders={orders} selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
+            <SelectedOrder orders={filteredOrders} selectedOrder={selectedOrder} setSelectedOrder={setSelectedOrder} />
           )}
         </div>
       </main>
