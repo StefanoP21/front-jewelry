@@ -418,6 +418,7 @@ export function CreateOrderForm() {
                                   (product) =>
                                     product.stock > 0 &&
                                     product.price > 0 &&
+                                    product.status &&
                                     selectedProduct?.productId !== product.id &&
                                     !orderDetailList.some((pd) => pd.productId === product.id),
                                 )

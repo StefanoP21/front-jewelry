@@ -39,9 +39,9 @@ export default function Sidebar({ children, user }: SidebarProps) {
         <div className="border-t flex p-3 items-center relative group">
           <Avatar name={user?.name} />
           <div
-            className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0 ml-0"}`}
+            className={`flex justify-between items-center overflow-hidden transition-all ${expanded ? "w-full ml-3" : "w-0 ml-0"}`}
           >
-            <div className="leading-4">
+            <div className="leading-4 mr-3">
               <h4 className="font-semibold text-[hsl(var(--foreground))] whitespace-nowrap">
                 {user?.name + " " + user?.lastname}
               </h4>

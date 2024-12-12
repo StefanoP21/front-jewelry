@@ -11,12 +11,13 @@ import { UserService } from "@/core/services/user.service";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LoaderCircle } from "lucide-react";
 
 const userSchema = z.object({
   id: z.string().min(1, { message: "ID is required" }),
 });
 
-export function DeleteUserForm(props: { id: number; dni: string }) {
+export function DeleteUserForm(props: { id: number; status: boolean }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -30,21 +31,20 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
 
   const deleteUserMutation = useMutation({
     mutationFn: async (id: number) => {
-      // Realiza la eliminación del usuario llamando al servicio
-      return await UserService.deleteUserById(id);
+      return await UserService.updateStatus(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toast({
         variant: "default",
-        title: "Usuario eliminado exitosamente",
+        title: "Estado actualizado exitosamente",
       });
       setIsOpen(false);
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast({
         variant: "destructive",
-        title: "Error al eliminar un usuario",
+        title: "Error al actualizar el estado",
         description: error.response?.data?.message || "Ocurrió un error",
       });
     },
@@ -66,21 +66,30 @@ export function DeleteUserForm(props: { id: number; dni: string }) {
             handleOpen();
           }}
         >
-          Eliminar
+          {props.status ? "Eliminar" : "Habilitar"}
         </span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Eliminar usuario con DNI {props.dni}?</DialogTitle>
+          <DialogTitle>
+            {props.status ? `Eliminar un Usuario con ID ${props.id}?` : `Habilitar un Usuario con ID ${props.id}?`}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 py-2">
-              <span>Esta acción no se podrá deshacer.</span>
+              <span>Esta acción afectará al usuario seleccionado.</span>
             </div>
             <DialogFooter>
-              <Button type="submit" variant="destructive" disabled={deleteUserMutation.isPending}>
-                {deleteUserMutation.isPending ? "Eliminando..." : "Eliminar"}
+              <Button type="submit" disabled={deleteUserMutation.isPending}>
+                {deleteUserMutation.isPending ? (
+                  <>
+                    <LoaderCircle className="h-5 w-5 mr-3 animate-spin" />{" "}
+                    {props.status ? "Elimando Usuario" : "Habilitando Usuario"}
+                  </>
+                ) : (
+                  <span>{props.status ? "Eliminar Usuario" : "Habilitar Usuario"}</span>
+                )}
               </Button>
             </DialogFooter>
           </form>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, ListFilter, Search } from "lucide-react";
+import { File, Search } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -13,28 +13,38 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RegisterForm from "@/components/auth/RegisterForm";
 import AllUsersSkeleton from "./components/AllUsersSkeleton";
 import AllUsers from "./components/AllUsers";
 import { useUsers } from "@/hooks/useUsers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "@/core/store/auth.store";
+import { redirect } from "next/navigation";
 
 export default function UserPage() {
+  const { user } = useAuthStore();
+
+  if (user?.role === "USER") {
+    redirect("/order");
+  }
+
   const { isLoading, users } = useUsers();
 
   const [searchText, setSearchText] = useState<string>("");
 
   const filteredUsers = users.filter((user) => user.user.dni.includes(searchText));
+
+  const filteredActiveUsers = users.filter((user) => user.user.dni.includes(searchText) && user.user.status);
+
+  const filteredInactiveUsers = users.filter((user) => user.user.dni.includes(searchText) && !user.user.status);
+
+  const [currentTab, setCurrentTab] = useState<"all" | "active" | "inactive">("all");
+
+  useEffect(() => {
+    setSearchText("");
+  }, [currentTab]);
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -49,12 +59,8 @@ export default function UserPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Usuarios</Link>
+                <BreadcrumbPage>Usuarios</BreadcrumbPage>
               </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Todos los usuarios</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -73,29 +79,17 @@ export default function UserPage() {
         <Tabs defaultValue="all">
           <div className="flex items-center">
             <TabsList>
-              <TabsTrigger value="all">Todos</TabsTrigger>
-              <TabsTrigger value="active">Activos</TabsTrigger>
-              <TabsTrigger value="draft">Borrador</TabsTrigger>
-              <TabsTrigger value="archived" className="hidden sm:flex">
-                Archivados
+              <TabsTrigger value="all" onClick={() => setCurrentTab("all")}>
+                Todos
+              </TabsTrigger>
+              <TabsTrigger value="active" onClick={() => setCurrentTab("active")}>
+                Activos
+              </TabsTrigger>
+              <TabsTrigger value="inactive" onClick={() => setCurrentTab("inactive")}>
+                Inactivos
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 gap-1">
-                    <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Filtrar</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>Activos</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Borrador</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Archivados</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
               <Button size="sm" variant="outline" className="h-7 gap-1">
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
@@ -107,12 +101,42 @@ export default function UserPage() {
             <Card x-chunk="dashboard-06-chunk-0">
               <CardHeader>
                 <CardTitle>Usuarios</CardTitle>
-                <CardDescription>Maneja tus usuarios.</CardDescription>
+                <CardDescription>Administra a todos los usuarios y verifica su información.</CardDescription>
               </CardHeader>
               {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredUsers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
                   Mostrando <strong>1-10</strong> de <strong>{users.length}</strong> usuarios
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="active">
+            <Card x-chunk="dashboard-06-chunk-0">
+              <CardHeader>
+                <CardTitle>Usuarios Activos</CardTitle>
+                <CardDescription>Administra a todos los usuarios activos y verifica su información.</CardDescription>
+              </CardHeader>
+              {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredActiveUsers} />}
+              <CardFooter>
+                <div className="text-xs text-muted-foreground">
+                  Mostrando <strong>1-10</strong> de <strong>{filteredActiveUsers.length}</strong> usuarios
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="inactive">
+            <Card x-chunk="dashboard-06-chunk-0">
+              <CardHeader>
+                <CardTitle>Usuarios Inactivos</CardTitle>
+                <CardDescription>Administra a todos los usuarios inactivos y verifica su información.</CardDescription>
+              </CardHeader>
+              {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredInactiveUsers} />}
+              <CardFooter>
+                <div className="text-xs text-muted-foreground">
+                  Mostrando <strong>1-10</strong> de <strong>{filteredInactiveUsers.length}</strong> usuarios
                 </div>
               </CardFooter>
             </Card>

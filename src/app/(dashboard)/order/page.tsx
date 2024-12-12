@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, ListFilter, Search } from "lucide-react";
+import { File, Search } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,17 +12,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent /*, TabsList, TabsTrigger*/ } from "@/components/ui/tabs";
 import { useOrders } from "@/hooks/useOrders";
 import { useEffect, useState } from "react";
 import { Order } from "@/core/models/order/model";
@@ -67,12 +59,8 @@ export default function OrderPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Ventas</Link>
+                <BreadcrumbPage>Ventas</BreadcrumbPage>
               </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Ventas Recientes</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -142,26 +130,14 @@ export default function OrderPage() {
           </div>
           <Tabs defaultValue="week">
             <div className="flex items-center">
+              {/*
               <TabsList>
                 <TabsTrigger value="week">Semana</TabsTrigger>
                 <TabsTrigger value="month">Mes</TabsTrigger>
                 <TabsTrigger value="year">Año</TabsTrigger>
               </TabsList>
+              */}
               <div className="ml-auto flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-7 gap-1 text-sm">
-                      <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filtro</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem checked>Completado</DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Cancelado</DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
                 <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
                   <File className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only">Exportar</span>

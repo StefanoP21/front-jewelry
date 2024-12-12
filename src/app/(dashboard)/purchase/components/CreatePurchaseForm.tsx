@@ -311,6 +311,7 @@ export function CreatePurchaseForm() {
                               {products
                                 .filter(
                                   (product) =>
+                                    product.status &&
                                     selectedProduct?.productId !== product.id &&
                                     !purchaseDetailList.some((pd) => pd.productId === product.id),
                                 )

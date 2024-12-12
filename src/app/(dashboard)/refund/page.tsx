@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, ListFilter, Search } from "lucide-react";
+import { File, Search } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,17 +12,9 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 // import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useRefunds } from "@/hooks/useRefunds";
 import { useEffect, useState } from "react";
 import { Refund } from "@/core/models/refunds/model";
@@ -80,12 +72,8 @@ export default function RefundPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Devoluciones</Link>
+                <BreadcrumbPage>Devoluciones</BreadcrumbPage>
               </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Devoluciones Recientes</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -114,72 +102,10 @@ export default function RefundPage() {
                 <CreateRefundForm />
               </CardFooter>
             </Card>
-            {/*
-            <Card x-chunk="dashboard-05-chunk-1">
-              <CardHeader className="pb-2">
-                <CardDescription>Esta Semana</CardDescription>
-                <CardTitle className="text-4xl">S/. {totalThisWeek.toFixed(2)}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs text-muted-foreground">
-                  {percentageChangeWeek >= 0
-                    ? `+${percentageChangeWeek.toFixed(2)}% desde la última Semana`
-                    : `${percentageChangeWeek.toFixed(2)}% desde la última Semana`}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Progress value={
-                  totalPreviousWeek === 0
-                    ? 0
-                    : Math.min(percentageChangeWeek, 100)
-                } aria-label="Reembolsos esta semana" />
-              </CardFooter>
-            </Card>
-
-            <Card x-chunk="dashboard-05-chunk-2">
-              <CardHeader className="pb-2">
-                <CardDescription>Este Mes</CardDescription>
-                <CardTitle className="text-4xl">S/. {totalThisMonth.toFixed(2)}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-xs text-muted-foreground">
-                  {percentageChangeMonth >= 0
-                    ? `+${percentageChangeMonth.toFixed(2)}% desde el último Mes`
-                    : `${percentageChangeMonth.toFixed(2)}% desde el último Mes`}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Progress value={
-                  totalPreviousMonth === 0
-                    ? 0
-                    : Math.min(percentageChangeMonth, 100)
-                } aria-label="Reembolsos este mes" />
-              </CardFooter>
-            </Card>
-            */}
           </div>
           <Tabs defaultValue="week">
             <div className="flex items-center">
-              <TabsList>
-                <TabsTrigger value="week">Semana</TabsTrigger>
-                <TabsTrigger value="month">Mes</TabsTrigger>
-                <TabsTrigger value="year">Año</TabsTrigger>
-              </TabsList>
               <div className="ml-auto flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-7 gap-1 text-sm">
-                      <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filtro</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuCheckboxItem checked>Completado</DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem>Cancelado</DropdownMenuCheckboxItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
                 <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
                   <File className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only">Exportar</span>

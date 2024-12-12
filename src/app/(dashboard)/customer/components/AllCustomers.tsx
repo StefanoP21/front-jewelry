@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { useState } from "react";
 import { UpdateCustomerForm } from "./UpdateCustomerForm";
 import { DeleteCustomerForm } from "./DeleteCustomerForm";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface AllCustomersProps {
   customers: Customer[];
@@ -54,43 +55,49 @@ export default function AllCustomers({ customers }: AllCustomersProps) {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {customers.map((customer) => (
-              <TableRow key={customer.id}>
-                <TableCell className="hidden sm:table-cell">
-                  <Avatar name={customer.name} />
-                </TableCell>
-                <TableCell className="font-medium w-[300px]">
-                  {customer.name} {customer.lastName}
-                </TableCell>
-                <TableCell className="w-[300px]">
-                  <Badge variant="outline">{customer.dni}</Badge>
-                </TableCell>
-                <TableCell className="w-[300px]">{customer.email}</TableCell>
-                <TableCell>{customer.phone}</TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button aria-haspopup="true" size="icon" variant="ghost">
-                        <MoreHorizontal className="h-4 w-4" />
-                        <span className="sr-only">Mostrar el menú</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                      <DropdownMenuItem onClick={() => handleEditOpen(Number(customer.id))}>
-                        Actualizar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleDeleteOpen(Number(customer.id))}>
-                        Eliminar
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
         </Table>
+
+        <ScrollArea className="h-[calc(100vh-350px)] w-full">
+          <Table>
+            <TableBody>
+              {customers.map((customer) => (
+                <TableRow key={customer.id}>
+                  <TableCell className="hidden sm:table-cell">
+                    <Avatar name={customer.name} />
+                  </TableCell>
+                  <TableCell className="font-medium w-[300px]">
+                    {customer.name} {customer.lastName}
+                  </TableCell>
+                  <TableCell className="w-[300px]">
+                    <Badge variant="outline">{customer.dni}</Badge>
+                  </TableCell>
+                  <TableCell className="w-[300px]">{customer.email}</TableCell>
+                  <TableCell>{customer.phone}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Mostrar el menú</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => handleEditOpen(Number(customer.id))}>
+                          Actualizar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDeleteOpen(Number(customer.id))}>
+                          Eliminar
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <ScrollBar />
+        </ScrollArea>
       </CardContent>
 
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>

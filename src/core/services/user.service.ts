@@ -17,6 +17,11 @@ export const UserService = {
     return data;
   },
 
+  updateStatus: async (id: number): Promise<unknown> => {
+    const { data } = await api.post<unknown>("api/auth/" + id);
+    return data;
+  },
+
   /*getAllProducts: async (): Promise<ProductListResponse> => {
     const { data } = await api.get<ProductListResponse>("/api/product");
     return data;
