@@ -24,6 +24,7 @@ import { SelectedOrder } from "./components/SelectedOrder";
 import { SelectedOrderSkeleton } from "./components/SelectedOrderSkeleton";
 import { CreateOrderForm } from "./components/CreateOrderForm";
 import useAmount from "@/hooks/useAmount";
+import { CSVLink } from "react-csv";
 
 export default function OrderPage() {
   const { isLoading, orders } = useOrders();
@@ -45,6 +46,24 @@ export default function OrderPage() {
     percentageChangeWeek,
     percentageChangeMonth,
   } = useAmount(orders);
+
+  const extractOrderDetails = () => {
+    return filteredOrders.map((order) => ({
+      id: order.id,
+      nombre: order.customer.name,
+      apellido: order.customer.lastName,
+      email: order.customer.email,
+      dni: order.customer.dni,
+      telefono: order.customer.phone,
+      fecha: order.date,
+      formaDePago: order.paymentMethod,
+      descuentoTotal: order.totalDesc,
+      total: order.total,
+      cantidad: order.orderDetail[0].quantity,
+      precioUnitario: order.orderDetail[0].unitPrice,
+      nombreDelProducto: order.orderDetail[0].product.name,
+    }));
+  };
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -130,18 +149,13 @@ export default function OrderPage() {
           </div>
           <Tabs defaultValue="week">
             <div className="flex items-center">
-              {/*
-              <TabsList>
-                <TabsTrigger value="week">Semana</TabsTrigger>
-                <TabsTrigger value="month">Mes</TabsTrigger>
-                <TabsTrigger value="year">Año</TabsTrigger>
-              </TabsList>
-              */}
               <div className="ml-auto flex items-center gap-2">
-                <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
-                  <File className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only">Exportar</span>
-                </Button>
+                <CSVLink data={extractOrderDetails()}>
+                  <Button size="sm" variant="outline" className="h-7 gap-1 text-sm">
+                    <File className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only">Exportar</span>
+                  </Button>
+                </CSVLink>
               </div>
             </div>
             <TabsContent value="week">
