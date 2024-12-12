@@ -12,10 +12,11 @@ import { useState } from "react";
 
 interface DeleteProductFormProps {
   id: number;
-  onClose: () => void; // Añade el prop para cerrar el diálogo
+  status: boolean;
+  onClose: () => void;
 }
 
-export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
+export function DeleteProductForm({ id, status, onClose }: DeleteProductFormProps) {
   const { toast } = useToast();
   const { refetch } = useProducts();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,11 +30,21 @@ export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
   const onSubmit = async () => {
     try {
       setIsLoading(true);
-      await ProductService.deleteProductById(id);
+      const product = await ProductService.getProductById(id);
+
+      await ProductService.updateProductById(id, {
+        name: product.data.name,
+        description: product.data.description,
+        categoryId: product.data.category.id,
+        image: product.data.image,
+        materialId: product.data.material.id,
+        price: product.data.price,
+        status: !product.data.status,
+      });
 
       toast({
         variant: "default",
-        title: "Producto eliminado exitosamente",
+        title: "Estado actualizado exitosamente",
       });
 
       form.reset();
@@ -42,10 +53,8 @@ export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
       setIsLoading(false);
       toast({
         variant: "destructive",
-        title: "Error al eliminar un producto",
-        description:
-          (error as AxiosError<{ message: string }>)?.response?.data?.message ||
-          "Ocurrió un error al eliminar un producto",
+        title: "Error al actualizar el estado",
+        description: (error as AxiosError<{ message: string }>)?.response?.data?.message || "Ocurrió un error",
       });
       throw error;
     }
@@ -55,17 +64,20 @@ export function DeleteProductForm({ id, onClose }: DeleteProductFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <h2 className="text-lg font-semibold leading-none tracking-tight">Eliminar Producto con ID {id}?</h2>
+        <h2 className="text-lg font-semibold leading-none tracking-tight">
+          {status ? `Eliminar Producto con ID ${id}?` : `Habilitar Producto con ID ${id}?`}
+        </h2>
         <div className="grid gap-4 py-2">
-          <span>Esta acción no se podrá deshacer.</span>
+          <span>Esta acción afectará al producto seleccionado.</span>
         </div>
         <Button type="submit" disabled={isLoading}>
           {isLoading ? (
             <>
-              <LoaderCircle className="h-5 w-5 mr-3 animate-spin" /> Eliminando Producto
+              <LoaderCircle className="h-5 w-5 mr-3 animate-spin" />{" "}
+              {status ? "Elimando Producto" : "Habilitando Producto"}
             </>
           ) : (
-            <span>Eliminar Producto</span>
+            <span>{status ? "Eliminar Producto" : "Habilitar Producto"}</span>
           )}
         </Button>
       </form>

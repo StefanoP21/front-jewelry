@@ -13,4 +13,5 @@ export interface UpdateProductDto {
   image?: string;
   materialId: number;
   price: number;
+  status?: boolean;
 }

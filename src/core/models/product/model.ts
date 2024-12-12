@@ -20,5 +20,6 @@ export interface Product {
   material: Material;
   price: number;
   stock: number;
+  status: boolean;
   purchasePrice: number;
 }

@@ -43,6 +43,7 @@ const orderDetailSchema = z.object({
 });
 
 let purchasePrices: number;
+let totalPrices: number;
 
 const orderSchema = z
   .object({
@@ -54,11 +55,10 @@ const orderSchema = z
   })
   .refine(
     (data) => {
-      console.log(purchasePrices);
-      return data.totalDesc <= purchasePrices;
+      return data.totalDesc <= totalPrices - purchasePrices;
     },
     {
-      message: "El descuento no puede ser mayor al valor de compra de los productos",
+      message: "El descuento no puede ser mayor al valor de compra de los productos.",
       path: ["totalDesc"],
     },
   );
@@ -138,6 +138,7 @@ export function CreateOrderForm() {
   const [totalDesc, setTotalDesc] = useState(0);
   const totalUnitPrice = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0) - totalDesc;
   purchasePrices = orderDetailList.reduce((total, item) => total + item.quantity * item.product.purchasePrice!, 0);
+  totalPrices = orderDetailList.reduce((total, item) => total + item.quantity * item.unitPrice, 0);
 
   const form = useForm({
     resolver: zodResolver(orderSchema),
@@ -334,7 +335,7 @@ export function CreateOrderForm() {
                     )}
                   />
                   <TooltipContent side="top">
-                    <p className="text-sm">Precio de compra total: {purchasePrices}</p>
+                    <p className="text-sm">El Descuento Máximo es: {totalPrices - purchasePrices}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -417,6 +418,7 @@ export function CreateOrderForm() {
                                   (product) =>
                                     product.stock > 0 &&
                                     product.price > 0 &&
+                                    product.status &&
                                     selectedProduct?.productId !== product.id &&
                                     !orderDetailList.some((pd) => pd.productId === product.id),
                                 )

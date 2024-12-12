@@ -18,4 +18,5 @@ export interface User {
   email: string;
   dni: string;
   role: string;
+  status: boolean;
 }
