@@ -19,6 +19,7 @@ import { useProducts } from "@/hooks/useProducts";
 import AllProducts from "./components/AllProducts";
 import AllProductsSkeleton from "./components/AllProductsSkeleton";
 import { useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 
 export default function ProductPage() {
   const { isLoading, products } = useProducts();
@@ -40,6 +41,27 @@ export default function ProductPage() {
   useEffect(() => {
     setSearchText("");
   }, [currentTab]);
+
+  const getFilteredProducts = () => {
+    if (currentTab === "active") return filteredActiveProducts;
+    if (currentTab === "inactive") return filteredInactiveProducts;
+    return filteredProducts;
+  };
+
+  const extractProductDetails = () => {
+    const productsToExport = getFilteredProducts();
+    return productsToExport.map((product) => ({
+      Id: product.id,
+      Nombre: product.name,
+      Descripcion: product.description,
+      Categoria: product.category.name,
+      Material: product.material.name,
+      Precio: product.price,
+      PrecioDeCompra: product.purchasePrice,
+      Stock: product.stock,
+      Estado: product.status ? "Activo" : "Inactivo",
+    }));
+  };
 
   return (
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:px-4">
@@ -85,10 +107,12 @@ export default function ProductPage() {
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
-              <Button size="sm" variant="outline" className="h-7 gap-1">
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
-              </Button>
+              <CSVLink data={extractProductDetails()} filename={`ReporteInventario(${currentTab}-products).csv`}>
+                <Button size="sm" variant="outline" className="h-7 gap-1">
+                  <File className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
+                </Button>
+              </CSVLink>
               <CreateProductForm />
             </div>
           </div>
