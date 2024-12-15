@@ -14,7 +14,6 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { DeleteCategoryForm } from "./DeleteCategoryForm";
 import { UpdateCategoryForm } from "./UpdateCategoryForm";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface AllCategoriesProps {
   categories: Category[];
@@ -45,40 +44,35 @@ export default function AllCategories({ categories }: AllCategoriesProps) {
               <TableHead className="w-1/3 text-center">Nombre</TableHead>
             </TableRow>
           </TableHeader>
-        </Table>
 
-        <ScrollArea className="h-[calc(100vh-350px)] w-full">
-          <Table>
-            <TableBody>
-              {categories.map((category) => (
-                <TableRow key={category.id}>
-                  <TableCell className="font-medium text-center w-1/3">{category.id}</TableCell>
-                  <TableCell className="font-medium text-center w-1/3">{category.name}</TableCell>
-                  <TableCell className="w-1/3 text-center">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleEditOpen(Number(category.id))}>
-                          Actualizar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteOpen(Number(category.id))}>
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <ScrollBar />
-        </ScrollArea>
+          <TableBody>
+            {categories.map((category) => (
+              <TableRow key={category.id}>
+                <TableCell className="font-medium text-center w-1/3">{category.id}</TableCell>
+                <TableCell className="font-medium text-center w-1/3">{category.name}</TableCell>
+                <TableCell className="w-1/3 text-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleEditOpen(Number(category.id))}>
+                        Actualizar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDeleteOpen(Number(category.id))}>
+                        Eliminar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
 
       {/* Dialog for Edit Product */}

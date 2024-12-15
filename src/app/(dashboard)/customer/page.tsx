@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -11,7 +11,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
@@ -61,10 +60,6 @@ export default function CustomerPage() {
         <Tabs defaultValue="all">
           <div className="flex items-center">
             <div className="ml-auto flex items-center gap-2">
-              <Button size="sm" variant="outline" className="h-7 gap-1">
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
-              </Button>
               <CreateCustomerForm />
             </div>
           </div>
@@ -77,7 +72,7 @@ export default function CustomerPage() {
               {isLoading ? <AllCustomersSkeleton /> : <AllCustomers customers={filteredCustomers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{customers.length}</strong> clientes
+                  Mostrando <strong>{customers.length}</strong> clientes
                 </div>
               </CardFooter>
             </Card>

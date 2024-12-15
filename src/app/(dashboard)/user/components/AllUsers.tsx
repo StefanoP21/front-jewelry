@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import Avatar from "../../components/avatar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface AllUsersProps {
   users: Data[];
@@ -40,68 +39,63 @@ export default function AllUsers({ users, filtered }: AllUsersProps) {
               </TableHead>
             </TableRow>
           </TableHeader>
-        </Table>
 
-        <ScrollArea className="h-[calc(100vh-350px)] w-full">
-          <Table>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.user.id}>
-                  <TableCell className="hidden sm:table-cell">
-                    <Avatar name={user.user.name} color={user.user.status} />
+          <TableBody>
+            {users.map((user) => (
+              <TableRow key={user.user.id}>
+                <TableCell className="hidden sm:table-cell">
+                  <Avatar name={user.user.name} color={user.user.status} />
+                </TableCell>
+                <TableCell className="font-medium w-[300px]">
+                  {user.user.name} {user.user.lastname}
+                </TableCell>
+                <TableCell className="w-[300px]">
+                  <Badge variant="outline">{user.user.dni}</Badge>
+                </TableCell>
+                <TableCell className="w-[250px]">{user.user.email}</TableCell>
+                <TableCell className="text-center">
+                  {(() => {
+                    switch (user.user.role) {
+                      case "ADMIN":
+                        return <>Administrador</>;
+                      case "USER":
+                        return <>Usuario</>;
+                      default:
+                        return <>Desconocido</>;
+                    }
+                  })()}
+                </TableCell>
+                {!filtered && (
+                  <TableCell className="hidden md:table-cell">
+                    <Badge className={user.user.status ? "text-lime-600" : "text-red-600"} variant="secondary">
+                      {user.user.status ? "Activo" : "Inactivo"}
+                    </Badge>
                   </TableCell>
-                  <TableCell className="font-medium w-[300px]">
-                    {user.user.name} {user.user.lastname}
-                  </TableCell>
-                  <TableCell className="w-[300px]">
-                    <Badge variant="outline">{user.user.dni}</Badge>
-                  </TableCell>
-                  <TableCell className="w-[250px]">{user.user.email}</TableCell>
-                  <TableCell className="text-center">
-                    {(() => {
-                      switch (user.user.role) {
-                        case "ADMIN":
-                          return <>Administrador</>;
-                        case "USER":
-                          return <>Usuario</>;
-                        default:
-                          return <>Desconocido</>;
-                      }
-                    })()}
-                  </TableCell>
-                  {!filtered && (
-                    <TableCell className="hidden md:table-cell">
-                      <Badge className={user.user.status ? "text-lime-600" : "text-red-600"} variant="secondary">
-                        {user.user.status ? "Activo" : "Inactivo"}
-                      </Badge>
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Mostrar el menú</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem
-                          onSelect={(e) => {
-                            e.preventDefault();
-                          }}
-                        >
-                          <DeleteUserForm id={user.user.id} status={user.user.status} />
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <ScrollBar />
-        </ScrollArea>
+                )}
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Mostrar el menú</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <DropdownMenuItem
+                        onSelect={(e) => {
+                          e.preventDefault();
+                        }}
+                      >
+                        <DeleteUserForm id={user.user.id} status={user.user.status} />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </>
   );

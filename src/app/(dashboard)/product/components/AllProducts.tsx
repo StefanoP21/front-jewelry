@@ -16,7 +16,6 @@ import { MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface AllProductsProps {
   products: Product[];
@@ -61,62 +60,55 @@ export default function AllProducts({ products, filtered }: AllProductsProps) {
               </TableHead>
             </TableRow>
           </TableHeader>
-        </Table>
 
-        <ScrollArea className="h-[calc(100vh-350px)] w-full">
-          <Table>
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.id}>
-                  <TableCell className="hidden sm:table-cell">
-                    <Image
-                      alt={product.description}
-                      className={`aspect-square rounded-md object-cover ${!product.status ? "grayscale" : ""}`}
-                      height="64"
-                      src={product.image}
-                      width="64"
-                    />
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell className="hidden sm:table-cell">
+                  <Image
+                    alt={product.description}
+                    className={`aspect-square rounded-md object-cover ${!product.status ? "grayscale" : ""}`}
+                    height="64"
+                    src={product.image}
+                    width="64"
+                  />
+                </TableCell>
+                <TableCell className="font-medium w-[200px]">{product.name}</TableCell>
+                <TableCell className="hidden md:table-cell w-[400px]">{product.description}</TableCell>
+                <TableCell className="hidden md:table-cell text-center">{product.category.name}</TableCell>
+                <TableCell className="text-center">
+                  <Badge variant="outline">{product.material.name}</Badge>
+                </TableCell>
+                <TableCell>S/. {parseFloat(product.price.toString()).toFixed(2)}</TableCell>
+                <TableCell className="hidden md:table-cell text-center">{product.stock}</TableCell>
+                {!filtered && (
+                  <TableCell className="hidden md:table-cell text-center">
+                    <Badge className={product.status ? "text-lime-600" : "text-red-600"} variant="secondary">
+                      {product.status ? "Activo" : "Inactivo"}
+                    </Badge>
                   </TableCell>
-                  <TableCell className="font-medium w-[200px]">{product.name}</TableCell>
-                  <TableCell className="hidden md:table-cell w-[400px]">{product.description}</TableCell>
-                  <TableCell className="hidden md:table-cell text-center">{product.category.name}</TableCell>
-                  <TableCell className="text-center">
-                    <Badge variant="outline">{product.material.name}</Badge>
-                  </TableCell>
-                  <TableCell>S/. {parseFloat(product.price.toString()).toFixed(2)}</TableCell>
-                  <TableCell className="hidden md:table-cell text-center">{product.stock}</TableCell>
-                  {!filtered && (
-                    <TableCell className="hidden md:table-cell text-center">
-                      <Badge className={product.status ? "text-lime-600" : "text-red-600"} variant="secondary">
-                        {product.status ? "Activo" : "Inactivo"}
-                      </Badge>
-                    </TableCell>
-                  )}
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleEditOpen(Number(product.id))}>
-                          Actualizar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteOpen(Number(product.id), product.status)}>
-                          {product.status ? "Eliminar" : "Habilitar"}
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <ScrollBar />
-        </ScrollArea>
+                )}
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleEditOpen(Number(product.id))}>Actualizar</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDeleteOpen(Number(product.id), product.status)}>
+                        {product.status ? "Inhabilitar" : "Habilitar"}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
 
       {/* Dialog for Edit Product */}

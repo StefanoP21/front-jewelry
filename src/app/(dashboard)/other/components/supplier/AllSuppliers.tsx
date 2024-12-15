@@ -15,7 +15,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useState } from "react";
 import { DeleteSupplierForm } from "./DeleteSupplierForm";
 import { UpdateSupplierForm } from "./UpdateSupplierForm";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 interface AllSuppliersProps {
   suppliers: Supplier[];
@@ -49,45 +48,40 @@ export default function AllSuppliers({ suppliers }: AllSuppliersProps) {
               <TableHead>Telefono</TableHead>
             </TableRow>
           </TableHeader>
-        </Table>
 
-        <ScrollArea className="h-[calc(100vh-350px)] w-full">
-          <Table>
-            <TableBody>
-              {suppliers.map((supplier) => (
-                <TableRow key={supplier.id}>
-                  <TableCell className=" w-[300px] font-bold">{supplier.ruc}</TableCell>
-                  <TableCell className=" w-[550px]">{supplier.companyName}</TableCell>
-                  <TableCell className=" w-[300px]">{supplier.nameContact}</TableCell>
-                  <TableCell className=" w-[300px]">{supplier.email}</TableCell>
-                  <TableCell className=" w-[300px]">
-                    <Badge variant="outline">{supplier.phone}</Badge>
-                  </TableCell>
-                  <TableCell className="w-[100px]">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleEditOpen(Number(supplier.id))}>
-                          Actualizar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDeleteOpen(Number(supplier.id))}>
-                          Eliminar
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <ScrollBar />
-        </ScrollArea>
+          <TableBody>
+            {suppliers.map((supplier) => (
+              <TableRow key={supplier.id}>
+                <TableCell className=" w-[300px] font-bold">{supplier.ruc}</TableCell>
+                <TableCell className=" w-[550px]">{supplier.companyName}</TableCell>
+                <TableCell className=" w-[300px]">{supplier.nameContact}</TableCell>
+                <TableCell className=" w-[300px]">{supplier.email}</TableCell>
+                <TableCell className=" w-[300px]">
+                  <Badge variant="outline">{supplier.phone}</Badge>
+                </TableCell>
+                <TableCell className="w-[100px]">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleEditOpen(Number(supplier.id))}>
+                        Actualizar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleDeleteOpen(Number(supplier.id))}>
+                        Eliminar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
 
       {/* Dialog for Edit Product */}

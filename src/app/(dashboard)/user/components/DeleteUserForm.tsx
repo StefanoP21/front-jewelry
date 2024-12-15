@@ -66,13 +66,13 @@ export function DeleteUserForm(props: { id: number; status: boolean }) {
             handleOpen();
           }}
         >
-          {props.status ? "Eliminar" : "Habilitar"}
+          {props.status ? "Inhabilitar" : "Habilitar"}
         </span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>
-            {props.status ? `Eliminar un Usuario con ID ${props.id}?` : `Habilitar un Usuario con ID ${props.id}?`}
+            {props.status ? `Inhabilitar usuario con ID ${props.id}?` : `Habilitar usuario con ID ${props.id}?`}
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -85,10 +85,10 @@ export function DeleteUserForm(props: { id: number; status: boolean }) {
                 {deleteUserMutation.isPending ? (
                   <>
                     <LoaderCircle className="h-5 w-5 mr-3 animate-spin" />{" "}
-                    {props.status ? "Elimando Usuario" : "Habilitando Usuario"}
+                    {props.status ? "Inhabilitando usuario" : "Habilitando usuario"}
                   </>
                 ) : (
-                  <span>{props.status ? "Eliminar Usuario" : "Habilitar Usuario"}</span>
+                  <span>{props.status ? "Inhabilitar usuario" : "Habilitar usuario"}</span>
                 )}
               </Button>
             </DialogFooter>

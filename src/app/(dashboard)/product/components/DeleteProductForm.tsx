@@ -65,7 +65,7 @@ export function DeleteProductForm({ id, status, onClose }: DeleteProductFormProp
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <h2 className="text-lg font-semibold leading-none tracking-tight">
-          {status ? `Eliminar Producto con ID ${id}?` : `Habilitar Producto con ID ${id}?`}
+          {status ? `Inhabilitar producto con ID ${id}?` : `Habilitar producto con ID ${id}?`}
         </h2>
         <div className="grid gap-4 py-2">
           <span>Esta acción afectará al producto seleccionado.</span>
@@ -74,10 +74,10 @@ export function DeleteProductForm({ id, status, onClose }: DeleteProductFormProp
           {isLoading ? (
             <>
               <LoaderCircle className="h-5 w-5 mr-3 animate-spin" />{" "}
-              {status ? "Elimando Producto" : "Habilitando Producto"}
+              {status ? "Inhabilitado producto" : "Habilitando producto"}
             </>
           ) : (
-            <span>{status ? "Eliminar Producto" : "Habilitar Producto"}</span>
+            <span>{status ? "Inhabilitar producto" : "Habilitar producto"}</span>
           )}
         </Button>
       </form>
