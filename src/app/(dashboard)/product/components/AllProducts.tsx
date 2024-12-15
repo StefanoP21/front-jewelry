@@ -100,7 +100,7 @@ export default function AllProducts({ products, filtered }: AllProductsProps) {
                       <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                       <DropdownMenuItem onClick={() => handleEditOpen(Number(product.id))}>Actualizar</DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleDeleteOpen(Number(product.id), product.status)}>
-                        {product.status ? "Eliminar" : "Habilitar"}
+                        {product.status ? "Inhabilitar" : "Habilitar"}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
