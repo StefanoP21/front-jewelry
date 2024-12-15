@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import {
   Breadcrumb,
@@ -11,7 +11,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -90,10 +89,6 @@ export default function UserPage() {
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
-              <Button size="sm" variant="outline" className="h-7 gap-1">
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
-              </Button>
               <RegisterForm />
             </div>
           </div>
@@ -106,7 +101,7 @@ export default function UserPage() {
               {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredUsers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{users.length}</strong> usuarios
+                  Mostrando <strong>{users.length}</strong> usuarios
                 </div>
               </CardFooter>
             </Card>
@@ -121,7 +116,7 @@ export default function UserPage() {
               {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredActiveUsers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{filteredActiveUsers.length}</strong> usuarios
+                  Mostrando <strong>{filteredActiveUsers.length}</strong> usuarios
                 </div>
               </CardFooter>
             </Card>
@@ -136,7 +131,7 @@ export default function UserPage() {
               {isLoading ? <AllUsersSkeleton /> : <AllUsers users={filteredInactiveUsers} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{filteredInactiveUsers.length}</strong> usuarios
+                  Mostrando <strong>{filteredInactiveUsers.length}</strong> usuarios
                 </div>
               </CardFooter>
             </Card>

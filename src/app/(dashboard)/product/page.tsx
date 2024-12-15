@@ -125,7 +125,7 @@ export default function ProductPage() {
               {isLoading ? <AllProductsSkeleton /> : <AllProducts products={filteredProducts} />}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{products.length}</strong> productos
+                  Mostrando <strong>{products.length}</strong> productos
                 </div>
               </CardFooter>
             </Card>
@@ -144,7 +144,7 @@ export default function ProductPage() {
               )}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{filteredActiveProducts.length}</strong> productos
+                  Mostrando <strong>{filteredActiveProducts.length}</strong> productos
                 </div>
               </CardFooter>
             </Card>
@@ -163,7 +163,7 @@ export default function ProductPage() {
               )}
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-10</strong> de <strong>{filteredInactiveProducts.length}</strong> productos
+                  Mostrando <strong>{filteredInactiveProducts.length}</strong> productos
                 </div>
               </CardFooter>
             </Card>

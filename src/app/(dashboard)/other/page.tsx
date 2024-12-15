@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { File, ListFilter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,16 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AllCategories from "./components/category/AllCategories";
@@ -73,12 +64,8 @@ export default function OtherPage() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="#">Otros</Link>
+                <BreadcrumbPage>Otros</BreadcrumbPage>
               </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Todos las opciones</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -129,25 +116,6 @@ export default function OtherPage() {
               </TabsTrigger>
             </TabsList>
             <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-7 gap-1">
-                    <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Filtro</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filtro</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>Activo</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Borrador</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>Archivado</DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button size="sm" variant="outline" className="h-7 gap-1">
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Exportar</span>
-              </Button>
               {currentTab === "categories" && <CreateCategoryForm />}
               {currentTab === "suppliers" && <CreateSupplierForm />}
               {currentTab === "materials" && <CreateMaterialForm />}
